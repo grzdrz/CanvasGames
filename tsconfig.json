@@ -1,0 +1,21 @@
+{
+    "exclude": [
+        "./temp",
+        "./node_modules",
+        "webpack.config.js"
+    ],
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ES6",
+        "lib": [
+            "ES5",
+            "ES6",
+            "DOM",
+            "DOM.Iterable",
+            "ScriptHost"
+        ],
+        "strict": true,
+        "esModuleInterop": true,
+        "sourceMap": true
+    }
+}

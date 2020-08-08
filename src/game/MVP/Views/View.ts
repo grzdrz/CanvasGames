@@ -3,40 +3,35 @@ import Vector from "../../Helpers/Vector";
 
 import ViewManager from "./ViewManager";
 
+import ViewState from "./Data/ViewState";
+
 abstract class View {
-    public containerElement: HTMLElement;
-
     public viewManager: ViewManager;
+    public isPopup: boolean = false;
+    public viewState = ViewState.Active;
+    public get IsActive() { return this.viewState == ViewState.Active; }
 
-    public modelData: IModelData = {};
-
-    constructor(containerElement: HTMLElement, viewManager: ViewManager) {
-        this.containerElement = containerElement;
+    constructor(viewManager: ViewManager) {
         this.viewManager = viewManager;
     }
 
-    public abstract initialize(): void;
-
-    public abstract update(neededFullRerender: boolean): void;
-
-    public static renderPosition(htmlElement: HTMLElement, position: Vector): void {
-        const element = htmlElement;
-
-        const left = `${position.x}px`;
-        element.style.left = left;
-
-        const bottom = `${position.y}px`;
-        element.style.bottom = bottom;
+    public update(/* GameTime gameTime,  */coveredByOtherScreen: boolean): void {
+        if (coveredByOtherScreen) {
+            this.viewState = ViewState.Hidden;
+        }
+        else {
+            this.viewState = ViewState.Active;
+        }
     }
 
-    public static renderSize(htmlElement: HTMLElement, size: Vector): void {
-        const element = htmlElement;
+    public draw(/* GameTime gameTime */): void { }
 
-        const width = `${size.width}px`;
-        element.style.width = width;
+    public loadContent(): void { }
 
-        const height = `${size.height}px`;
-        element.style.height = height;
+    public unloadContent(): void { }
+
+    public exitScreen() {
+        this.viewManager.removeView(this);
     }
 }
 
