@@ -15,7 +15,7 @@ abstract class View {
         this.viewManager = viewManager;
     }
 
-    public update(/* GameTime gameTime,  */coveredByOtherScreen: boolean): void {
+    public update(gameTime: DOMHighResTimeStamp, coveredByOtherScreen: boolean): void {
         if (coveredByOtherScreen) {
             this.viewState = ViewState.Hidden;
         }
@@ -24,7 +24,7 @@ abstract class View {
         }
     }
 
-    public draw(/* GameTime gameTime */): void { }
+    public draw(gameTime: DOMHighResTimeStamp): void { }
 
     public loadContent(): void { }
 

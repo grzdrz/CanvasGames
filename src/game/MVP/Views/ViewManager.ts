@@ -29,15 +29,15 @@ class ViewManager extends GameComponent {
     public onStatesUpdate = new Event();
     public onGetModelData = new Event();
     /* public onHandleMove = new Event();
-    public onInputsChange = new Event();
+    public onInputsChange = new Event(); */
     public onMouseDown = new Event();
     public onMouseMove = new Event();
-    public onMouseUp = new Event(); */
+    public onMouseUp = new Event();
 
     constructor(viewData: ViewData, canvas: HTMLElement) {
         super();
         this.viewData = viewData;
-        this.canvasManager = new CanvasManager(canvas, 800, 600);
+        this.canvasManager = new CanvasManager(this, canvas, 500, 500);
 
         this.isGameActive = true;
 
@@ -63,7 +63,7 @@ class ViewManager extends GameComponent {
         }
     }
 
-    public update(/* GameTime gameTime */): void {
+    public update(gameTime: DOMHighResTimeStamp): void {
         this.viewsToUpdate = [];
 
         for (let view of this.views) {
@@ -78,7 +78,7 @@ class ViewManager extends GameComponent {
             this.viewsToUpdate.pop();
 
             // Update the screen.
-            view.update(/* gameTime,  */coveredByOtherScreen);
+            view.update(gameTime, coveredByOtherScreen);
 
             if (view.viewState == ViewState.Active) {
                 if (!view.isPopup)
@@ -87,14 +87,14 @@ class ViewManager extends GameComponent {
         }
     }
 
-    public draw(/* GameTime gameTime */): void {
+    public draw(gameTime: DOMHighResTimeStamp): void {
         this.canvasManager.clear();
 
         for (let view of this.views) {
             if (view.viewState == ViewState.Hidden)
                 continue;
 
-            view.draw(/* gameTime */);
+            view.draw(gameTime);
         }
         //input.draw();
     }
@@ -122,7 +122,6 @@ class ViewManager extends GameComponent {
             this.viewsToUpdate.splice(index, 1);
         }
     }
-
 
     public setData(data: IViewData): void {
         /* if (data.sliderStripThickness !== undefined) this.viewData.sliderStripThickness = data.sliderStripThickness; */

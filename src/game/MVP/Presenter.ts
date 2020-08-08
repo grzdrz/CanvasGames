@@ -14,9 +14,7 @@ import IViewData from "./Views/Data/IViewData";
 
 class Presenter {
     public model: Model;
-
     public viewManager: ViewManager;
-
     public gameComponents: GameComponent[] = new Array<GameComponent>();
 
     constructor(defaultModelData: IModelData, defaultViewData: IViewData) {
@@ -35,14 +33,7 @@ class Presenter {
 
     private initialize(): void {
         this.viewManager.onStatesUpdate.subscribe(this.handlerStatesUpdate);
-        this.viewManager.onStatesUpdate.subscribe(this.handlerViewsUpdate);
         this.model.onStatesUpdate.subscribe(this.handlerStatesUpdate);
-
-        /* this.viewManager.onHandleMove.subscribe(this.handlerStatesUpdate);
-        this.viewManager.onHandleMove.subscribe(this.handlerHandleMove);
-
-        this.viewManager.onInputsChange.subscribe(this.handlerStatesUpdate);
-        this.viewManager.onInputsChange.subscribe(this.handlerHandleMove); */
 
         this.model.onGetViewData.subscribe(this.handlerGetViewData);
         this.viewManager.onGetModelData.subscribe(this.handlerGetModelData);
@@ -57,15 +48,14 @@ class Presenter {
         this.gameComponents.forEach(component => {
             component.loadContent();
         });
-        this.invokeGameCycle();
+        this.invokeGameCycle(0);
     }
 
-    public invokeGameCycle = () => {
+    public invokeGameCycle = (gameTime: DOMHighResTimeStamp) => {
         this.gameComponents.forEach(component => {
-            component.update();
-            component.draw();
+            component.update(gameTime);
+            component.draw(gameTime);
         });
-
         requestAnimationFrame(this.invokeGameCycle);
     }
 
@@ -80,14 +70,6 @@ class Presenter {
 
     private handlerGetViewData = (args: EventArgs) => {
         this.viewManager.getData(<ViewDataEventArgs>args);
-    }
-
-    private handlerViewsUpdate = () => {
-        this.viewManager.views.forEach((e) => e.update(true));
-    }
-
-    private handlerHandleMove = () => {
-        this.viewManager.views.forEach((e) => e.update(false));
     }
 }
 

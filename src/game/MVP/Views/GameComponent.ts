@@ -2,8 +2,8 @@ class GameComponent {
     constructor() { }
 
     public initialize(): void { }
-    public update(/* GameTime gameTime */): void { }
-    public draw(/* GameTime gameTime */): void { }
+    public update(gameTime: DOMHighResTimeStamp): void { }
+    public draw(gameTime: DOMHighResTimeStamp): void { }
     public loadContent(): void { }
     public unloadContent(): void { }
 }
