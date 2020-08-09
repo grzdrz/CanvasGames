@@ -34,6 +34,9 @@ class ViewManager extends GameComponent {
     public onMouseMove = new Event();
     public onMouseUp = new Event();
 
+    public onKeyDown = new Event();
+    public onKeyUp = new Event();
+
     constructor(viewData: ViewData, canvas: HTMLElement) {
         super();
         this.viewData = viewData;

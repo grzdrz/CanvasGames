@@ -46,6 +46,9 @@ class CanvasManager {
         this.canvas.ondragstart = () => false;
         this.canvas.addEventListener("mousedown", this.handlerMouseDown.bind(this));
         this.canvas.addEventListener("touchstart", this.handlerMouseDown.bind(this));
+
+        window.addEventListener("keydown", this.handlerKeyDown.bind(this));
+        window.addEventListener("keyup", this.handlerKeyUp.bind(this));
     }
 
     // d&d
@@ -115,6 +118,18 @@ class CanvasManager {
         document.removeEventListener("touchend", optionsFromMouseDown.handlerMouseUp);
 
         this.viewManager.onMouseUp.invoke({});
+    }
+
+    private handlerKeyDown = (event: KeyboardEvent) => {
+        /* event.preventDefault(); */
+
+        this.viewManager.onKeyDown.invoke({ key: event.code });
+    }
+
+    private handlerKeyUp = (event: KeyboardEvent) => {
+        /* event.preventDefault(); */
+
+        this.viewManager.onKeyUp.invoke({ key: event.code });
     }
 }
 
