@@ -1,14 +1,13 @@
 import ViewData from "./Data/ViewData";
 
-/* import OptionsPanelView from "./OptionsPanel/OptionsPanelView"; */
-import ViewDataEventArgs from "../../Events/ViewDataEventArgs";
+import ViewDataEventArgs from "../Events/ViewDataEventArgs";
 import IViewData from "./Data/IViewData";
 
-import Event from "../../Events/Event";
+import Event from "../Events/Event";
 import ModelData from "../Model/Data/ModelData";
-import ModelDataEventArgs from "../../Events/ModelDataEventArgs";
-import View from "./View";
-import CanvasManager from "./CanvasManager";
+import ModelDataEventArgs from "../Events/ModelDataEventArgs";
+import View from "./Views/View";
+import CanvasManager from "../DrawingSystem/CanvasManager";
 import ViewState from "./Data/ViewState";
 import GameComponent from "./GameComponent";
 

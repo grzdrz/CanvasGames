@@ -41,6 +41,10 @@ class Vector {
         this._y = value;
     }
 
+    static get zero(): Vector {
+        return new Vector(0, 0);
+    }
+
     sum(vector: Vector): Vector {
         return new Vector(this._x + vector.x, this._y + vector.y);
     }
@@ -80,6 +84,10 @@ class Vector {
         const newX = this._x * Math.cos(angleInRad) - this._y * Math.sin(angleInRad);
         const newY = this._x * Math.sin(angleInRad) + this._y * Math.cos(angleInRad);
         return new Vector(newX, newY);
+    }
+
+    public getUnitVector(): Vector {
+        return new Vector(this._x / this.length, this._y / this.length);
     }
 }
 

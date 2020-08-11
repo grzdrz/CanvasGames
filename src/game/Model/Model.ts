@@ -1,10 +1,10 @@
-import Event from "../../Events/Event";
+import Event from "../Events/Event";
 
 import IModelData from "./Data/IModelData";
 import ModelData from "./Data/ModelData";
-import ModelDataEventArgs from "../../Events/ModelDataEventArgs";
-import ViewDataEventArgs from "../../Events/ViewDataEventArgs";
-import ViewData from "../Views/Data/ViewData";
+import ModelDataEventArgs from "../Events/ModelDataEventArgs";
+import ViewDataEventArgs from "../Events/ViewDataEventArgs";
+import ViewData from "../ViewSystem/Data/ViewData";
 
 class Model {
     private data: ModelData;

@@ -1,9 +1,9 @@
-import IModelData from "../Model/Data/IModelData";
+import IModelData from "../../Model/Data/IModelData";
 import Vector from "../../Helpers/Vector";
 
-import ViewManager from "./ViewManager";
+import ViewManager from "../ViewManager";
 
-import ViewState from "./Data/ViewState";
+import ViewState from "../Data/ViewState";
 
 abstract class View {
     public viewManager: ViewManager;

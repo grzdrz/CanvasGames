@@ -1,3 +1,3 @@
-import Game from "./game/Game";
+import Presenter from "./game/Presenter";
 
-const game = new Game();
+const presenter = new Presenter();

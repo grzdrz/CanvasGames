@@ -1,5 +1,5 @@
 import EventArgs from "./EventArgs";
-import IModelData from "../MVP/Model/Data/IModelData";
+import IModelData from "../Model/Data/IModelData";
 import Vector from "../Helpers/Vector";
 
 class MouseClickEventArgs extends EventArgs {

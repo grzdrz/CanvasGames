@@ -1,4 +1,4 @@
-import Vector from "../../../Helpers/Vector";
+import Vector from "../Helpers/Vector";
 
 interface IDrawableObject {
     position: Vector;

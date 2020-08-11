@@ -1,6 +1,7 @@
-import Vector from "../../Helpers/Vector";
-import ViewManager from "./ViewManager";
-import IDrawableObject from "./GameObjects/IDrawableObject";
+import Vector from "../Helpers/Vector";
+import ViewManager from "../ViewSystem/ViewManager";
+import IDrawableObject from "../GameSystem/IDrawableObject";
+import Player from "../GameSystem/Player";
 
 interface IMouseEventArgs {
     handlerMouseMove: (event: UIEvent) => void,
@@ -34,7 +35,10 @@ class CanvasManager {
 
     public drawObject(object: IDrawableObject): void {
         this.context.fillStyle = object.color;
-        this.context.fillRect(object.position.x, object.position.y, object.width, object.height);
+        // this.context.fillRect(object.position.x, object.position.y, object.width, object.height);
+        this.context.beginPath();
+        this.context.arc(object.position.x, object.position.y, object.width / 2, 0, 2 * Math.PI);
+        this.context.fill();
     }
 
     public clear(): void {

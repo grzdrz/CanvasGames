@@ -1,23 +1,28 @@
 import Model from "./Model/Model";
 
-import ViewManager from "./Views/ViewManager";
+import ViewManager from "./ViewSystem/ViewManager";
 
-import EventArgs from "../Events/EventArgs";
-import ModelDataEventArgs from "../Events/ModelDataEventArgs";
-import ViewDataEventArgs from "../Events/ViewDataEventArgs";
-import GameComponent from "./Views/GameComponent";
+import EventArgs from "./Events/EventArgs";
+import ModelDataEventArgs from "./Events/ModelDataEventArgs";
+import ViewDataEventArgs from "./Events/ViewDataEventArgs";
+import GameComponent from "./ViewSystem/GameComponent";
 import ModelData from "./Model/Data/ModelData";
-import ViewData from "./Views/Data/ViewData";
-import SessionView from "./Views/SessionView";
+import ViewData from "./ViewSystem/Data/ViewData";
+import SessionView from "./ViewSystem/Views/SessionView";
 import IModelData from "./Model/Data/IModelData";
-import IViewData from "./Views/Data/IViewData";
+import IViewData from "./ViewSystem/Data/IViewData";
+
+import "./Styles/Game.scss";
+
+const defaultModelData = {};
+const defaultViewData = {};
 
 class Presenter {
     public model: Model;
     public viewManager: ViewManager;
     public gameComponents: GameComponent[] = new Array<GameComponent>();
 
-    constructor(defaultModelData: IModelData, defaultViewData: IViewData) {
+    constructor() {
         const canvas = <HTMLElement>(document.querySelector(".game"));
 
         const modelData = new ModelData(defaultModelData);

@@ -1,25 +1,37 @@
-import Vector from "../../../Helpers/Vector";
+import Vector from "../Helpers/Vector";
 import IDrawableObject from "./IDrawableObject";
-import MouseClickEventArgs from "../../../Events/MouseClickEventArgs";
-import EventArgs from "../../../Events/EventArgs";
-import KeysClickEventArgs from "../../../Events/KeysClickEventArgs";
+import MouseClickEventArgs from "../Events/MouseClickEventArgs";
+import EventArgs from "../Events/EventArgs";
+import KeysClickEventArgs from "../Events/KeysClickEventArgs";
+import IPhysicalObject from "./IPhysicalObject";
 
-class SomeObject implements IDrawableObject {
+class Player implements IDrawableObject, IPhysicalObject {
     public width = 50;
     public height = 50;
     public color = "red";
     public position = new Vector(0, 0);
 
+    public velocity = new Vector(0, 0);
+    public isColliding = false;
 
     public firstKeyDowned = "";
     public secondKeyDowned = "";
 
-    constructor() {
+    constructor(position: Vector, velocity: Vector) {
+        this.position = position;
+        this.velocity = velocity;
+
         this.initialize();
     }
 
     public initialize(): void {
 
+    }
+
+    public update(): void {
+        this.position = this.position.sum(this.velocity);
+        if (this.isColliding) this.color = "red";
+        else this.color = "blue";
     }
 
     public handlerSetPosition = (eventArgs: EventArgs) => {
@@ -69,4 +81,4 @@ class SomeObject implements IDrawableObject {
     }
 }
 
-export default SomeObject;
+export default Player;
