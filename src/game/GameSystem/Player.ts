@@ -13,13 +13,19 @@ class Player implements IDrawableObject, IPhysicalObject {
 
     public velocity = new Vector(0, 0);
     public isColliding = false;
+    public mass: number;
+    public restitution = 0.9;
 
     public firstKeyDowned = "";
     public secondKeyDowned = "";
 
-    constructor(position: Vector, velocity: Vector) {
+    constructor(position: Vector, velocity: Vector, mass: number) {
         this.position = position;
         this.velocity = velocity;
+        this.mass = mass;
+
+        this.width = this.width * this.mass;
+        this.height = this.height * this.mass;
 
         this.initialize();
     }
@@ -29,6 +35,11 @@ class Player implements IDrawableObject, IPhysicalObject {
     }
 
     public update(): void {
+        this.velocity.y += 0.1; /* g * secondsPassed */
+
+        this.position.x += this.velocity.x /* * secondsPassed */;
+        this.position.y += this.velocity.y /* * secondsPassed */;
+
         this.position = this.position.sum(this.velocity);
         if (this.isColliding) this.color = "red";
         else this.color = "blue";

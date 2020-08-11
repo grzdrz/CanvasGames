@@ -7,6 +7,8 @@ interface IPhysicalObject {
 
     velocity: Vector;
     isColliding: boolean;
+    mass: number;
+    restitution: number;
 }
 
 export default IPhysicalObject;

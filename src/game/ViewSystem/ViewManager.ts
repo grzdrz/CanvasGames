@@ -39,7 +39,8 @@ class ViewManager extends GameComponent {
     constructor(viewData: ViewData, canvas: HTMLElement) {
         super();
         this.viewData = viewData;
-        this.canvasManager = new CanvasManager(this, canvas, 500, 500);
+        const viewportWidth = 
+        this.canvasManager = new CanvasManager(this, canvas, 1000, 600);
 
         this.isGameActive = true;
 

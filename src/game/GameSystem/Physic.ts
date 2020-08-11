@@ -2,20 +2,10 @@ import Vector from "../Helpers/Vector";
 import Player from "./Player";
 import IPhysicalObject from "./IPhysicalObject";
 
+const g = 9.81;
+const borderRestitution = 0.50;
+
 class Physic {
-    public static calculateCollizionVelocity(obj1: IPhysicalObject, obj2: IPhysicalObject) {
-        const vectorBetweenObjects = obj2.position.subtract(obj1.position);
-        const unitVector = vectorBetweenObjects.getUnitVector();
-
-        const relativeVelocity = obj1.velocity.subtract(obj2.velocity);
-        const speed = relativeVelocity.x * unitVector.x + relativeVelocity.y * unitVector.y;
-
-        obj1.velocity.x -= (speed * unitVector.x);
-        obj1.velocity.y -= (speed * unitVector.y);
-        obj2.velocity.x += (speed * unitVector.x);
-        obj2.velocity.y += (speed * unitVector.y);
-    }
-
     public static detectCollision(obj1: IPhysicalObject, obj2: IPhysicalObject): boolean {
         const vectorBetweenObjects = obj2.position.subtract(obj1.position);
         const sumOfRadiusesOfObjects = obj1.width / 2 + obj2.width / 2;
@@ -42,8 +32,54 @@ class Physic {
                     obj1.isColliding = true;
                     obj2.isColliding = true;
 
-                    Physic.calculateCollizionVelocity(obj1, obj2);
+                    const vectorBetweenObjects = obj2.position.subtract(obj1.position);
+                    const unitVector = vectorBetweenObjects.getUnitVector();
+
+                    // расталкиваем объекты если между ними образовалось пересечение(иначе слипнутся)
+                    const contactDepth = vectorBetweenObjects.length - (obj1.width / 2 + obj2.width / 2);
+                    let pushingDistance;
+                    if (unitVector.x === 0 && unitVector.y === 0)
+                        pushingDistance = new Vector((contactDepth / 2) * (16 / 25), (contactDepth / 2) * (9 / 25));
+                    else
+                        pushingDistance = new Vector((contactDepth / 2) * unitVector.x, (contactDepth / 2) * unitVector.y);
+                    obj1.position = obj1.position.sum(pushingDistance);
+                    obj2.position = obj2.position.subtract(pushingDistance);
+
+                    const relativeVelocity = obj1.velocity.subtract(obj2.velocity);
+                    let speed = relativeVelocity.x * unitVector.x + relativeVelocity.y * unitVector.y;
+                    speed *= Math.min(obj1.restitution, obj2.restitution);
+
+                    const impulse = 2 * speed / (obj1.mass + obj2.mass);
+                    obj1.velocity.x -= (impulse * obj2.mass * unitVector.x);
+                    obj1.velocity.y -= (impulse * obj2.mass * unitVector.y);
+                    obj2.velocity.x += (impulse * obj1.mass * unitVector.x);
+                    obj2.velocity.y += (impulse * obj1.mass * unitVector.y);
                 }
+            }
+        }
+    }
+
+    public static detectEdgeCollisions(gameObjects: IPhysicalObject[], canvasWidth: number, canvasHeight: number) {
+        let obj;
+        for (let i = 0; i < gameObjects.length; i++) {
+            obj = gameObjects[i];
+
+            // Check for left and right
+            if (obj.position.x < obj.width / 2) {
+                obj.velocity.x = Math.abs(obj.velocity.x) * borderRestitution;
+                obj.position.x = obj.width / 2;
+            } else if (obj.position.x > canvasWidth - obj.width / 2) {
+                obj.velocity.x = -Math.abs(obj.velocity.x) * borderRestitution;
+                obj.position.x = canvasWidth - obj.width / 2;
+            }
+
+            // Check for bottom and top
+            if (obj.position.y < obj.width / 2) {
+                obj.velocity.y = Math.abs(obj.velocity.y) * borderRestitution;
+                obj.position.y = obj.width / 2;
+            } else if (obj.position.y > canvasHeight - obj.width / 2) {
+                obj.velocity.y = -Math.abs(obj.velocity.y) * borderRestitution;
+                obj.position.y = canvasHeight - obj.width / 2;
             }
         }
     }

@@ -10,16 +10,9 @@ class SessionView extends View {
     constructor(viewManager: ViewManager) {
         super(viewManager);
 
-        this.gameObjects = [
-            new Player(new Vector(250, 50), new Vector(0, 0.50)),
-            new Player(new Vector(250, 300), new Vector(0, -0.50)),
-            new Player(new Vector(150, 0), new Vector(0.50, 0.50)),
-            new Player(new Vector(250, 150), new Vector(0.50, 0.50)),
-            new Player(new Vector(350, 75), new Vector(-0.50, 0.50)),
-            new Player(new Vector(300, 300), new Vector(0.50, -0.50)),
-            /* new Player(new Vector(250, 50), new Vector(0, 0.50)),
-            new Player(new Vector(250, 350), new Vector(0, -0.50)), */
-        ];
+        for (let i = 0; i < 10; i++) {
+            this.gameObjects.push(new Player(new Vector(150, 150), new Vector(0, 0), 1));
+        }
     }
 
 
@@ -38,6 +31,7 @@ class SessionView extends View {
     public update(gameTime: DOMHighResTimeStamp): void {
         this.gameObjects.forEach((obj) => obj.update())
         Physic.analyzeCollisions(this.gameObjects);
+        Physic.detectEdgeCollisions(this.gameObjects, this.viewManager.canvasManager.width, this.viewManager.canvasManager.height);
     }
 
     public draw(gameTime: DOMHighResTimeStamp): void {

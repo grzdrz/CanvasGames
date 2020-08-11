@@ -87,6 +87,7 @@ class Vector {
     }
 
     public getUnitVector(): Vector {
+        if (this.length === 0) return Vector.zero;
         return new Vector(this._x / this.length, this._y / this.length);
     }
 }
