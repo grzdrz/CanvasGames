@@ -24,7 +24,7 @@ abstract class View {
         }
     }
 
-    public draw(gameTime: DOMHighResTimeStamp): void { }
+    public draw(): void { }
 
     public loadContent(): void { }
 

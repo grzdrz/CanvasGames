@@ -1,23 +1,16 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import EventArgs from "./EventArgs";
 import EventHandler from "./EventHandler";
 
-class Event {
-    private handlers: EventHandler[];
+class Event<TData> {
+    private handlers = new Array<EventHandler<TData>>();
 
-    constructor() {
-        this.handlers = new Array<EventHandler>();
-
-        this.invoke = this.invoke.bind(this);
-        this.subscribe = this.subscribe.bind(this);
-    }
-
-    public invoke(args: EventArgs): void {
+    public invoke = (args: EventArgs<TData>) => {
         this.handlers.forEach((eventHandler) => eventHandler(args));
-    }
+    };
 
-    public subscribe(handler: EventHandler): void {
+    public subscribe = (handler: EventHandler<TData>) => {
         this.handlers.push(handler);
-    }
+    };
 }
-
 export default Event;

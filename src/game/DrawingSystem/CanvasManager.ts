@@ -2,6 +2,8 @@ import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
 import IDrawableObject from "../GameSystem/IDrawableObject";
 import Player from "../GameSystem/Player";
+import EventArgs from "../Events/EventArgs";
+import IMouseData from "../GameSystem/IMouseData";
 
 interface IMouseEventArgs {
     handlerMouseMove: (event: UIEvent) => void,
@@ -59,22 +61,6 @@ class CanvasManager {
     private handlerMouseDown(event: UIEvent): void {
         event.preventDefault();
 
-        let cursorMouseDownPositionX;
-        let cursorMouseDownPositionY;
-        if (event instanceof TouchEvent) {
-            const touchEvent = /* <TouchEvent> */event;
-            cursorMouseDownPositionX = touchEvent.changedTouches[0].pageX;
-            cursorMouseDownPositionY = touchEvent.changedTouches[0].pageY;
-        } else {
-            const mouseEvent = <MouseEvent>event;
-            cursorMouseDownPositionX = mouseEvent.clientX;
-            cursorMouseDownPositionY = mouseEvent.clientY;
-        }
-        // cursorMouseDownPositionY = (document.documentElement.clientHeight + window.pageYOffset) - cursorMouseDownPositionY;
-        cursorMouseDownPositionY = cursorMouseDownPositionY;
-        // cursorMouseDownPositionX =;
-        const cursorMouseDownPosition = new Vector(cursorMouseDownPositionX, cursorMouseDownPositionY);// место нажатия левой кнопки мыши
-
         const optionsForMouseEvents = {
             handlerMouseMove: (_event: UIEvent): void => { },
             handlerMouseUp: (_event: UIEvent): void => { },
@@ -91,49 +77,52 @@ class CanvasManager {
         document.addEventListener("touchend", handlerMouseUp);
 
 
-        this.viewManager.onMouseDown.invoke({ cursorPosition: cursorMouseDownPosition });
+        const mousePosition = this.calculateMouseGlobalPosition(event);
+        this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({ mousePosition }));
     }
 
     private handlerMouseMove(optionsFromMouseDown: IMouseEventArgs, event: UIEvent): void {
-        let mouseGlobalPositionX;
-        let mouseGlobalPositionY;
-        if (event instanceof TouchEvent) {
-            const touchEvent = /* <TouchEvent> */event;
-            mouseGlobalPositionX = touchEvent.changedTouches[0].pageX;
-            mouseGlobalPositionY = touchEvent.changedTouches[0].pageY;
-        } else {
-            const mouseEvent = <MouseEvent>event;
-            mouseGlobalPositionX = mouseEvent.clientX;
-            mouseGlobalPositionY = mouseEvent.clientY;
-        }
-        // mouseGlobalPositionY = (document.documentElement.clientHeight + window.pageYOffset) - mouseGlobalPositionY;
-        mouseGlobalPositionY = mouseGlobalPositionY;
-        // mouseGlobalPositionX =;
-        const mouseGlobalPosition = new Vector(mouseGlobalPositionX, mouseGlobalPositionY);// место нажатия левой кнопки мыши
-
-
-        this.viewManager.onMouseMove.invoke({ cursorPosition: mouseGlobalPosition });
+        const mousePosition = this.calculateMouseGlobalPosition(event);
+        this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({ mousePosition }));
     }
 
-    private handlerMouseUp(optionsFromMouseDown: IMouseEventArgs, _event: UIEvent): void {
+    private handlerMouseUp(optionsFromMouseDown: IMouseEventArgs, event: UIEvent): void {
         document.removeEventListener("mousemove", optionsFromMouseDown.handlerMouseMove);
         document.removeEventListener("mouseup", optionsFromMouseDown.handlerMouseUp);
         document.removeEventListener("touchmove", optionsFromMouseDown.handlerMouseMove);
         document.removeEventListener("touchend", optionsFromMouseDown.handlerMouseUp);
 
-        this.viewManager.onMouseUp.invoke({});
+        const mousePosition = this.calculateMouseGlobalPosition(event);
+        this.viewManager.onMouseUp.invoke(new EventArgs<IMouseData>({ mousePosition }));
     }
+
+    private calculateMouseGlobalPosition = (event: UIEvent) => {
+        let x;
+        let y;
+        if (event instanceof TouchEvent) {
+            const touchEvent = /* <TouchEvent> */event;
+            x = touchEvent.changedTouches[0].pageX;
+            y = touchEvent.changedTouches[0].pageY;
+        } else {
+            const mouseEvent = <MouseEvent>event;
+            x = mouseEvent.clientX;
+            y = mouseEvent.clientY;
+        }
+        // y = (document.documentElement.clientHeight + window.pageYOffset) - y;
+
+        return new Vector(x, y);
+    };
 
     private handlerKeyDown = (event: KeyboardEvent) => {
         /* event.preventDefault(); */
 
-        this.viewManager.onKeyDown.invoke({ key: event.code });
+        this.viewManager.onKeyDown.invoke(new EventArgs<IKeyData>({ key: event.code }));
     }
 
     private handlerKeyUp = (event: KeyboardEvent) => {
         /* event.preventDefault(); */
 
-        this.viewManager.onKeyUp.invoke({ key: event.code });
+        this.viewManager.onKeyUp.invoke(new EventArgs<IKeyData>({ key: event.code }));
     }
 }
 

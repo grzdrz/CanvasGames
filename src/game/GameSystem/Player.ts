@@ -1,9 +1,8 @@
 import Vector from "../Helpers/Vector";
 import IDrawableObject from "./IDrawableObject";
-import MouseClickEventArgs from "../Events/MouseClickEventArgs";
 import EventArgs from "../Events/EventArgs";
-import KeysClickEventArgs from "../Events/KeysClickEventArgs";
 import IPhysicalObject from "./IPhysicalObject";
+import IMouseData from "./IMouseData";
 
 class Player implements IDrawableObject, IPhysicalObject {
     public width = 50;
@@ -34,28 +33,25 @@ class Player implements IDrawableObject, IPhysicalObject {
 
     }
 
-    public update(): void {
-        this.velocity.y += 0.1; /* g * secondsPassed */
+    public update(gameTime: DOMHighResTimeStamp): void {
+        gameTime = gameTime * 10;
+        this.velocity.y += 9.81 * gameTime;
 
-        this.position.x += this.velocity.x /* * secondsPassed */;
-        this.position.y += this.velocity.y /* * secondsPassed */;
+        this.position.x += this.velocity.x * gameTime;
+        this.position.y += this.velocity.y * gameTime;
 
-        this.position = this.position.sum(this.velocity);
         if (this.isColliding) this.color = "red";
         else this.color = "blue";
     }
 
-    public handlerSetPosition = (eventArgs: EventArgs) => {
-        const args = <MouseClickEventArgs>(eventArgs);
-        this.position.x = args.cursorPosition.x;
-        this.position.y = args.cursorPosition.y;
+    public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
+        this.position.x = eventArgs.data.mousePosition.x;
+        this.position.y = eventArgs.data.mousePosition.y;
     }
 
-    public handlerKeyDown = (eventArgs: EventArgs) => {
-        const args = <KeysClickEventArgs>(eventArgs);
-
-        if (this.firstKeyDowned === "") this.firstKeyDowned = args.key;
-        else if (args.key !== this.firstKeyDowned) this.secondKeyDowned = args.key;
+    public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
+        if (this.firstKeyDowned === "") this.firstKeyDowned = eventArgs.data.key;
+        else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
 
         if (this.firstKeyDowned !== "" && this.secondKeyDowned === "") {
             if (this.firstKeyDowned === "KeyD") this.position.x += 10;
@@ -86,7 +82,7 @@ class Player implements IDrawableObject, IPhysicalObject {
         }
     }
 
-    public handlerKeyUp = (eventArgs: EventArgs) => {
+    public handlerKeyUp = (/* eventArgs: EventArgs<IKeyData> */) => {
         if (this.secondKeyDowned === "") this.firstKeyDowned = "";
         else this.secondKeyDowned = "";
     }

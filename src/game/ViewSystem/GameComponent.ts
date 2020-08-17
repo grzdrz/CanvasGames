@@ -3,7 +3,7 @@ class GameComponent {
 
     public initialize(): void { }
     public update(gameTime: DOMHighResTimeStamp): void { }
-    public draw(gameTime: DOMHighResTimeStamp): void { }
+    public draw(): void { }
     public loadContent(): void { }
     public unloadContent(): void { }
 }

@@ -1,15 +1,14 @@
 import ViewData from "./Data/ViewData";
-
-import ViewDataEventArgs from "../Events/ViewDataEventArgs";
 import IViewData from "./Data/IViewData";
-
 import Event from "../Events/Event";
 import ModelData from "../Model/Data/ModelData";
-import ModelDataEventArgs from "../Events/ModelDataEventArgs";
 import View from "./Views/View";
 import CanvasManager from "../DrawingSystem/CanvasManager";
 import ViewState from "./Data/ViewState";
 import GameComponent from "./GameComponent";
+import IModelData from "../Model/Data/IModelData";
+import IMouseData from "../GameSystem/IMouseData";
+import EventArgs from "../Events/EventArgs";
 
 class ViewManager extends GameComponent {
     public canvasManager: CanvasManager;
@@ -25,22 +24,22 @@ class ViewManager extends GameComponent {
 
     // public assets
 
-    public onStatesUpdate = new Event();
-    public onGetModelData = new Event();
-    /* public onHandleMove = new Event();
-    public onInputsChange = new Event(); */
-    public onMouseDown = new Event();
-    public onMouseMove = new Event();
-    public onMouseUp = new Event();
-
-    public onKeyDown = new Event();
-    public onKeyUp = new Event();
+    public onSetViewData = new Event<IViewData>();
+    public onSetModelData = new Event<IModelData>();
+    public onGetModelData = new Event<IModelData>();
+    public onHandleMove = new Event<IModelData>();
+    public onInputsChange = new Event<IModelData>();
+    public onMouseDown = new Event<IMouseData>();
+    public onMouseMove = new Event<IMouseData>();
+    public onMouseUp = new Event<IMouseData>();
+    public onKeyDown = new Event<IKeyData>();
+    public onKeyUp = new Event<IKeyData>();
 
     constructor(viewData: ViewData, canvas: HTMLElement) {
         super();
         this.viewData = viewData;
-        const viewportWidth = 
-        this.canvasManager = new CanvasManager(this, canvas, 1000, 600);
+        const viewportWidth =
+            this.canvasManager = new CanvasManager(this, canvas, 1000, 600);
 
         this.isGameActive = true;
 
@@ -90,14 +89,14 @@ class ViewManager extends GameComponent {
         }
     }
 
-    public draw(gameTime: DOMHighResTimeStamp): void {
+    public draw(): void {
         this.canvasManager.clear();
 
         for (let view of this.views) {
             if (view.viewState == ViewState.Hidden)
                 continue;
 
-            view.draw(gameTime);
+            view.draw();
         }
         //input.draw();
     }
@@ -131,12 +130,12 @@ class ViewManager extends GameComponent {
     }
 
     public getModelData(): ModelData {
-        const optionsEventArgs = new ModelDataEventArgs({});
+        const optionsEventArgs = new EventArgs<IModelData>({});
         this.onGetModelData.invoke(optionsEventArgs);
         return <ModelData>optionsEventArgs.data;
     }
 
-    public getData(args: ViewDataEventArgs): void {
+    public getData(args: EventArgs<IViewData>): void {
         args.data = new ViewData(this.viewData);
     }
 }

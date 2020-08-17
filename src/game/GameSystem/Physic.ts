@@ -2,8 +2,7 @@ import Vector from "../Helpers/Vector";
 import Player from "./Player";
 import IPhysicalObject from "./IPhysicalObject";
 
-const g = 9.81;
-const borderRestitution = 0.50;
+const borderRestitution = 0.9;
 
 class Physic {
     public static detectCollision(obj1: IPhysicalObject, obj2: IPhysicalObject): boolean {

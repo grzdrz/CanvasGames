@@ -1,7 +1,7 @@
 import EventArgs from "./EventArgs";
 
-interface EventHandler {
-    (args: EventArgs): void;
+interface EventHandler<TData> {
+    (args: EventArgs<TData>): void;
 }
 
 export default EventHandler;

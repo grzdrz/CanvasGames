@@ -3,8 +3,6 @@ import Model from "./Model/Model";
 import ViewManager from "./ViewSystem/ViewManager";
 
 import EventArgs from "./Events/EventArgs";
-import ModelDataEventArgs from "./Events/ModelDataEventArgs";
-import ViewDataEventArgs from "./Events/ViewDataEventArgs";
 import GameComponent from "./ViewSystem/GameComponent";
 import ModelData from "./Model/Data/ModelData";
 import ViewData from "./ViewSystem/Data/ViewData";
@@ -37,11 +35,11 @@ class Presenter {
     }
 
     private initialize(): void {
-        this.viewManager.onStatesUpdate.subscribe(this.handlerStatesUpdate);
-        this.model.onStatesUpdate.subscribe(this.handlerStatesUpdate);
+        this.viewManager.onSetModelData.subscribe(this.handlerSetModelData);
 
-        this.model.onGetViewData.subscribe(this.handlerGetViewData);
-        this.viewManager.onGetModelData.subscribe(this.handlerGetModelData);
+        this.viewManager.onSetViewData.subscribe(this.handlerSetViewData);
+
+        this.model.onSetViewData.subscribe(this.handlerSetViewData);
 
         this.model.initialize();
         this.viewManager.initialize();
@@ -56,25 +54,34 @@ class Presenter {
         this.invokeGameCycle(0);
     }
 
+    secondsPassed = 0;
+    oldTimeStamp = 0;
     public invokeGameCycle = (gameTime: DOMHighResTimeStamp) => {
+        this.secondsPassed = (gameTime - this.oldTimeStamp) / 1000;
+        this.secondsPassed = Math.min(this.secondsPassed, 0.1);
+        this.oldTimeStamp = gameTime;
+
         this.gameComponents.forEach(component => {
-            component.update(gameTime);
-            component.draw(gameTime);
+            component.update(this.secondsPassed);
+            component.draw();
         });
         requestAnimationFrame(this.invokeGameCycle);
     }
 
-    private handlerStatesUpdate = (args: EventArgs) => {
-        if (args instanceof ModelDataEventArgs) this.model.setData(args.data);
-        if (args instanceof ViewDataEventArgs) this.viewManager.setData(args.data);
+    private handlerSetModelData = (args: EventArgs<IModelData>) => {
+        this.model.update(args.data);
+    };
+
+    private handlerSetViewData = (args: EventArgs<IViewData>) => {
+        this.viewManager.setData(args.data);
+    };
+
+    private handlerGetModelData = (args: EventArgs<IModelData>) => {
+        this.model.getData(args);
     }
 
-    private handlerGetModelData = (args: EventArgs) => {
-        this.model.getData(<ModelDataEventArgs>args);
-    }
-
-    private handlerGetViewData = (args: EventArgs) => {
-        this.viewManager.getData(<ViewDataEventArgs>args);
+    private handlerGetViewData = (args: EventArgs<IViewData>) => {
+        this.viewManager.getData(args);
     }
 }
 
