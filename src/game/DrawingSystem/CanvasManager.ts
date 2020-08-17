@@ -1,7 +1,6 @@
 import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
-import IDrawableObject from "../GameSystem/IDrawableObject";
-import Player from "../GameSystem/Player";
+import GameObject from "../GameSystem/GameObjects/GameObject";
 import EventArgs from "../Events/EventArgs";
 import IMouseData from "../GameSystem/IMouseData";
 
@@ -35,7 +34,7 @@ class CanvasManager {
         this.setDragAndDropHandlers();
     }
 
-    public drawObject(object: IDrawableObject): void {
+    public drawObject(object: GameObject): void {
         this.context.fillStyle = object.color;
         // this.context.fillRect(object.position.x, object.position.y, object.width, object.height);
         this.context.beginPath();

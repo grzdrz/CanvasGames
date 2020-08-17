@@ -1,17 +1,16 @@
 import Vector from "../Helpers/Vector";
-import Player from "./Player";
-import IPhysicalObject from "./IPhysicalObject";
+import GameObject from "./GameObjects/GameObject";
 
 const borderRestitution = 0.9;
 
 class Physic {
-    public static detectCollision(obj1: IPhysicalObject, obj2: IPhysicalObject): boolean {
+    public static detectCollision(obj1: GameObject, obj2: GameObject): boolean {
         const vectorBetweenObjects = obj2.position.subtract(obj1.position);
         const sumOfRadiusesOfObjects = obj1.width / 2 + obj2.width / 2;
         return (vectorBetweenObjects.length <= sumOfRadiusesOfObjects);
     }
 
-    public static analyzeCollisions(objects: IPhysicalObject[]): void {
+    public static analyzeCollisions(objects: GameObject[]): void {
         let obj1;
         let obj2;
 
@@ -58,7 +57,7 @@ class Physic {
         }
     }
 
-    public static detectEdgeCollisions(gameObjects: IPhysicalObject[], canvasWidth: number, canvasHeight: number) {
+    public static detectEdgeCollisions(gameObjects: GameObject[], canvasWidth: number, canvasHeight: number) {
         let obj;
         for (let i = 0; i < gameObjects.length; i++) {
             obj = gameObjects[i];

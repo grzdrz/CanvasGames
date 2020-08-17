@@ -71,6 +71,12 @@ class MathFunctions {
         const y = height * Math.sin(t);
         return new Vector(x, y);
     }
+
+    static randomInteger(min: number, max: number) {
+        // случайное число от min до (max+1)
+        let rand = min + Math.random() * (max + 1 - min);
+        return Math.floor(rand);
+    }
 }
 
 export default MathFunctions;
