@@ -1,3 +1,0 @@
-interface IKeyData{
-    key: string;
-}

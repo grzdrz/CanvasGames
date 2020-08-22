@@ -1,8 +1,8 @@
 class EventArgs<TData> {
-    data: TData;
+  data: TData;
 
-    constructor(data: TData) {
-        this.data = data;
-    }
+  constructor(data: TData) {
+    this.data = data;
+  }
 }
 export default EventArgs;

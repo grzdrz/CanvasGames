@@ -1,38 +1,36 @@
-import IModelData from "../../Model/Data/IModelData";
+import IModelData from "../../Data/IModelData";
 import Vector from "../../Helpers/Vector";
-
 import ViewManager from "../ViewManager";
-
-import ViewState from "../Data/ViewState";
+import ViewState from "../../Data/ViewState";
 
 abstract class View {
-    public viewManager: ViewManager;
-    public isPopup: boolean = false;
-    public viewState = ViewState.Active;
-    public get IsActive() { return this.viewState == ViewState.Active; }
+  public viewManager: ViewManager;
+  public isPopup: boolean = false;
+  public viewState = ViewState.Active;
+  public get IsActive() { return this.viewState == ViewState.Active; }
 
-    constructor(viewManager: ViewManager) {
-        this.viewManager = viewManager;
+  constructor(viewManager: ViewManager) {
+    this.viewManager = viewManager;
+  }
+
+  public update(gameTime: DOMHighResTimeStamp, coveredByOtherScreen: boolean): void {
+    if (coveredByOtherScreen) {
+      this.viewState = ViewState.Hidden;
     }
-
-    public update(gameTime: DOMHighResTimeStamp, coveredByOtherScreen: boolean): void {
-        if (coveredByOtherScreen) {
-            this.viewState = ViewState.Hidden;
-        }
-        else {
-            this.viewState = ViewState.Active;
-        }
+    else {
+      this.viewState = ViewState.Active;
     }
+  }
 
-    public draw(): void { }
+  public draw(): void { }
 
-    public loadContent(): void { }
+  public loadContent(): void { }
 
-    public unloadContent(): void { }
+  public unloadContent(): void { }
 
-    public exitScreen() {
-        this.viewManager.removeView(this);
-    }
+  public exitScreen() {
+    this.viewManager.removeView(this);
+  }
 }
 
 export default View;

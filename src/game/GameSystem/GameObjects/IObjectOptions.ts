@@ -1,15 +1,15 @@
 import Vector from "../../Helpers/Vector";
 
 interface IObjectOptions {
-    width?: number,
-    height?: number,
-    position?: Vector,
+  width?: number,
+  height?: number,
+  position?: Vector,
 
-    velocity?: Vector,
-    mass?: number,
-    restitution?: number,
+  velocity?: Vector,
+  mass?: number,
+  restitution?: number,
 
-    color?: string,
+  color?: string,
 }
 
 export default IObjectOptions;

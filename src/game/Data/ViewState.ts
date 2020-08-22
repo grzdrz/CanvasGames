@@ -1,6 +1,6 @@
 enum ViewState {
-    Active,
-    Hidden,
+  Active,
+  Hidden,
 }
 
 export default ViewState;

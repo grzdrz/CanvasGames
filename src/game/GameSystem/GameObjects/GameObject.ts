@@ -1,52 +1,60 @@
 import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
-import IMouseData from "../IMouseData";
+import IMouseData from "../../Data/IMouseData";
 import IObjectOptions from "./IObjectOptions";
+import SessionView from "../../ViewSystem/Views/SessionView";
 
 class GameObject {
-    public width = 50;
-    public height = 50;
-    public position = new Vector(0, 0);
+  public view: SessionView;
 
-    public velocity = new Vector(0, 0);
-    public mass = 1;
-    public restitution = 0.9;
+  public width = 50;
+  public height = 50;
+  public position = new Vector(0, 0);
+  public radians = 0;
 
-    public color = "red";
+  public velocity = new Vector(0, 0);
+  public mass = 1;
+  public restitution = 0.9;
 
+  public color = "red";
 
-    public firstKeyDowned = "";
-    public secondKeyDowned = "";
-    public isColliding = false;
+  public firstKeyDowned = "";
+  public secondKeyDowned = "";
+  public isColliding = false;
+  public isGriped = false;
 
-    public isGripped = false;
+  public isStatic = false;
 
-    constructor(options: IObjectOptions) {
-        this.initialize(options);
+  constructor(options: IObjectOptions, view: SessionView) {
+    this.view = view;
+    this.initialize(options);
+  }
+
+  public initialize(options: IObjectOptions): void {
+    if (options.width !== undefined) this.width = options.width;
+    if (options.height !== undefined) this.height = options.height;
+    if (options.position !== undefined) this.position = options.position;
+    if (options.velocity !== undefined) this.velocity = options.velocity;
+    if (options.mass !== undefined) this.mass = options.mass;
+    if (options.restitution !== undefined) this.restitution = options.restitution;
+    if (options.color !== undefined) this.color = options.color;
+  }
+
+  public update(gameTime: DOMHighResTimeStamp): void {
+    gameTime *= 10;
+    if (!this.isGriped) {
+      if (!this.isStatic) {
+        this.velocity.y += 9.81 * gameTime;
+        this.position.x += this.velocity.x * gameTime;
+        this.position.y += this.velocity.y * gameTime;
+      } else {
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+      }
     }
 
-    public initialize(options: IObjectOptions): void {
-        if (options.width !== undefined) this.width = options.width;
-        if (options.height !== undefined) this.height = options.height;
-        if (options.position !== undefined) this.position = options.position;
-        if (options.velocity !== undefined) this.velocity = options.velocity;
-        if (options.mass !== undefined) this.mass = options.mass;
-        if (options.restitution !== undefined) this.restitution = options.restitution;
-        if (options.color !== undefined) this.color = options.color;
-    }
-
-    public update(gameTime: DOMHighResTimeStamp): void {
-        gameTime = gameTime * 10;
-        if (!this.isGripped) {
-            this.velocity.y += 9.81 * gameTime;
-
-            this.position.x += this.velocity.x * gameTime;
-            this.position.y += this.velocity.y * gameTime;
-        }
-
-        /* if (this.isColliding) this.color = "red";
-        else this.color = "blue"; */
-    }
+    this.radians = Math.atan2(this.velocity.y, this.velocity.x);
+  }
 }
 
 export default GameObject;

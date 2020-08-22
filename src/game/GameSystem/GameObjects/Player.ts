@@ -2,62 +2,58 @@ import GameObject from "./GameObject";
 import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IObjectOptions from "./IObjectOptions";
-import IMouseData from "../IMouseData";
+import IMouseData from "../../Data/IMouseData";
+import SessionView from "../../ViewSystem/Views/SessionView";
 
 class Player extends GameObject {
-    constructor(options: IObjectOptions) {
-        super(options);
-    }
+  public HP = 100;
 
-    public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
-        if (this.firstKeyDowned === "") this.firstKeyDowned = eventArgs.data.key;
-        else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
+  constructor(options: IObjectOptions, view: SessionView) {
+    super(options, view);
+  }
 
-        if (this.firstKeyDowned !== "" && this.secondKeyDowned === "") {
-            if (this.firstKeyDowned === "KeyD") this.velocity.x += 5;
-            if (this.firstKeyDowned === "KeyA") this.velocity.x -= 5;
-            if (this.firstKeyDowned === "KeyS") this.velocity.y += 5;
-            if (this.firstKeyDowned === "KeyW") this.velocity.y -= 5;
-        } else if (this.firstKeyDowned !== "" && this.secondKeyDowned !== "") {
-            if ((this.firstKeyDowned === "KeyD" && this.secondKeyDowned === "KeyW") ||
-                (this.firstKeyDowned === "KeyW" && this.secondKeyDowned === "KeyD")) {
-                this.velocity.x += 5;
-                this.velocity.y -= 5;
-            }
-            if ((this.firstKeyDowned === "KeyD" && this.secondKeyDowned === "KeyS") ||
-                (this.firstKeyDowned === "KeyS" && this.secondKeyDowned === "KeyD")) {
-                this.velocity.x += 5;
-                this.velocity.y += 5;
-            }
-            if ((this.firstKeyDowned === "KeyA" && this.secondKeyDowned === "KeyW") ||
-                (this.firstKeyDowned === "KeyW" && this.secondKeyDowned === "KeyA")) {
-                this.velocity.x -= 5;
-                this.velocity.y -= 5;
-            }
-            if ((this.firstKeyDowned === "KeyA" && this.secondKeyDowned === "KeyS") ||
-                (this.firstKeyDowned === "KeyS" && this.secondKeyDowned === "KeyA")) {
-                this.velocity.x -= 5;
-                this.velocity.y += 5;
-            }
-        }
-    }
+  public update(gameTime: DOMHighResTimeStamp) {
+    super.update(gameTime);
+  }
 
-    public handlerKeyUp = (/* eventArgs: EventArgs<IKeyData> */) => {
-        if (this.secondKeyDowned === "") this.firstKeyDowned = "";
-        else this.secondKeyDowned = "";
-    }
+  public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
+    if (this.firstKeyDowned === "") this.firstKeyDowned = eventArgs.data.key;
+    else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
 
-    public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
-        this.isGripped = true;
-        this.velocity.x = 0;
-        this.velocity.y = 0;
-        this.position.x = eventArgs.data.mousePosition.x;
-        this.position.y = eventArgs.data.mousePosition.y;
+    if (this.isColliding && this.firstKeyDowned === "Space") {
+      if (this.firstKeyDowned === "Space") this.velocity.y -= 30;
     }
+    if (/* !this.isColliding && */ this.velocity.x <= 20 && this.firstKeyDowned === "KeyD") this.velocity.x += 10;
+    if (/* !this.isColliding && */ this.velocity.x >= -20 && this.firstKeyDowned === "KeyA") this.velocity.x -= 10;
 
-    public handlerUnhand = (eventArgs: EventArgs<IMouseData>) => {
-        this.isGripped = false;
+  }
+
+  public handlerKeyUp = (/* eventArgs: EventArgs<IKeyData> */) => {
+    if (this.secondKeyDowned === "") this.firstKeyDowned = "";
+    else this.secondKeyDowned = "";
+  }
+
+  public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
+    this.isGriped = true;
+    this.velocity.x = 0;
+    this.velocity.y = 0;
+    this.position.x = eventArgs.data.mousePosition.x;
+    this.position.y = eventArgs.data.mousePosition.y;
+  }
+
+  public handlerUnhand = (eventArgs: EventArgs<IMouseData>) => {
+    this.isGriped = false;
+  }
+
+  public handleClick = (eventArgs: EventArgs<IMouseData>) => {
+    if (this.isColliding) {
+      const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
+      const lengthToClickPoint = Math.min(vectorToClickPoint.length, 500);
+      const unitVector = vectorToClickPoint.getUnitVector();
+      const velocity = unitVector.multiplyByNumber(lengthToClickPoint / 10);
+      this.velocity = this.velocity.sum(velocity);
     }
+  }
 }
 
 export default Player;
