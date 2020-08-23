@@ -87,7 +87,7 @@ class ViewManager extends GameComponent {
       // Update the screen.
       view.update(gameTime, coveredByOtherScreen);
 
-      if (view.viewState == ViewState.Active) {
+      if (view.viewState === ViewState.Active) {
         if (!view.isPopup)
           coveredByOtherScreen = true;
       }
@@ -98,7 +98,7 @@ class ViewManager extends GameComponent {
     this.canvasManager.clear();
 
     for (let view of this.views) {
-      if (view.viewState == ViewState.Hidden)
+      if (view.viewState === ViewState.Hidden)
         continue;
 
       view.draw();

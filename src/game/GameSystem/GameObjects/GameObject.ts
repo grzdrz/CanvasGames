@@ -40,6 +40,10 @@ class GameObject {
     if (options.color !== undefined) this.color = options.color;
   }
 
+  public draw() {
+    this.view.viewManager.canvasManager.drawObject(this);
+  }
+
   public update(gameTime: DOMHighResTimeStamp): void {
     gameTime *= 10;
     if (!this.isGriped) {

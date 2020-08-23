@@ -52,7 +52,7 @@ class CanvasManager {
     this.context.stroke();          // Отображает путь
   }
 
-  public drawEndGame() {
+  public drawEndGame(isWin: boolean) {
     this.context.fillStyle = "rgb(37, 53, 73)";
     const windowWidth = 500;
     const windowHeight = 300;
@@ -60,7 +60,13 @@ class CanvasManager {
 
     this.context.fillStyle = "white";
     this.context.font = "30px san-serif";
-    this.context.fillText("Game end", this.width / 2 - 60, this.height / 2);
+    this.context.fillText(`Game ${isWin ? "win" : "lose"}`, this.width / 2 - 60, this.height / 2);
+  }
+
+  public drawHP(HP: number) {
+    this.context.fillStyle = "black";
+    this.context.font = "30px san-serif";
+    this.context.fillText(`HP: ${HP}`, 60, 60);
   }
 
   public clear(): void {

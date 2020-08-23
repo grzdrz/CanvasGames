@@ -85,14 +85,19 @@ class SessionView extends View {
   }
 
   public draw(): void {
-    if (this.gameState === GameState.Lose || this.gameState === GameState.Win) {
-      this.viewManager.canvasManager.drawEndGame();
+    if (this.gameState === GameState.Lose) {
+      this.viewManager.canvasManager.drawEndGame(false);
+      return;
+    }
+    if (this.gameState === GameState.Win) {
+      this.viewManager.canvasManager.drawEndGame(true);
       return;
     }
 
     this.gameObjects.forEach(obj => {
-      this.viewManager.canvasManager.drawObject(obj);
+      obj.draw();
     });
+    this.player.draw();
   }
 
   public unloadContent(): void {

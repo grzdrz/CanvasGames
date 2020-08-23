@@ -8,12 +8,30 @@ import SessionView from "../../ViewSystem/Views/SessionView";
 class Player extends GameObject {
   public HP = 100;
 
+  public damageTimeStamp = 0;
+
   constructor(options: IObjectOptions, view: SessionView) {
     super(options, view);
   }
 
+  public draw(){
+    super.draw();
+    this.view.viewManager.canvasManager.drawHP(this.HP);
+  }
+
   public update(gameTime: DOMHighResTimeStamp) {
     super.update(gameTime);
+    if (this.isColliding && this.damageTimeStamp === 0) {
+      this.HP -= 5;
+      this.damageTimeStamp += gameTime;
+    }
+
+    if (this.damageTimeStamp !== 0) {
+      this.damageTimeStamp += gameTime;
+      if (this.damageTimeStamp >= 1) {
+        this.damageTimeStamp = 0;
+      }
+    }
   }
 
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
