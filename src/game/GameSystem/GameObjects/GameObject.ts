@@ -21,6 +21,7 @@ class GameObject {
   public firstKeyDowned = "";
   public secondKeyDowned = "";
   public isColliding = false;
+  public isPreColliding = false;
   public isGriped = false;
 
   public isStatic = false;

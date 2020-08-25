@@ -5,21 +5,97 @@ import Player from "./GameObjects/Player";
 
 const borderRestitution = 0.5;
 
-class Physic {
-  public static detectCollision(obj1: GameObject, obj2: GameObject): boolean {
-    const vectorBetweenObjects = obj2.position.subtract(obj1.position);
-    const sumOfRadiusesOfObjects = obj1.width / 2 + obj2.width / 2;
-    return (vectorBetweenObjects.length <= sumOfRadiusesOfObjects);
+class Collisions {
+  public static preCollisionsDistance = 30;
+
+  public static analyzeCollizions(objects: GameObject[], width: number, height: number) {
+    this.handleObjectsCollisions(objects);
+    this.detectEdgeCollisions(objects, width, height);
+
+    this.detectObjectsPreCollisions(objects);
+    this.detectEdgeCollisions(objects, width, height, true);
   }
 
-  public static throwOffCollisions(objects: GameObject[]): void {
+  public static detectCollision(obj1: GameObject, obj2: GameObject, isPreCollisions = false): boolean {
+    const vectorBetweenObjects = obj2.position.subtract(obj1.position);
+    let sumOfRadiusesOfObjects = obj1.width / 2 + obj2.width / 2;
+    const length = vectorBetweenObjects.length;
+    sumOfRadiusesOfObjects = (isPreCollisions ? sumOfRadiusesOfObjects + this.preCollisionsDistance : sumOfRadiusesOfObjects);
+    return (length <= sumOfRadiusesOfObjects);
+  }
+
+  public static throwOffCollisions(objects: GameObject[], isPreCollisions = false): void {
     // сброс состояний коллизий
     for (let i = 0; i < objects.length; i++) {
-      objects[i].isColliding = false;
+      if (isPreCollisions) objects[i].isPreColliding = false;
+      else objects[i].isColliding = false;
     }
   }
 
-  public static analyzeCollisions(objects: GameObject[]): void {
+  public static detectEdgeCollisions(gameObjects: GameObject[], canvasWidth: number, canvasHeight: number, isPreCollisions = false) {
+    /* this.throwOffCollisions(gameObjects); */
+
+    let obj;
+    for (let i = 0; i < gameObjects.length; i++) {
+      obj = gameObjects[i];
+
+      const isLeftPreCollision = isPreCollisions && (obj.position.x < obj.width / 2 + this.preCollisionsDistance);
+      const isLeftCollision = !isPreCollisions && (obj.position.x < obj.width / 2);
+      const isRightPreCollision = isPreCollisions && (obj.position.x > canvasWidth - obj.width / 2 - this.preCollisionsDistance);
+      const isRightCollision = !isPreCollisions && (obj.position.x > canvasWidth - obj.width / 2);
+      if (isLeftCollision) {
+        obj.velocity.x = Math.abs(obj.velocity.x) * borderRestitution;
+        obj.position.x = obj.width / 2;
+        obj.isColliding = true;
+      } else if (isRightCollision) {
+        obj.velocity.x = -Math.abs(obj.velocity.x) * borderRestitution;
+        obj.position.x = canvasWidth - obj.width / 2;
+        obj.isColliding = true;
+      }
+      if (isLeftPreCollision) { obj.isPreColliding = true; }
+      else if (isRightPreCollision) { obj.isPreColliding = true; }
+
+      /* const isTopPreCollision = isPreCollisions && (obj.position.y < obj.width / 2 + this.preCollisionsDistance);
+      const isTopCollision = !isPreCollisions && (obj.position.y < obj.width / 2); */
+      const isBottomPreCollision = isPreCollisions && (obj.position.y > canvasHeight - obj.width / 2 - this.preCollisionsDistance);
+      const isBottomCollision = !isPreCollisions && (obj.position.y > canvasHeight - obj.width / 2);
+      /* if (isTopCollision) {
+        obj.velocity.y = Math.abs(obj.velocity.y) * borderRestitution;
+        obj.position.y = obj.width / 2;
+        obj.isColliding = true;
+      } else */ if (isBottomCollision) {
+        obj.velocity.y = -Math.abs(obj.velocity.y) * borderRestitution;
+        obj.position.y = canvasHeight - obj.width / 2;
+        obj.isColliding = true;
+      }
+      /* if (isTopPreCollision) { obj.isPreColliding = true; }
+      else */ if (isBottomPreCollision) { obj.isPreColliding = true; }
+    }
+  }
+
+  public static detectObjectsPreCollisions(objects: GameObject[]) {
+    let obj1;
+    let obj2;
+
+    // сброс состояний коллизий
+    this.throwOffCollisions(objects, true);
+
+    // поиск коллизий
+    for (let i = 0; i < objects.length; i++) {
+      obj1 = objects[i];
+      for (let j = i + 1; j < objects.length; j++) {
+        obj2 = objects[j];
+
+        // Compare object1 with object2
+        if (this.detectCollision(obj1, obj2, true)) {
+          obj1.isPreColliding = true;
+          obj2.isPreColliding = true;
+        }
+      }
+    }
+  }
+
+  public static handleObjectsCollisions(objects: GameObject[]): void {
     let obj1;
     let obj2;
 
@@ -112,47 +188,7 @@ class Physic {
       }
     }
   }
-
-  public static detectEdgeCollisions(gameObjects: GameObject[], canvasWidth: number, canvasHeight: number) {
-    /* this.throwOffCollisions(gameObjects); */
-
-    let obj;
-    for (let i = 0; i < gameObjects.length; i++) {
-      obj = gameObjects[i];
-
-      // Check for left and right
-      if (obj.position.x < obj.width / 2) {
-        obj.velocity.x = Math.abs(obj.velocity.x) * borderRestitution;
-        obj.position.x = obj.width / 2;
-        obj.isColliding = true;
-      } else if (obj.position.x > canvasWidth - obj.width / 2) {
-        obj.velocity.x = -Math.abs(obj.velocity.x) * borderRestitution;
-        obj.position.x = canvasWidth - obj.width / 2;
-        obj.isColliding = true;
-      }
-
-      // Check for bottom and top
-      /* if (obj.position.y < obj.width / 2) {
-        obj.velocity.y = Math.abs(obj.velocity.y) * borderRestitution;
-        obj.position.y = obj.width / 2;
-        obj.isColliding = true;
-      } else */ if (obj.position.y > canvasHeight - obj.width / 2) {
-        if (obj instanceof Player) {
-          let breakpoint = 0;
-        }
-
-        obj.velocity.y = -Math.abs(obj.velocity.y) * borderRestitution;
-        obj.position.y = canvasHeight - obj.width / 2;
-        obj.isColliding = true;
-
-        /* if (obj instanceof Enemy) {
-            if (obj.collisionsCount > 10) obj.isActive = false;
-            else obj.collisionsCount += 1;
-            continue;
-        } */
-      }
-    }
-  }
 }
 
-export default Physic;
+
+export default Collisions;

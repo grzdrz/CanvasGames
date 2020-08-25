@@ -14,7 +14,7 @@ class Player extends GameObject {
     super(options, view);
   }
 
-  public draw(){
+  public draw() {
     super.draw();
     this.view.viewManager.canvasManager.drawHP(this.HP);
   }
@@ -38,11 +38,11 @@ class Player extends GameObject {
     if (this.firstKeyDowned === "") this.firstKeyDowned = eventArgs.data.key;
     else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
 
-    if (this.isColliding && this.firstKeyDowned === "Space") {
+    if (this.isPreColliding && this.firstKeyDowned === "Space") {
       if (this.firstKeyDowned === "Space") this.velocity.y -= 30;
     }
-    if (/* !this.isColliding && */ this.velocity.x <= 20 && this.firstKeyDowned === "KeyD") this.velocity.x += 10;
-    if (/* !this.isColliding && */ this.velocity.x >= -20 && this.firstKeyDowned === "KeyA") this.velocity.x -= 10;
+    if (/* !this.isPreColliding && */ this.velocity.x <= 20 && this.firstKeyDowned === "KeyD") this.velocity.x += 10;
+    if (/* !this.isPreColliding && */ this.velocity.x >= -20 && this.firstKeyDowned === "KeyA") this.velocity.x -= 10;
 
   }
 
@@ -64,7 +64,7 @@ class Player extends GameObject {
   }
 
   public handleClick = (eventArgs: EventArgs<IMouseData>) => {
-    if (this.isColliding) {
+    if (this.isPreColliding) {
       const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
       const lengthToClickPoint = Math.min(vectorToClickPoint.length, 500);
       const unitVector = vectorToClickPoint.getUnitVector();

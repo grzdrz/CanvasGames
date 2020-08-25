@@ -2,7 +2,7 @@ import View from "./View";
 import ViewManager from "../ViewManager";
 import GameObject from "../../GameSystem/GameObjects/GameObject";
 import Vector from "../../Helpers/Vector";
-import Physic from "../../GameSystem/Physic";
+import Collisions from "../../GameSystem/Collisions";
 import MathFunctions from "../../Helpers/MathFunctions";
 import Player from "../../GameSystem/GameObjects/Player";
 import Enemy from "../../GameSystem/GameObjects/Enemy";
@@ -71,14 +71,13 @@ class SessionView extends View {
     }
 
     this.spawnTimeStamp += gameTime;
-    if (this.spawnTimeStamp > 1) {
+    if (this.spawnTimeStamp > 0.5) {
       this.spawnTimeStamp = 0;
       this.spawnEnemy();
     }
 
-    this.gameObjects.forEach((obj) => obj.update(gameTime))
-    Physic.analyzeCollisions(this.gameObjects);
-    Physic.detectEdgeCollisions(this.gameObjects, this.viewManager.canvasManager.width, this.viewManager.canvasManager.height);
+    this.gameObjects.forEach((obj) => obj.update(gameTime));
+    Collisions.analyzeCollizions(this.gameObjects, this.viewManager.canvasManager.width, this.viewManager.canvasManager.height);
 
     if (this.player.position.y < 0) this.gameState = GameState.Win;
     if (this.player.HP <= 0) this.gameState = GameState.Lose;
