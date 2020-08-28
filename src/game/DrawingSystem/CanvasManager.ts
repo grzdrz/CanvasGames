@@ -69,6 +69,11 @@ class CanvasManager {
     this.context.fillText(`HP: ${HP}`, 60, 60);
   }
 
+  public drawSquare(position: Vector, size: Vector, color: string) {
+    this.context.fillStyle = color;
+    this.context.fillRect(position.x, position.y, size.width, size.height);
+  }
+
   public clear(): void {
     this.context.fillStyle = "gray";
     this.context.fillRect(0, 0, this.width, this.height);

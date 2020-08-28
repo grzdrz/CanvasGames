@@ -4,10 +4,12 @@ import MainMenuEntry from "./MainMenuEntry";
 import Vector from "../../Helpers/Vector";
 import Rectangle from "./Rectangle";
 import EntryType from "./EntryType";
+import EventArgs from "../../Events/EventArgs";
+import IMouseData from "../../Data/IMouseData";
 
 class MainMenuView extends View {
   private menuEntries = new Array<MainMenuEntry>();
-  public selectedEntry = 0;
+  public selectedEntry = -1;
 
   constructor(viewManager: ViewManager) {
     super(viewManager);
@@ -18,16 +20,26 @@ class MainMenuView extends View {
   public initialize() {
   }
 
-  public update(gameTime: DOMHighResTimeStamp): void {
+  public update(gameTime: DOMHighResTimeStamp, coveredByOtherScreen: boolean): void {
+    super.update(gameTime, coveredByOtherScreen);
 
+    // Update each nested MenuEntry object.
+    for (let i = 0; i < this.menuEntries.length; ++i) {
+      const isSelected = i == this.selectedEntry;
+      this.menuEntries[i].update(isSelected, gameTime);
+    }
   }
 
   public draw(): void {
-
+    for (let i = 0; i < this.menuEntries.length; ++i) {
+      this.menuEntries[i].draw();
+    }
   }
 
   public unloadContent(): void {
     super.unloadContent();
+
+    this.viewManager.onMouseClick.unsubscribe(this.handleClick);
   }
 
   public addMenuItem(type: EntryType, view: View): void {
@@ -38,13 +50,7 @@ class MainMenuView extends View {
   public loadContent(): void {
     super.loadContent();
 
-    /* Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-    SpriteFont font = ScreenManager.Fonts.MenuSpriteFont; */
-    const canvasManager = this.viewManager.canvasManager;
-
-    /* _texScrollButton = ScreenManager.Content.Load<Texture2D>("Common/arrow");
-    _texSlider = ScreenManager.Content.Load<Texture2D>("Common/slider"); */
-
+    this.viewManager.onMouseClick.subscribe(this.handleClick);
     for (let i = 0; i < this.menuEntries.length; ++i) {
       this.menuEntries[i].initialize();
     }
@@ -53,11 +59,9 @@ class MainMenuView extends View {
   private getMenuEntryAt(position: Vector): number {
     let index = 0;
     for (let entry of this.menuEntries) {
-      const width = entry.width;
-      const height = entry.height;
       const rect = new Rectangle(
-        new Vector((entry.position.x - width / 2), (entry.position.y - height / 2)),
-        new Vector(width, height)
+        new Vector((entry.position.x + entry.size.width / 2), (entry.position.y + entry.size.height / 2)),
+        new Vector(entry.size.width, entry.size.height)
       );
 
       if (rect.contains(new Vector(position.x, position.y)))
@@ -67,6 +71,22 @@ class MainMenuView extends View {
     }
     return -1;
   }
-}
 
+  public handleClick = (eventArgs: EventArgs<IMouseData>) => {
+    const hoverIndex = this.getMenuEntryAt(eventArgs.data.mousePosition);
+    if (hoverIndex > -1 && this.menuEntries[hoverIndex].isSelectable())
+      this.selectedEntry = hoverIndex;
+    else
+      this.selectedEntry = -1;
+
+    if (this.selectedEntry != -1) {
+      /* if (this.menuEntries[this.selectedEntry].isExitItem())
+        this.viewManager.game.exit();
+      else  */
+      if (this.menuEntries[this.selectedEntry].view !== undefined) {
+        this.viewManager.addView(this.menuEntries[this.selectedEntry].view);
+      }
+    }
+  }
+}
 export default MainMenuView;

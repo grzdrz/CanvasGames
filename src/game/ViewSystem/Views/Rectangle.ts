@@ -10,10 +10,10 @@ class Rectangle {
   }
 
   public contains(point: Vector): boolean {
-    return (
-      point.x > this.position.x && point.x < this.position.x + this.size.width &&
-      point.y > this.position.y && point.y < this.position.y + this.size.height
-    );
+    const betweenX = point.x > this.position.x - this.size.width / 2 && point.x < this.position.x + this.size.width / 2;
+    const betweenY = point.y > this.position.y - this.size.height / 2 && point.y < this.position.y + this.size.height / 2;
+    const result = betweenX && betweenY;
+    return result;
   }
 }
 
