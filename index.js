@@ -109,6 +109,17 @@ eval("\n\nvar isOldIE = function isOldIE() {\n  var memo;\n  return function mem
 
 /***/ }),
 
+/***/ "./src sync recursive \\.(ttf|eot|woff|woff2|svg|png|jpg)$":
+/*!******************************************************!*\
+  !*** ./src sync \.(ttf|eot|woff|woff2|svg|png|jpg)$ ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var map = {\n\t\"./game/Images/Interface/buttonBack.png\": \"./src/game/Images/Interface/buttonBack.png\",\n\t\"./game/Images/Interface/buttonExit.png\": \"./src/game/Images/Interface/buttonExit.png\",\n\t\"./game/Images/Interface/buttonGameLevel_0stars.png\": \"./src/game/Images/Interface/buttonGameLevel_0stars.png\",\n\t\"./game/Images/Interface/buttonGameLevel_1stars.png\": \"./src/game/Images/Interface/buttonGameLevel_1stars.png\",\n\t\"./game/Images/Interface/buttonGameLevel_2stars.png\": \"./src/game/Images/Interface/buttonGameLevel_2stars.png\",\n\t\"./game/Images/Interface/buttonGameLevel_3stars.png\": \"./src/game/Images/Interface/buttonGameLevel_3stars.png\",\n\t\"./game/Images/Interface/buttonGameLevel_4stars.png\": \"./src/game/Images/Interface/buttonGameLevel_4stars.png\",\n\t\"./game/Images/Interface/buttonGameLevel_5stars.png\": \"./src/game/Images/Interface/buttonGameLevel_5stars.png\",\n\t\"./game/Images/Interface/buttonPlay.png\": \"./src/game/Images/Interface/buttonPlay.png\",\n\t\"./game/Images/Interface/buttonRestart.png\": \"./src/game/Images/Interface/buttonRestart.png\"\n};\n\n\nfunction webpackContext(req) {\n\tvar id = webpackContextResolve(req);\n\treturn __webpack_require__(id);\n}\nfunction webpackContextResolve(req) {\n\tif(!__webpack_require__.o(map, req)) {\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t}\n\treturn map[req];\n}\nwebpackContext.keys = function webpackContextKeys() {\n\treturn Object.keys(map);\n};\nwebpackContext.resolve = webpackContextResolve;\nmodule.exports = webpackContext;\nwebpackContext.id = \"./src sync recursive \\\\.(ttf|eot|woff|woff2|svg|png|jpg)$\";\n\n//# sourceURL=webpack:///./src_sync_\\.(ttf%7Ceot%7Cwoff%7Cwoff2%7Csvg%7Cpng%7Cjpg)$?");
+
+/***/ }),
+
 /***/ "./src/game/Data/ModelData.ts":
 /*!************************************!*\
   !*** ./src/game/Data/ModelData.ts ***!
@@ -277,6 +288,126 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* eslint-disable no-undersco
 
 /***/ }),
 
+/***/ "./src/game/Images/Interface/buttonBack.png":
+/*!**************************************************!*\
+  !*** ./src/game/Images/Interface/buttonBack.png ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonBack.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonBack.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonExit.png":
+/*!**************************************************!*\
+  !*** ./src/game/Images/Interface/buttonExit.png ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonExit.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonExit.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonGameLevel_0stars.png":
+/*!**************************************************************!*\
+  !*** ./src/game/Images/Interface/buttonGameLevel_0stars.png ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonGameLevel_0stars.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonGameLevel_0stars.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonGameLevel_1stars.png":
+/*!**************************************************************!*\
+  !*** ./src/game/Images/Interface/buttonGameLevel_1stars.png ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonGameLevel_1stars.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonGameLevel_1stars.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonGameLevel_2stars.png":
+/*!**************************************************************!*\
+  !*** ./src/game/Images/Interface/buttonGameLevel_2stars.png ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonGameLevel_2stars.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonGameLevel_2stars.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonGameLevel_3stars.png":
+/*!**************************************************************!*\
+  !*** ./src/game/Images/Interface/buttonGameLevel_3stars.png ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonGameLevel_3stars.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonGameLevel_3stars.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonGameLevel_4stars.png":
+/*!**************************************************************!*\
+  !*** ./src/game/Images/Interface/buttonGameLevel_4stars.png ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonGameLevel_4stars.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonGameLevel_4stars.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonGameLevel_5stars.png":
+/*!**************************************************************!*\
+  !*** ./src/game/Images/Interface/buttonGameLevel_5stars.png ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonGameLevel_5stars.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonGameLevel_5stars.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonPlay.png":
+/*!**************************************************!*\
+  !*** ./src/game/Images/Interface/buttonPlay.png ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonPlay.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonPlay.png?");
+
+/***/ }),
+
+/***/ "./src/game/Images/Interface/buttonRestart.png":
+/*!*****************************************************!*\
+  !*** ./src/game/Images/Interface/buttonRestart.png ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"src/game/Images/Interface/buttonRestart.png\");\n\n//# sourceURL=webpack:///./src/game/Images/Interface/buttonRestart.png?");
+
+/***/ }),
+
 /***/ "./src/game/Model/Model.ts":
 /*!*********************************!*\
   !*** ./src/game/Model/Model.ts ***!
@@ -416,7 +547,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _Dat
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _game_Presenter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game/Presenter */ \"./src/game/Presenter.ts\");\n\r\nconst presenter = new _game_Presenter__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\r\n\n\n//# sourceURL=webpack:///./src/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _game_Presenter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game/Presenter */ \"./src/game/Presenter.ts\");\n\r\n__webpack_require__(\"./src sync recursive \\\\.(ttf|eot|woff|woff2|svg|png|jpg)$\");\r\nconst presenter = new _game_Presenter__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\r\n\n\n//# sourceURL=webpack:///./src/index.ts?");
 
 /***/ })
 
