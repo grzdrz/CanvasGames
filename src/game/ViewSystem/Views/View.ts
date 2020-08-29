@@ -28,7 +28,7 @@ abstract class View {
 
   public unloadContent(): void { }
 
-  public exitScreen() {
+  public exitView() {
     this.viewManager.removeView(this);
   }
 }

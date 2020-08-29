@@ -13,6 +13,8 @@ import IViewData from "./Data/IViewData";
 import "./Styles/Game.scss";
 import MainMenuView from "./ViewSystem/Views/MainMenuView";
 import EntryType from "./ViewSystem/Views/EntryType";
+import MenuView from "./ViewSystem/Views/MenuView";
+import MenuEntry from "./ViewSystem/Views/MenuEntry";
 
 const defaultModelData = {};
 const defaultViewData = {};
@@ -44,10 +46,19 @@ class Presenter {
     this.model.initialize();
     this.viewManager.initialize();
 
-    const sessioonView = new SessionView(this.viewManager);
-    /* this.viewManager.addView(sessioonView); */
     const mainMenuView = new MainMenuView(this.viewManager);
-    mainMenuView.addMenuItem(EntryType.Screen, sessioonView);
+    const menuView = new MenuView(this.viewManager, "some text");
+    const sessioonView = new SessionView(this.viewManager);
+    const sessioonView2 = new SessionView(this.viewManager);
+    const sessioonView3 = new SessionView(this.viewManager);
+    const sessioonView4 = new SessionView(this.viewManager);
+
+    menuView.addMenuItem(EntryType.Screen, sessioonView);
+    menuView.addMenuItem(EntryType.Screen, sessioonView2);
+    menuView.addMenuItem(EntryType.Screen, sessioonView3);
+    menuView.addMenuItem(EntryType.Screen, sessioonView4);
+    menuView.addMenuItem(EntryType.ExitItem, sessioonView4);
+    mainMenuView.addMenuItem(EntryType.Screen, menuView);
     this.viewManager.addView(mainMenuView);
 
     this.gameComponents.forEach(component => {

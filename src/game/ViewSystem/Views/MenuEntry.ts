@@ -1,18 +1,17 @@
-import MainMenuView from "./MainMenuView";
-import View from "./View";
 import EntryType from "./EntryType";
-import Texture from "./Texture";
 import Vector from "../../Helpers/Vector";
-import MathFunctions from "../../Helpers/MathFunctions";
+import View from "./View";
+import MenuView from "./MenuView";
 import IDrawableImage from "../../DrawingSystem/IDrawableImage";
+import MathFunctions from "../../Helpers/MathFunctions";
 
-class MainMenuEntry implements IDrawableImage {
-  public view: View;
+class MenuEntry implements IDrawableImage {
+  public view?: View;
   public type: EntryType;
-  public menu: MainMenuView;
+  public menu: MenuView;
   public position = Vector.zero;
 
-  public size = new Vector(200, 200);
+  public size = new Vector(150, 150);
 
   public image: HTMLImageElement;
   public isImageLoaded = false;
@@ -25,16 +24,16 @@ class MainMenuEntry implements IDrawableImage {
     return this.type !== EntryType.Separator;
   }
 
-  constructor(menu: MainMenuView, type: EntryType, view: View) {
+  constructor(menu: MenuView, type: EntryType, view?: View) {
     this.view = view;
     this.type = type;
     this.menu = menu;
 
-    const canvas = this.view.viewManager.canvasManager;
-    this.position = new Vector(canvas.width / 2 - this.size.width / 2, canvas.height / 2 - this.size.height / 2);
-
     this.image = new Image();
-    this.image.src = `/src/game/Images/Interface/buttonPlay.png`;
+    if (this.type === EntryType.Screen)
+      this.image.src = `/src/game/Images/Interface/buttonGameLevel_${MathFunctions.randomInteger(0, 5)}stars.png`;
+    else if (this.type === EntryType.ExitItem)
+      this.image.src = `/src/game/Images/Interface/buttonBack.png`;
     this.image.onload = () => {
       this.isImageLoaded = true;
     };
@@ -47,9 +46,10 @@ class MainMenuEntry implements IDrawableImage {
   }
 
   public draw() {
-    const canvas = this.view.viewManager.canvasManager;
+    const canvas = this.menu.viewManager.canvasManager;
     canvas.drawImage(this);
   }
+
 }
 
-export default MainMenuEntry;
+export default MenuEntry;

@@ -4,6 +4,7 @@ import GameObject from "../GameSystem/GameObjects/GameObject";
 import EventArgs from "../Events/EventArgs";
 import IMouseData from "../Data/IMouseData";
 import Enemy from "../GameSystem/GameObjects/Enemy";
+import IDrawableImage from "./IDrawableImage";
 
 interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,
@@ -72,6 +73,14 @@ class CanvasManager {
   public drawSquare(position: Vector, size: Vector, color: string) {
     this.context.fillStyle = color;
     this.context.fillRect(position.x, position.y, size.width, size.height);
+  }
+
+  public drawImage(object: IDrawableImage) {
+    if (object.isImageLoaded) {
+      this.context.drawImage(object.image, object.position.x, object.position.y, object.size.width, object.size.height);
+    } else { // заглушка, до подгрузки изображения
+      this.drawSquare(object.position, object.size, "rgb(12, 123, 222)");
+    }
   }
 
   public clear(): void {

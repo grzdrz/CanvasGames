@@ -9,6 +9,7 @@ import Enemy from "../../GameSystem/GameObjects/Enemy";
 import GameState from "./GameState";
 import EventArgs from "../../Events/EventArgs";
 import IMouseData from "../../Data/IMouseData";
+import ViewState from "../../Data/ViewState";
 
 class SessionView extends View {
   public gameState = GameState.Active;
@@ -27,42 +28,45 @@ class SessionView extends View {
       mass: 1,
       restitution: 0.9,
     }, this);
-
-    this.initialize();
   }
 
   public initialize() {
-    /* const options = {
-        position: new Vector(0, 0),
-        velocity: new Vector(0, 0),
-        mass: 1,
-    }; */
+    this.gameObjects = new Array<GameObject>();
+    this.player = new Player({
+      width: 40,
+      height: 40,
+      color: "green",
+      mass: 1,
+      restitution: 0.9,
+    }, this);
 
-    /* for (let i = 0; i < 100; i++) {
-        const positionX = MathFunctions.randomInteger(0, this.viewManager.canvasManager.width);
-        const positionY = MathFunctions.randomInteger(0, this.viewManager.canvasManager.height);
-        options.position = new Vector(positionX, positionY);
-
-        const velocityX = MathFunctions.randomInteger(-10, 10) / 10;
-        const velocityY = MathFunctions.randomInteger(-10, 10) / 10;
-        options.velocity = new Vector(velocityX, velocityY);
-
-        this.gameObjects.push(new Enemy(options, this));
-    } */
     this.gameObjects.push(this.player);
+
+    this.gameState = GameState.Active;
   }
 
   public loadContent(): void {
     super.loadContent();
+    this.initialize();
 
+    this.viewManager.onKeyUp.subscribe(this.handleKeyClick);
     this.viewManager.onMouseDown.subscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseMove.subscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseUp.subscribe(this.player.handlerUnhand);
-
     this.viewManager.onKeyDown.subscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.subscribe(this.player.handlerKeyUp);
-
     this.viewManager.onMouseClick.subscribe(this.player.handleClick);
+  }
+
+  public unloadContent(): void {
+    super.unloadContent();
+    this.viewManager.onKeyUp.unsubscribe(this.handleKeyClick);
+    this.viewManager.onMouseDown.unsubscribe(this.player.handlerSetPosition);
+    this.viewManager.onMouseMove.unsubscribe(this.player.handlerSetPosition);
+    this.viewManager.onMouseUp.unsubscribe(this.player.handlerUnhand);
+    this.viewManager.onKeyDown.unsubscribe(this.player.handlerKeyDown);
+    this.viewManager.onKeyUp.unsubscribe(this.player.handlerKeyUp);
+    this.viewManager.onMouseClick.unsubscribe(this.player.handleClick);
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
@@ -99,10 +103,6 @@ class SessionView extends View {
     this.player.draw();
   }
 
-  public unloadContent(): void {
-    super.unloadContent();
-  }
-
   public spawnEnemy() {
     const options = {
       position: new Vector(0, 0),
@@ -120,6 +120,13 @@ class SessionView extends View {
     options.velocity = new Vector(velocityX, velocityY);
 
     this.gameObjects.push(new Enemy(options, this));
+  }
+
+  public handleKeyClick = (args: EventArgs<IKeyData>) => {
+    if (this.viewState === ViewState.Hidden) return;
+    if (args.data.key === "Escape") {
+      this.viewManager.removeView(this);
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import Rectangle from "./Rectangle";
 import EntryType from "./EntryType";
 import EventArgs from "../../Events/EventArgs";
 import IMouseData from "../../Data/IMouseData";
+import ViewState from "../../Data/ViewState";
 
 class MainMenuView extends View {
   private menuEntries = new Array<MainMenuEntry>();
@@ -23,7 +24,6 @@ class MainMenuView extends View {
   public update(gameTime: DOMHighResTimeStamp, coveredByOtherScreen: boolean): void {
     super.update(gameTime, coveredByOtherScreen);
 
-    // Update each nested MenuEntry object.
     for (let i = 0; i < this.menuEntries.length; ++i) {
       const isSelected = i == this.selectedEntry;
       this.menuEntries[i].update(isSelected, gameTime);
@@ -73,6 +73,7 @@ class MainMenuView extends View {
   }
 
   public handleClick = (eventArgs: EventArgs<IMouseData>) => {
+    if (this.viewState === ViewState.Hidden) return;
     const hoverIndex = this.getMenuEntryAt(eventArgs.data.mousePosition);
     if (hoverIndex > -1 && this.menuEntries[hoverIndex].isSelectable())
       this.selectedEntry = hoverIndex;

@@ -113,6 +113,9 @@ class ViewManager extends GameComponent {
       view.loadContent();
 
     this.views.push(view);
+
+    this.views.forEach((view) => view.viewState = ViewState.Hidden);
+    this.views[this.views.length - 1].viewState = ViewState.Active;
   }
 
   public removeView(view: View): void {
