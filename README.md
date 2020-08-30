@@ -1,3 +1,3 @@
-# canvasGame
+# CanvasGames
 
-<a href="https://grzdrz.github.io/canvasGame/">Github Page</a>
+<a href="https://grzdrz.github.io/CanvasGames/">Github Page</a>
