@@ -4,7 +4,7 @@ import EventArgs from "./Events/EventArgs";
 import GameComponent from "./ViewSystem/GameComponent";
 import ModelData from "./Data/ModelData";
 import ViewData from "./Data/ViewData";
-import SessionView from "./Game_1/SessionView";
+import Game_1 from "./Game_1/Game_1";
 import IModelData from "./Data/IModelData";
 import IViewData from "./Data/IViewData";
 import MainMenuView from "./ViewSystem/MainMenuView";
@@ -45,13 +45,13 @@ class Presenter {
 
     const mainMenuView = new MainMenuView(this.viewManager);
     const lvlsListView = new LvlsListView(this.viewManager);
-    const sessioonView = new SessionView(this.viewManager);
+    const sessioonView = new Game_1(this.viewManager);
 
     lvlsListView.addMenuItem(EntryType.Screen, sessioonView);
 
     // ТЕСТ позиционирования иконок
     for (let i = 0; i < 10; i++) {
-      lvlsListView.addMenuItem(EntryType.Screen, new SessionView(this.viewManager));
+      lvlsListView.addMenuItem(EntryType.Screen, new Game_1(this.viewManager));
     }
 
     mainMenuView.addMenuItem(EntryType.Screen, lvlsListView);

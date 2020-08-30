@@ -1,12 +1,12 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import SessionView from "../SessionView";
+import Game_1 from "../Game_1";
 
 class Enemy extends GameObject {
   public collideObjects = Array<GameObject>();
   public activeTimeStamp = 0;
 
-  constructor(options: IObjectOptions, view: SessionView) {
+  constructor(options: IObjectOptions, view: Game_1) {
     super(options, view);
   }
 

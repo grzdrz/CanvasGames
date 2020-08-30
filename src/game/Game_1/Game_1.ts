@@ -12,9 +12,9 @@ import IMouseData from "../Data/IMouseData";
 import ViewState from "../Data/ViewState";
 import ViewEntry from "../ViewSystem/ViewEntry";
 import EntryType from "../States/EntryType";
+import SessionView from "../ViewSystem/SessionView";
 
-class SessionView extends View {
-  public gameState = GameState.Active;
+class Game_1 extends SessionView {
   public gameObjects = new Array<GameObject>();
   public player: Player;
 
@@ -35,6 +35,12 @@ class SessionView extends View {
   }
 
   public initialize() {
+    super.initialize();
+  }
+
+  public loadContent(): void {
+    super.loadContent();
+
     this.gameObjects = new Array<GameObject>();
     this.player = new Player({
       size: new Vector(40, 40),
@@ -46,20 +52,8 @@ class SessionView extends View {
 
     this.gameObjects.push(this.player);
 
-    this.addMenuItem(EntryType.ExitItem, new Vector(50, 50), new Vector(150, 150));
-    this.addMenuItem(EntryType.Restart, new Vector(50, 250), new Vector(150, 150));
-
-    this.gameState = GameState.Active;
-  }
-
-  public loadContent(): void {
-    super.loadContent();
-    this.initialize();
-
     this.collisionAnalyzer.loadContent();
 
-    this.viewManager.onKeyUp.subscribe(this.handleKeyClick);
-    this.viewManager.onMouseClick.subscribe(this.handleMouseClick);
     this.viewManager.onMouseDown.subscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseMove.subscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseUp.subscribe(this.player.handlerUnhand);
@@ -73,8 +67,6 @@ class SessionView extends View {
 
     this.collisionAnalyzer.unloadContent();
 
-    this.viewManager.onKeyUp.unsubscribe(this.handleKeyClick);
-    this.viewManager.onMouseClick.unsubscribe(this.handleMouseClick);
     this.viewManager.onMouseDown.unsubscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseMove.unsubscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseUp.unsubscribe(this.player.handlerUnhand);
@@ -83,21 +75,8 @@ class SessionView extends View {
     this.viewManager.onMouseClick.unsubscribe(this.player.handleClick);
   }
 
-  public addMenuItem(type: EntryType, position: Vector, size: Vector, view?: View) {
-    let src = "";
-    if (type === EntryType.ExitItem) {
-      src = `./src/game/Images/Interface/buttonBack.png`;
-    } else if (type === EntryType.Restart) {
-      src = `./src/game/Images/Interface/buttonRestart.png`;
-    }
-
-    let entry = new ViewEntry(this, type, src, view);
-    entry.position = position;
-    entry.size = size;
-    this.menuEntries.push(entry);
-  }
-
   public update(gameTime: DOMHighResTimeStamp): void {
+    super.update(gameTime);
     if (this.gameState === GameState.Lose || this.gameState === GameState.Win || this.gameState === GameState.Pause) {
       return;
     }
@@ -121,20 +100,7 @@ class SessionView extends View {
     });
     this.player.draw();
 
-    if (this.gameState === GameState.Lose) {
-      this.viewManager.canvasManager.drawEndGame(false);
-      this.viewManager.canvasManager.drawPause();
-    } else if (this.gameState === GameState.Win) {
-      this.viewManager.canvasManager.drawEndGame(true);
-      this.viewManager.canvasManager.drawPause();
-    } else if (this.gameState === GameState.Pause) {
-      this.viewManager.canvasManager.drawPause();
-    }
-    if (this.gameState === GameState.Lose || this.gameState === GameState.Win || this.gameState === GameState.Pause) {
-      for (let i = 0; i < this.menuEntries.length; ++i) {
-        this.menuEntries[i].draw();
-      }
-    }
+    super.draw();
   }
 
   public spawnEnemy() {
@@ -155,50 +121,6 @@ class SessionView extends View {
 
     this.gameObjects.push(new Enemy(options, this));
   }
-
-  public handleKeyClick = (args: EventArgs<IKeyData>) => {
-    if (this.viewState === ViewState.Hidden) return;
-    if (args.data.key === "Escape") {
-      switch (this.gameState) {
-        case GameState.Win: {
-          this.viewManager.removeView(this);
-          break;
-        }
-        case GameState.Lose: {
-          this.viewManager.removeView(this);
-          break;
-        }
-        case GameState.Pause: {
-          this.gameState = GameState.Active;
-          break;
-        }
-        case GameState.Active: {
-          this.gameState = GameState.Pause;
-          break;
-        }
-      }
-    }
-  }
-
-  public handleMouseClick = (eventArgs: EventArgs<IMouseData>) => {
-    if (this.viewState === ViewState.Hidden) return;
-    if (this.gameState === GameState.Pause || this.gameState === GameState.Win || this.gameState === GameState.Lose) {
-      const hoverIndex = this.getMenuEntryAt(eventArgs.data.mousePosition);
-      if (hoverIndex > -1 && this.menuEntries[hoverIndex].isSelectable())
-        this.selectedEntry = hoverIndex;
-      else
-        this.selectedEntry = -1;
-
-      if (this.selectedEntry != -1) {
-        if (this.menuEntries[this.selectedEntry].isExitItem()) {
-          this.exitView();
-        } else if (this.menuEntries[this.selectedEntry].type === EntryType.Restart) {
-          this.unloadContent();
-          this.loadContent();
-        }
-      }
-    }
-  }
 }
 
-export default SessionView;
+export default Game_1;

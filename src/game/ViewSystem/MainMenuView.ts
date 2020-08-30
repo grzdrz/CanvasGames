@@ -92,9 +92,7 @@ class MainMenuView extends View {
 
     if (this.selectedEntry != -1) {
       const innerView = this.menuEntries[this.selectedEntry].view;
-      /* if (this.menuEntries[this.selectedEntry].isExitItem()) {
-        this.exitView();
-      } else  */if (innerView !== undefined) {
+      if (innerView !== undefined) {
         this.viewManager.addView(innerView);
       }
     }

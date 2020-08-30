@@ -8,7 +8,6 @@ abstract class View {
   public viewManager: ViewManager;
   public isPopup: boolean = false;
   public viewState = ViewState.Active;
-  public get IsActive() { return this.viewState == ViewState.Active; }
 
   public menuEntries = new Array<ViewEntry>();
   public selectedEntry = 0;
@@ -16,6 +15,14 @@ abstract class View {
   constructor(viewManager: ViewManager) {
     this.viewManager = viewManager;
   }
+
+  public initialize(): void {
+
+  }
+
+  public loadContent(): void { }
+
+  public unloadContent(): void { }
 
   public update(gameTime: DOMHighResTimeStamp, coveredByOtherScreen: boolean): void {
     if (coveredByOtherScreen) {
@@ -27,10 +34,6 @@ abstract class View {
   }
 
   public draw(): void { }
-
-  public loadContent(): void { }
-
-  public unloadContent(): void { }
 
   public exitView() {
     this.viewManager.removeView(this);

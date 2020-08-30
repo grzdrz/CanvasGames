@@ -2,10 +2,10 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IMouseData from "../../Data/IMouseData";
 import IObjectOptions from "./IObjectOptions";
-import SessionView from "../SessionView";
+import Game_1 from "../Game_1";
 
 class GameObject {
-  public view: SessionView;
+  public view: Game_1;
 
   public position = new Vector(0, 0);
   public size = new Vector(50, 50);
@@ -25,7 +25,7 @@ class GameObject {
 
   public isStatic = false;
 
-  constructor(options: IObjectOptions, view: SessionView) {
+  constructor(options: IObjectOptions, view: Game_1) {
     this.view = view;
     this.initialize(options);
   }

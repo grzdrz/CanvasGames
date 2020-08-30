@@ -13,7 +13,7 @@ class LvlsListView extends View {
 
   constructor(viewManager: ViewManager) {
     super(viewManager);
-    
+
     this.addMenuItem(EntryType.ExitItem);
   }
 
@@ -84,7 +84,7 @@ class LvlsListView extends View {
     super.update(gameTime, coveredByOtherScreen);
 
     for (let i = 0; i < this.menuEntries.length; ++i) {
-      const isSelected = /* IsActive && */ (i == this.selectedEntry);
+      const isSelected = (i == this.selectedEntry);
       this.menuEntries[i].update(isSelected, gameTime);
     }
   }

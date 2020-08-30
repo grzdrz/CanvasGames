@@ -3,14 +3,14 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IObjectOptions from "./IObjectOptions";
 import IMouseData from "../../Data/IMouseData";
-import SessionView from "../SessionView";
+import Game_1 from "../Game_1";
 
 class Player extends GameObject {
   public HP = 100;
 
   public damageTimeStamp = 0;
 
-  constructor(options: IObjectOptions, view: SessionView) {
+  constructor(options: IObjectOptions, view: Game_1) {
     super(options, view);
   }
 
