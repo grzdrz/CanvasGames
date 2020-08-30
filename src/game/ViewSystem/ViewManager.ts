@@ -2,7 +2,7 @@ import ViewData from "../Data/ViewData";
 import IViewData from "../Data/IViewData";
 import Event from "../Events/Event";
 import ModelData from "../Data/ModelData";
-import View from "./Views/View";
+import View from "./View";
 import CanvasManager from "../DrawingSystem/CanvasManager";
 import ViewState from "../Data/ViewState";
 import GameComponent from "./GameComponent";

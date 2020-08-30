@@ -1,9 +1,9 @@
 import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
-import GameObject from "../GameSystem/GameObjects/GameObject";
+import GameObject from "../Game_1/GameObjects/GameObject";
 import EventArgs from "../Events/EventArgs";
 import IMouseData from "../Data/IMouseData";
-import Enemy from "../GameSystem/GameObjects/Enemy";
+import Enemy from "../Game_1/GameObjects/Enemy";
 import IDrawableImage from "./IDrawableImage";
 
 interface IMouseEventArgs {
@@ -30,8 +30,6 @@ class CanvasManager {
     this.canvas.height = height;
 
     this.context = <CanvasRenderingContext2D>(this.canvas.getContext("2d"));
-    /* this.context.canvas.clientWidth 
-    this.context.canvas.clientHeight */
 
     this.setDragAndDropHandlers();
   }
@@ -41,7 +39,7 @@ class CanvasManager {
     if (object instanceof Enemy && object.isStatic) this.context.fillStyle = "blue";
     // this.context.fillRect(object.position.x, object.position.y, object.width, object.height);
     this.context.beginPath();
-    this.context.arc(object.position.x, object.position.y, object.width / 2, 0, 2 * Math.PI);
+    this.context.arc(object.position.x, object.position.y, object.size.width / 2, 0, 2 * Math.PI);
     this.context.fill();
 
     //////TEST of velocity vector
@@ -62,6 +60,11 @@ class CanvasManager {
     this.context.fillStyle = "white";
     this.context.font = "30px san-serif";
     this.context.fillText(`Game ${isWin ? "win" : "lose"}`, this.width / 2 - 60, this.height / 2);
+  }
+
+  public drawPause() {
+    this.context.fillStyle = "rgba(200, 200, 200, 0.5)";
+    this.context.fillRect(0, 0, this.width / 5, this.height);
   }
 
   public drawHP(HP: number) {

@@ -1,20 +1,17 @@
 import Model from "./Model/Model";
-
 import ViewManager from "./ViewSystem/ViewManager";
-
 import EventArgs from "./Events/EventArgs";
 import GameComponent from "./ViewSystem/GameComponent";
 import ModelData from "./Data/ModelData";
 import ViewData from "./Data/ViewData";
-import SessionView from "./ViewSystem/Views/SessionView";
+import SessionView from "./Game_1/SessionView";
 import IModelData from "./Data/IModelData";
 import IViewData from "./Data/IViewData";
+import MainMenuView from "./ViewSystem/MainMenuView";
+import EntryType from "./States/EntryType";
+import LvlsListView from "./ViewSystem/LvlsListView";
 
 import "./Styles/Game.scss";
-import MainMenuView from "./ViewSystem/Views/MainMenuView";
-import EntryType from "./ViewSystem/Views/EntryType";
-import MenuView from "./ViewSystem/Views/MenuView";
-import MenuEntry from "./ViewSystem/Views/MenuEntry";
 
 const defaultModelData = {};
 const defaultViewData = {};
@@ -47,18 +44,17 @@ class Presenter {
     this.viewManager.initialize();
 
     const mainMenuView = new MainMenuView(this.viewManager);
-    const menuView = new MenuView(this.viewManager, "some text");
+    const lvlsListView = new LvlsListView(this.viewManager);
     const sessioonView = new SessionView(this.viewManager);
-    const sessioonView2 = new SessionView(this.viewManager);
-    const sessioonView3 = new SessionView(this.viewManager);
-    const sessioonView4 = new SessionView(this.viewManager);
 
-    menuView.addMenuItem(EntryType.Screen, sessioonView);
-    menuView.addMenuItem(EntryType.Screen, sessioonView2);
-    menuView.addMenuItem(EntryType.Screen, sessioonView3);
-    menuView.addMenuItem(EntryType.Screen, sessioonView4);
-    menuView.addMenuItem(EntryType.ExitItem, sessioonView4);
-    mainMenuView.addMenuItem(EntryType.Screen, menuView);
+    lvlsListView.addMenuItem(EntryType.Screen, sessioonView);
+
+    // ТЕСТ позиционирования иконок
+    for (let i = 0; i < 10; i++) {
+      lvlsListView.addMenuItem(EntryType.Screen, new SessionView(this.viewManager));
+    }
+
+    mainMenuView.addMenuItem(EntryType.Screen, lvlsListView);
     this.viewManager.addView(mainMenuView);
 
     this.gameComponents.forEach(component => {

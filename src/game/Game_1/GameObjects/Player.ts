@@ -3,7 +3,7 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IObjectOptions from "./IObjectOptions";
 import IMouseData from "../../Data/IMouseData";
-import SessionView from "../../ViewSystem/Views/SessionView";
+import SessionView from "../SessionView";
 
 class Player extends GameObject {
   public HP = 100;

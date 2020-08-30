@@ -1,6 +1,6 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import SessionView from "../../ViewSystem/Views/SessionView";
+import SessionView from "../SessionView";
 
 class Enemy extends GameObject {
   public collideObjects = Array<GameObject>();

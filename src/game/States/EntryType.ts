@@ -1,7 +1,8 @@
 enum EntryType {
   Screen,
   Separator,//пустая строка
-  ExitItem
+  ExitItem,
+  Restart,
 }
 
 export default EntryType;

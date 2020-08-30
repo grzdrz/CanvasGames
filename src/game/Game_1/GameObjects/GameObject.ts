@@ -2,14 +2,13 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IMouseData from "../../Data/IMouseData";
 import IObjectOptions from "./IObjectOptions";
-import SessionView from "../../ViewSystem/Views/SessionView";
+import SessionView from "../SessionView";
 
 class GameObject {
   public view: SessionView;
 
-  public width = 50;
-  public height = 50;
   public position = new Vector(0, 0);
+  public size = new Vector(50, 50);
   public radians = 0;
 
   public velocity = new Vector(0, 0);
@@ -32,8 +31,7 @@ class GameObject {
   }
 
   public initialize(options: IObjectOptions): void {
-    if (options.width !== undefined) this.width = options.width;
-    if (options.height !== undefined) this.height = options.height;
+    if (options.size !== undefined) this.size = options.size;
     if (options.position !== undefined) this.position = options.position;
     if (options.velocity !== undefined) this.velocity = options.velocity;
     if (options.mass !== undefined) this.mass = options.mass;

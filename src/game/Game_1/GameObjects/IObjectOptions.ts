@@ -1,8 +1,7 @@
 import Vector from "../../Helpers/Vector";
 
 interface IObjectOptions {
-  width?: number,
-  height?: number,
+  size?: Vector,
   position?: Vector,
 
   velocity?: Vector,
