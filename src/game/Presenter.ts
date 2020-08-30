@@ -12,6 +12,7 @@ import EntryType from "./States/EntryType";
 import LvlsListView from "./ViewSystem/LvlsListView";
 
 import "./Styles/Game.scss";
+import Game_TEST from "./Game_TEST/Game_TEST";
 
 const defaultModelData = {};
 const defaultViewData = {};
@@ -45,9 +46,11 @@ class Presenter {
 
     const mainMenuView = new MainMenuView(this.viewManager);
     const lvlsListView = new LvlsListView(this.viewManager);
-    const sessioonView = new Game_1(this.viewManager);
+    const game1 = new Game_1(this.viewManager);
+    const gameTEST = new Game_TEST(this.viewManager);
 
-    lvlsListView.addMenuItem(EntryType.Screen, sessioonView);
+    lvlsListView.addMenuItem(EntryType.Screen, game1);
+    lvlsListView.addMenuItem(EntryType.Screen, gameTEST);// тест физики
 
     // ТЕСТ позиционирования иконок
     for (let i = 0; i < 10; i++) {

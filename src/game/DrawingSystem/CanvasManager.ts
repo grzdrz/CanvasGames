@@ -5,6 +5,7 @@ import EventArgs from "../Events/EventArgs";
 import IMouseData from "../Data/IMouseData";
 import Enemy from "../Game_1/GameObjects/Enemy";
 import IDrawableImage from "./IDrawableImage";
+import IDrawablePolygon from "./IDrawablePolygon";
 
 interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,
@@ -45,7 +46,8 @@ class CanvasManager {
     //////TEST of velocity vector
     this.context.beginPath();       // Начинает новый путь
     this.context.moveTo(object.position.x, object.position.y);    // Рередвигает перо в точку (30, 50)
-    const test = new Vector(50, 0).rotateVector(object.radians);
+    let test = new Vector(50, 0);
+    test.rotateVector(object.angle);
     const vectorTo = object.position.sum(test);
     this.context.lineTo(vectorTo.x, vectorTo.y);  // Рисует линию до точки (150, 100)
     this.context.stroke();          // Отображает путь
@@ -84,6 +86,17 @@ class CanvasManager {
     } else { // заглушка, до подгрузки изображения
       this.drawSquare(object.position, object.size, "rgb(12, 123, 222)");
     }
+  }
+
+  public drawConvexPolygon = (object: IDrawablePolygon) => {
+    this.context.fillStyle = '#f00';
+    this.context.beginPath();
+    object.vertices.forEach((vertex, index) => {
+      if (index === 0) this.context.moveTo(vertex.position.x, vertex.position.y);
+      else this.context.lineTo(vertex.position.x, vertex.position.y);
+    });
+    this.context.closePath();
+    this.context.fill();
   }
 
   public clear(): void {

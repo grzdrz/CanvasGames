@@ -80,10 +80,10 @@ class Vector {
     return new Vector(length * cos, length * sin);
   }
 
-  public rotateVector(angleInRad: number): Vector {
-    const newX = this._x * Math.cos(angleInRad) - this._y * Math.sin(angleInRad);
-    const newY = this._x * Math.sin(angleInRad) + this._y * Math.cos(angleInRad);
-    return new Vector(newX, newY);
+  public rotateVector(angleInRad: number)/* : Vector */ {
+    this._x = this._x * Math.cos(angleInRad) - this._y * Math.sin(angleInRad);
+    this._y = this._x * Math.sin(angleInRad) + this._y * Math.cos(angleInRad);
+    /* return new Vector(newX, newY); */
   }
 
   public getUnitVector(): Vector {

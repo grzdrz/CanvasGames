@@ -9,7 +9,7 @@ class GameObject {
 
   public position = new Vector(0, 0);
   public size = new Vector(50, 50);
-  public radians = 0;
+  public angle = 0;
 
   public velocity = new Vector(0, 0);
   public mass = 1;
@@ -56,7 +56,7 @@ class GameObject {
       }
     }
 
-    this.radians = Math.atan2(this.velocity.y, this.velocity.x);
+    this.angle = Math.atan2(this.velocity.y, this.velocity.x);
   }
 }
 
