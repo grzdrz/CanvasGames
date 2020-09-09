@@ -11,8 +11,6 @@ class GameObject implements IDrawablePolygon {
 
   public vertices = new Array<Vertex>();
   public center = Vector.zero;
-  /* public position = new Vector(0, 0); */
-  /* public size = new Vector(50, 50); */
   public angle = 0;
 
   public velocity = new Vector(0, 0);
@@ -35,8 +33,6 @@ class GameObject implements IDrawablePolygon {
   }
 
   public initialize(options: IObjectOptions): void {
-    /* if (options.size !== undefined) this.size = options.size;
-    if (options.position !== undefined) this.position = options.position; */
     if (options.vertices !== undefined) this.vertices = options.vertices;
     if (options.velocity !== undefined) this.velocity = options.velocity;
     if (options.mass !== undefined) this.mass = options.mass;

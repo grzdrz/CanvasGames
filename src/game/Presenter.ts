@@ -52,11 +52,6 @@ class Presenter {
     lvlsListView.addMenuItem(EntryType.Screen, game1);
     lvlsListView.addMenuItem(EntryType.Screen, gameTEST);// тест физики
 
-    // ТЕСТ позиционирования иконок
-    for (let i = 0; i < 10; i++) {
-      lvlsListView.addMenuItem(EntryType.Screen, new Game_1(this.viewManager));
-    }
-
     mainMenuView.addMenuItem(EntryType.Screen, lvlsListView);
     this.viewManager.addView(mainMenuView);
 

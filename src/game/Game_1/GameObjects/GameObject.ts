@@ -24,6 +24,7 @@ class GameObject {
   public isGriped = false;
 
   public isStatic = false;
+  public layerLevel = 1;
 
   constructor(options: IObjectOptions, view: Game_1) {
     this.view = view;

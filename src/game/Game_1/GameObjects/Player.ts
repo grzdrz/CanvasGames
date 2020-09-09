@@ -7,11 +7,16 @@ import Game_1 from "../Game_1";
 
 class Player extends GameObject {
   public HP = 100;
-
   public damageTimeStamp = 0;
+  public isCollideWithEnemy = false;
 
   constructor(options: IObjectOptions, view: Game_1) {
     super(options, view);
+
+    const height = this.view.viewManager.canvasManager.height;
+    const width = this.view.viewManager.canvasManager.width;
+    this.size.width = Math.min(Math.max(width, height) / 25, 50);
+    this.size.height =  Math.min(Math.max(width, height) / 25, 50);
   }
 
   public draw() {
@@ -21,7 +26,7 @@ class Player extends GameObject {
 
   public update(gameTime: DOMHighResTimeStamp) {
     super.update(gameTime);
-    if (this.isColliding && this.damageTimeStamp === 0) {
+    if (this.isCollideWithEnemy && this.damageTimeStamp === 0) {
       this.HP -= 5;
       this.damageTimeStamp += gameTime;
     }
@@ -41,8 +46,8 @@ class Player extends GameObject {
     if (this.isPreColliding && this.firstKeyDowned === "Space") {
       if (this.firstKeyDowned === "Space") this.velocity.y -= 30;
     }
-    if (/* !this.isPreColliding && */ this.velocity.x <= 20 && this.firstKeyDowned === "KeyD") this.velocity.x += 10;
-    if (/* !this.isPreColliding && */ this.velocity.x >= -20 && this.firstKeyDowned === "KeyA") this.velocity.x -= 10;
+    if (this.velocity.x <= 20 && this.firstKeyDowned === "KeyD") this.velocity.x += 10;
+    if (this.velocity.x >= -20 && this.firstKeyDowned === "KeyA") this.velocity.x -= 10;
 
   }
 
@@ -66,7 +71,7 @@ class Player extends GameObject {
   public handleClick = (eventArgs: EventArgs<IMouseData>) => {
     if (this.isPreColliding) {
       const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
-      const lengthToClickPoint = Math.min(vectorToClickPoint.length, 500);
+      const lengthToClickPoint = Math.max(vectorToClickPoint.length, 500);
       const unitVector = vectorToClickPoint.getUnitVector();
       const velocity = unitVector.multiplyByNumber(lengthToClickPoint / 10);
       this.velocity = this.velocity.sum(velocity);

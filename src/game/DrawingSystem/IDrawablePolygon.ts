@@ -5,6 +5,9 @@ interface IDrawablePolygon {
   /* image: HTMLImageElement,
   isImageLoaded: boolean, */
   vertices: Array<Vertex>;
+  color: string;
+  isStatic: boolean;
+  isColliding: boolean;
 }
 
 export default IDrawablePolygon;

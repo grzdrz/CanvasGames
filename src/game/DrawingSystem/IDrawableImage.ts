@@ -5,6 +5,7 @@ interface IDrawableImage {
   isImageLoaded: boolean,
   position: Vector,
   size: Vector,
+  angle: number,
 }
 
 export default IDrawableImage;

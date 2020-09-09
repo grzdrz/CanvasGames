@@ -21,8 +21,8 @@ class SessionView extends View {
     this.viewManager.onKeyUp.subscribe(this.handleKeyClick);
     this.viewManager.onMouseClick.subscribe(this.handleMouseClick);
 
-    this.addMenuItem(EntryType.ExitItem, new Vector(50, 50), new Vector(150, 150));
-    this.addMenuItem(EntryType.Restart, new Vector(50, 250), new Vector(150, 150));
+    this.addMenuItem(EntryType.ExitItem);
+    this.addMenuItem(EntryType.Restart);
 
     this.gameState = GameState.Active;
   }
@@ -57,15 +57,27 @@ class SessionView extends View {
     }
   }
 
-  public addMenuItem(type: EntryType, position: Vector, size: Vector, view?: View) {
+  public addMenuItem(type: EntryType, view?: View) {
+    const height = this.viewManager.canvasManager.height;
+    const width = this.viewManager.canvasManager.width;
+
     let src = "";
+    let size = Vector.zero;
+    let position = Vector.zero;
     if (type === EntryType.ExitItem) {
       src = `./src/game/Images/Interface/buttonBack.png`;
+      position.x = Math.min(Math.min(width, height) / 10, 150) / 2;
+      position.y = Math.min(Math.max(width, height) / 10, 150) * 0.3;
     } else if (type === EntryType.Restart) {
       src = `./src/game/Images/Interface/buttonRestart.png`;
+      position.x = Math.min(Math.min(width, height) / 10, 150) / 2;
+      position.y = Math.min(Math.max(width, height) / 10, 150) * 1.5;
     }
 
-    let entry = new ViewEntry(this, type, src, view);
+    size.width = Math.min(Math.max(width, height) / 10, 150);
+    size.height = Math.min(Math.max(width, height) / 10, 150);
+
+    let entry = new ViewEntry(this, type, src, size, view);
     entry.position = position;
     entry.size = size;
     this.menuEntries.push(entry);

@@ -3,9 +3,6 @@ import Vertex from "../../Helpers/Vertex";
 
 interface IObjectOptions {
   vertices: Array<Vertex>;
-  /* size?: Vector,
-  position?: Vector, */
-
   velocity?: Vector,
   mass?: number,
   restitution?: number,

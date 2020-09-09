@@ -66,7 +66,7 @@ class CanvasManager {
 
   public drawPause() {
     this.context.fillStyle = "rgba(200, 200, 200, 0.5)";
-    this.context.fillRect(0, 0, this.width / 5, this.height);
+    this.context.fillRect(0, 0, this.width / 4.5, this.height);
   }
 
   public drawHP(HP: number) {
@@ -82,14 +82,23 @@ class CanvasManager {
 
   public drawImage(object: IDrawableImage) {
     if (object.isImageLoaded) {
-      this.context.drawImage(object.image, object.position.x, object.position.y, object.size.width, object.size.height);
+      //точка вращения относительно канваса
+      const x = object.position.x + object.size.width / 2;
+      const y = object.position.y + object.size.height / 2;
+      //центр объекта относительно самого себя
+      const objCenterX = -object.size.width / 2;
+      const objCenterY = -object.size.height / 2;
+      this.context.setTransform(1, 0, 0, 1, x, y);
+      this.context.rotate(object.angle);
+      this.context.drawImage(object.image, objCenterX, objCenterY, object.size.width, object.size.height);
+      this.context.resetTransform();
     } else { // заглушка, до подгрузки изображения
       this.drawSquare(object.position, object.size, "rgb(12, 123, 222)");
     }
   }
 
   public drawConvexPolygon = (object: IDrawablePolygon) => {
-    this.context.fillStyle = '#f00';
+    this.context.fillStyle = object.isStatic ? "blue" : object.isColliding ? "purple" : object.color;
     this.context.beginPath();
     object.vertices.forEach((vertex, index) => {
       if (index === 0) this.context.moveTo(vertex.position.x, vertex.position.y);
@@ -113,6 +122,7 @@ class CanvasManager {
     window.addEventListener("keyup", this.handlerKeyUp);
 
     this.canvas.addEventListener("click", this.handleMouseClick);
+    this.canvas.addEventListener("touchstart", this.handleMouseClick);
   }
 
   // d&d
@@ -134,7 +144,6 @@ class CanvasManager {
     document.addEventListener("mouseup", handlerMouseUp);
     document.addEventListener("touchmove", handlerMouseMove);
     document.addEventListener("touchend", handlerMouseUp);
-
 
     const mousePosition = this.calculateMouseGlobalPosition(event);
     this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({ mousePosition }));
@@ -167,25 +176,20 @@ class CanvasManager {
       x = mouseEvent.clientX;
       y = mouseEvent.clientY;
     }
-    // y = (document.documentElement.clientHeight + window.pageYOffset) - y;
 
     return new Vector(x, y);
   };
 
   private handlerKeyDown = (event: KeyboardEvent) => {
-    /* event.preventDefault(); */
-
     this.viewManager.onKeyDown.invoke(new EventArgs<IKeyData>({ key: event.code }));
   }
 
   private handlerKeyUp = (event: KeyboardEvent) => {
-    /* event.preventDefault(); */
-
     this.viewManager.onKeyUp.invoke(new EventArgs<IKeyData>({ key: event.code }));
   }
 
   private handleMouseClick = (event: UIEvent) => {
-    if ((<MouseEvent>event).button !== 0) return;
+    if ((<MouseEvent>event).button !== 0 && !(<TouchEvent>event)) return;
     const mousePosition = this.calculateMouseGlobalPosition(event);
     this.viewManager.onMouseClick.invoke(new EventArgs<IMouseData>({ mousePosition }));
   }

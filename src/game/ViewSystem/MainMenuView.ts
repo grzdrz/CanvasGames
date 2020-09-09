@@ -50,13 +50,19 @@ class MainMenuView extends View {
 
   public addMenuItem(type: EntryType, view?: View) {
     let src = "";
+    let size = Vector.zero;
     if (type === EntryType.Screen) {
-      src = `./src/game/Images/Interface/buttonPlay.png`;
+      src = './src/game/Images/Interface/buttonPlay.png';
     } else if (type === EntryType.ExitItem) {
-      src = `./src/game/Images/Interface/buttonBack.png`;
+      src = './src/game/Images/Interface/buttonBack.png';
     }
 
-    let entry = new ViewEntry(this, type, src, view);
+    const height = this.viewManager.canvasManager.height;
+    const width = this.viewManager.canvasManager.width;
+    size.width = Math.min(Math.max(width, height) / 5, 200);
+    size.height = Math.min(Math.max(width, height) / 5, 200);
+
+    let entry = new ViewEntry(this, type, src, size, view);
     this.menuEntries.push(entry);
   }
 

@@ -32,6 +32,7 @@ class Collisions {
   }
 
   public detectCollision(object1: GameObject, object2: GameObject, isPreCollisions = false): boolean {
+    if (object1.layerLevel !== object2.layerLevel) return false;
     const vectorBetweenObjects = object2.position.subtract(object1.position);
     let sumOfRadiusesOfObjects = object1.size.width / 2 + object2.size.width / 2;
     const length = vectorBetweenObjects.length;
@@ -39,11 +40,21 @@ class Collisions {
     return (length <= sumOfRadiusesOfObjects);
   }
 
+  public detectCollisionOfPlayerAndEnemy(object1: GameObject, object2: GameObject) {
+    if (object1 instanceof Player && object2 instanceof Enemy && !object2.isStatic) {
+      object1.isCollideWithEnemy = true;
+    }
+    else if (object2 instanceof Player && object1 instanceof Enemy && !object1.isStatic) {
+      object2.isCollideWithEnemy = true;
+    }
+  }
+
   public throwOffCollisions(objects: GameObject[]): void {
     // сброс состояний коллизий
     for (let i = 0; i < objects.length; i++) {
       objects[i].isPreColliding = false;
       objects[i].isColliding = false;
+      if ((<Player>objects[i])) (<Player>objects[i]).isCollideWithEnemy = false;
     }
   }
 
@@ -75,6 +86,9 @@ class Collisions {
         if (this.detectCollision(object1, object2)) {
           object1.isColliding = true;
           object2.isColliding = true;
+
+          //поиск коллизии игрока с врагом
+          this.detectCollisionOfPlayerAndEnemy(object1, object2);
 
           this.onCollisionDetected.invoke(new EventArgs<ICollisionData>({
             object1: object1,

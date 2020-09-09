@@ -13,6 +13,7 @@ import ViewState from "../Data/ViewState";
 import ViewEntry from "../ViewSystem/ViewEntry";
 import EntryType from "../States/EntryType";
 import SessionView from "../ViewSystem/SessionView";
+import Background from "./GameObjects/Background";
 
 class Game_1 extends SessionView {
   public gameObjects = new Array<GameObject>();
@@ -42,6 +43,12 @@ class Game_1 extends SessionView {
     super.loadContent();
 
     this.gameObjects = new Array<GameObject>();
+
+    this.gameObjects.push(new Background({
+      size: new Vector(500, 300),
+      position: new Vector(400, 150),
+    }, this));
+
     this.player = new Player({
       size: new Vector(40, 40),
       position: new Vector(50, 50),
@@ -106,6 +113,7 @@ class Game_1 extends SessionView {
   public spawnEnemy() {
     const options = {
       position: new Vector(0, 0),
+      size: new Vector(0, 0),
       velocity: new Vector(0, 0),
       mass: 1,
       width: 50,

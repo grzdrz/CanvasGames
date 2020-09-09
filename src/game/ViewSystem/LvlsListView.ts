@@ -36,12 +36,18 @@ class LvlsListView extends View {
 
   public addMenuItem(type: EntryType, view?: View) {
     let src = "";
+    let size = Vector.zero;
     if (type === EntryType.Screen)
       src = `./src/game/Images/Interface/buttonGameLevel_${MathFunctions.randomInteger(0, 5)}stars.png`;
     else if (type === EntryType.ExitItem)
       src = `./src/game/Images/Interface/buttonBack.png`;
 
-    const entry = new ViewEntry(this, type, src, view);
+    const height = this.viewManager.canvasManager.height;
+    const width = this.viewManager.canvasManager.width;
+    size.width = Math.min(Math.max(width, height) / 10, 150);
+    size.height = Math.min(Math.max(width, height) / 10, 150);
+
+    const entry = new ViewEntry(this, type, src, size, view);
     this.menuEntries.push(entry);
   }
 
@@ -51,7 +57,7 @@ class LvlsListView extends View {
     let width = this.viewManager.canvasManager.width;
     const gameIconSize = 170;
     const menuBorderTop = 50;
-    const menuOffset = 50;
+    const menuOffset = Math.max(width, height) / 20;
     let borderWidthHeight = 40;
     this.entryPosition.x = borderWidthHeight;
     this.entryPosition.y = menuBorderTop;
@@ -60,8 +66,6 @@ class LvlsListView extends View {
       if (this.menuEntries[i].type === EntryType.ExitItem) {
         this.menuEntries[i].position.x = width - 50 - this.menuEntries[i].size.width;
         this.menuEntries[i].position.y = height - 50 - this.menuEntries[i].size.height;
-        this.menuEntries[i].size.width = 150;
-        this.menuEntries[i].size.height = 150;
       } else {
         if (this.entryPosition.x >= width - this.menuEntries[i].size.width - borderWidthHeight) {
           this.entryPosition.x = borderWidthHeight;
@@ -74,8 +78,6 @@ class LvlsListView extends View {
           this.menuEntries[i].position.y = this.entryPosition.y;
           this.entryPosition.x += (this.menuEntries[i].size.width + menuOffset);
         }
-        this.menuEntries[i].size.width = 170;
-        this.menuEntries[i].size.height = 170;
       }
     }
   }

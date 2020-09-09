@@ -8,7 +8,8 @@ class ViewEntry {
   public parrentView: View;
   public position = Vector.zero;
 
-  public size = new Vector(200, 200);
+  public size = new Vector(0, 0);
+  public angle = 0;
 
   public image: HTMLImageElement;
   public isImageLoaded = false;
@@ -21,11 +22,13 @@ class ViewEntry {
     return this.type !== EntryType.Separator;
   }
 
-  constructor(parrentView: View, type: EntryType, imageSrc: string, view?: View) {
+  constructor(parrentView: View, type: EntryType, imageSrc: string, size: Vector, view?: View) {
     this.view = view;
     this.type = type;
     this.parrentView = parrentView;
 
+    this.size = size;
+    
     this.image = new Image();
     this.image.src = imageSrc;
     this.image.onload = () => {

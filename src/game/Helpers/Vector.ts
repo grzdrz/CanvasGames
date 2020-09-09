@@ -81,8 +81,10 @@ class Vector {
   }
 
   public rotateVector(angleInRad: number)/* : Vector */ {
-    this._x = this._x * Math.cos(angleInRad) - this._y * Math.sin(angleInRad);
-    this._y = this._x * Math.sin(angleInRad) + this._y * Math.cos(angleInRad);
+    const rotatedX = this._x * Math.cos(angleInRad) - this._y * Math.sin(angleInRad);
+    const rotatedY = this._x * Math.sin(angleInRad) + this._y * Math.cos(angleInRad);
+    this._x = rotatedX;
+    this._y = rotatedY;
     /* return new Vector(newX, newY); */
   }
 
