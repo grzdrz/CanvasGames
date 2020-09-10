@@ -6,6 +6,7 @@ import IMouseData from "../Data/IMouseData";
 import Enemy from "../Game_1/GameObjects/Enemy";
 import IDrawableImage from "./IDrawableImage";
 import IDrawablePolygon from "./IDrawablePolygon";
+import IDrawableSquare from "./IDrawableSquare";
 
 interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,
@@ -42,6 +43,23 @@ class CanvasManager {
     this.context.beginPath();
     this.context.arc(object.position.x, object.position.y, object.size.width / 2, 0, 2 * Math.PI);
     this.context.fill();
+
+    //////TEST of velocity vector
+    this.context.beginPath();       // Начинает новый путь
+    this.context.moveTo(object.position.x, object.position.y);    // Рередвигает перо в точку (30, 50)
+    let test = new Vector(50, 0);
+    test.rotateVector(object.angle);
+    const vectorTo = object.position.sum(test);
+    this.context.lineTo(vectorTo.x, vectorTo.y);  // Рисует линию до точки (150, 100)
+    this.context.stroke();          // Отображает путь
+  }
+
+  public drawSquareObject(object: IDrawableSquare): void {
+    this.context.fillStyle = object.color;
+    this.context.fillRect(object.position.x - object.size.width / 2, object.position.y - object.size.height / 2, object.size.width, object.size.height);
+    /* this.context.beginPath();
+    this.context.arc(object.position.x, object.position.y, object.size.width / 2, 0, 2 * Math.PI);
+    this.context.fill(); */
 
     //////TEST of velocity vector
     this.context.beginPath();       // Начинает новый путь

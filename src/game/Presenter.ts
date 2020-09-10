@@ -13,6 +13,7 @@ import LvlsListView from "./ViewSystem/LvlsListView";
 
 import "./Styles/Game.scss";
 import Game_TEST from "./Game_TEST/Game_TEST";
+import Game_2 from "./Game_2/Game_2";
 
 const defaultModelData = {};
 const defaultViewData = {};
@@ -47,9 +48,11 @@ class Presenter {
     const mainMenuView = new MainMenuView(this.viewManager);
     const lvlsListView = new LvlsListView(this.viewManager);
     const game1 = new Game_1(this.viewManager);
+    const game2 = new Game_2(this.viewManager);
     const gameTEST = new Game_TEST(this.viewManager);
 
     lvlsListView.addMenuItem(EntryType.Screen, game1);
+    lvlsListView.addMenuItem(EntryType.Screen, game2);
     lvlsListView.addMenuItem(EntryType.Screen, gameTEST);// тест физики
 
     mainMenuView.addMenuItem(EntryType.Screen, lvlsListView);
