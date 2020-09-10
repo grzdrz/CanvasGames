@@ -22,10 +22,12 @@ class GameObject implements IDrawableSquare {
   public secondKeyDowned = "";
   public isColliding = false;
   public isPreColliding = false;
+  public isCollideWithEnemy = false;
   public isGriped = false;
 
   public isStatic = false;
   public layerLevel = 1;
+  public isDestroyed = false;
 
   constructor(options: IObjectOptions, view: Game_2) {
     this.view = view;

@@ -38,6 +38,8 @@ class Presenter {
   }
 
   private initialize(): void {
+    document.addEventListener("contextmenu", this.hanldeContextmenu);
+
     this.viewManager.onSetModelData.subscribe(this.handlerSetModelData);
     this.viewManager.onSetViewData.subscribe(this.handlerSetViewData);
     this.model.onSetViewData.subscribe(this.handlerSetViewData);
@@ -92,6 +94,10 @@ class Presenter {
 
   private handlerGetViewData = (args: EventArgs<IViewData>) => {
     this.viewManager.getData(args);
+  }
+
+  private hanldeContextmenu = (event: UIEvent) => {
+    event.preventDefault();
   }
 }
 

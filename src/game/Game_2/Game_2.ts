@@ -99,6 +99,8 @@ class Game_2 extends SessionView {
 
     if (this.player.position.y < 0) this.gameState = GameState.Win;
     if (this.player.HP <= 0) this.gameState = GameState.Lose;
+
+    this.gameObjects = this.gameObjects.filter((object) => !object.isDestroyed);
   }
 
   public draw(): void {

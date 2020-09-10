@@ -6,6 +6,7 @@ import Event from "../Events/Event";
 import ICollisionData from "./ICollisionData";
 import EventArgs from "../Events/EventArgs";
 import ViewManager from "../ViewSystem/ViewManager";
+import Bullet from "./GameObjects/Bullet";
 
 const borderRestitution = 0.5;
 
@@ -50,12 +51,19 @@ class Collisions {
     return result;
   }
 
-  public detectCollisionOfPlayerAndEnemy(object1: GameObject, object2: GameObject) {
+  public detectCollisionOfEnemies(object1: GameObject, object2: GameObject) {
     if (object1 instanceof Player && object2 instanceof Enemy && !object2.isStatic) {
       object1.isCollideWithEnemy = true;
     }
     else if (object2 instanceof Player && object1 instanceof Enemy && !object1.isStatic) {
       object2.isCollideWithEnemy = true;
+    }
+
+    if (object1 instanceof Bullet && object2 instanceof Enemy && !object2.isStatic) {
+      object2.isCollideWithEnemy = true;
+    }
+    else if (object2 instanceof Bullet && object1 instanceof Enemy && !object1.isStatic) {
+      object1.isCollideWithEnemy = true;
     }
   }
 
@@ -64,7 +72,7 @@ class Collisions {
     for (let i = 0; i < objects.length; i++) {
       objects[i].isPreColliding = false;
       objects[i].isColliding = false;
-      if ((<Player>objects[i])) (<Player>objects[i]).isCollideWithEnemy = false;
+      objects[i].isCollideWithEnemy = false;
     }
   }
 
@@ -78,8 +86,13 @@ class Collisions {
     // поиск коллизий
     for (let i = 0; i < objects.length; i++) {
       object1 = objects[i];
+
       for (let j = i + 1; j < objects.length; j++) {
         object2 = objects[j];
+
+        if ((object1 instanceof Bullet && object2 instanceof Player) ||
+          (object2 instanceof Bullet && object1 instanceof Player))
+          continue;
 
         // поиск потенциальных коллизий
         if (this.detectCollision(object1, object2, true)) {
@@ -98,7 +111,7 @@ class Collisions {
           object2.isColliding = true;
 
           //поиск коллизии игрока с врагом
-          this.detectCollisionOfPlayerAndEnemy(object1, object2);
+          this.detectCollisionOfEnemies(object1, object2);
 
           this.onCollisionDetected.invoke(new EventArgs<ICollisionData>({
             object1: object1,
@@ -180,28 +193,13 @@ class Collisions {
     const vectorizedSide = unitVector.multiplyByNumber(side);
 
     if (object1.isStatic) {
-      object2.position = object2.position.sum(vectorizedSide/* .multiplyByNumber(2) */);
+      object2.position = object2.position.sum(vectorizedSide);
     } else if (object2.isStatic) {
-      object1.position = object1.position.subtract(vectorizedSide/* .multiplyByNumber(2) */);
+      object1.position = object1.position.subtract(vectorizedSide);
     } else {
       object1.position = object1.position.subtract(vectorizedSide.multiplyByNumber(0.5));
       object2.position = object2.position.sum(vectorizedSide.multiplyByNumber(0.5));
     }
-
-    /* const contactDepth = vectorBetweenObjects.length - (object1.size.width / 2 + object2.size.width / 2);
-    let pushingDistance;
-    if (unitVector.x === 0 && unitVector.y === 0)
-      pushingDistance = new Vector((contactDepth / 2) * (16 / 25), (contactDepth / 2) * (9 / 25));
-    else
-      pushingDistance = new Vector((contactDepth / 2) * unitVector.x, (contactDepth / 2) * unitVector.y);
-    if (object1.isStatic) {
-      object2.position = object2.position.subtract(pushingDistance.multiplyByNumber(2));
-    } else if (object2.isStatic) {
-      object1.position = object1.position.sum(pushingDistance.multiplyByNumber(2));
-    } else {
-      object1.position = object1.position.sum(pushingDistance);
-      object2.position = object2.position.subtract(pushingDistance);
-    } */
   }
 
   public handleObjectsImpact = (args: EventArgs<ICollisionData>) => {
@@ -217,18 +215,20 @@ class Collisions {
   }
 
   public calculateImpactWithStaticObject(staticObj: GameObject, dinamicObj: GameObject) {
-    const vectorBetweenObjects = dinamicObj.position.subtract(staticObj.position);
+    /* const vectorBetweenObjects = dinamicObj.position.subtract(staticObj.position);
     const unitVector = vectorBetweenObjects.getUnitVector();
     const relativeVelocity = staticObj.velocity.subtract(dinamicObj.velocity);
     let speed = relativeVelocity.x * unitVector.x + relativeVelocity.y * unitVector.y;
     speed *= Math.max(staticObj.restitution, dinamicObj.restitution);
     const impulse = 2 * speed / (staticObj.mass + dinamicObj.mass);
     dinamicObj.velocity.x += (impulse * staticObj.mass * unitVector.x);
-    dinamicObj.velocity.y += (impulse * staticObj.mass * unitVector.y);
+    dinamicObj.velocity.y += (impulse * staticObj.mass * unitVector.y); */
+    dinamicObj.velocity.x *= 0.1;
+    dinamicObj.velocity.y *= 0.1;
   }
 
   public calculateDinamicObjectsImpact(object1: GameObject, object2: GameObject) {
-    const vectorBetweenObjects = object2.position.subtract(object1.position);
+    /* const vectorBetweenObjects = object2.position.subtract(object1.position);
     const unitVector = vectorBetweenObjects.getUnitVector();
     const relativeVelocity = object1.velocity.subtract(object2.velocity);
     let speed = relativeVelocity.x * unitVector.x + relativeVelocity.y * unitVector.y;
@@ -237,7 +237,11 @@ class Collisions {
     object1.velocity.x -= (impulse * object2.mass * unitVector.x);
     object1.velocity.y -= (impulse * object2.mass * unitVector.y);
     object2.velocity.x += (impulse * object1.mass * unitVector.x);
-    object2.velocity.y += (impulse * object1.mass * unitVector.y);
+    object2.velocity.y += (impulse * object1.mass * unitVector.y); */
+    object1.velocity.x *= 0.1;
+    object1.velocity.y *= 0.1;
+    object2.velocity.x *= 0.1;
+    object2.velocity.y *= 0.1;
   }
 }
 

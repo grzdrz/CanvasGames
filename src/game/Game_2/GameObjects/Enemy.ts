@@ -1,8 +1,11 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
 import Game_2 from "../Game_2";
+import Bullet from "./Bullet";
 
 class Enemy extends GameObject {
+  public HP = 100;
+
   public collideObjects = Array<GameObject>();
   public readonly lifeTime = 3;
   public activeTimeStamp = 0;
@@ -24,14 +27,13 @@ class Enemy extends GameObject {
       this.restitution = 1.4;
     }
 
+    if (this.isCollideWithEnemy && !this.isStatic) {
+      this.HP -= Bullet.damage;
+    }
+    if (this.HP <= 0) this.isStatic = true;
     if (this.isStatic) {
       this.color = "blue";
     }
-    /* if (this.isColliding) {
-      this.color = "purple";
-    } else {
-      this.color = "red";
-    } */
 
     super.update(gameTime);
   }

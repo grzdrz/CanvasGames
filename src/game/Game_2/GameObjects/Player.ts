@@ -4,11 +4,12 @@ import EventArgs from "../../Events/EventArgs";
 import IObjectOptions from "./IObjectOptions";
 import IMouseData from "../../Data/IMouseData";
 import Game_2 from "../Game_2";
+import Bullet from "./Bullet";
 
 class Player extends GameObject {
   public HP = 100;
   public damageTimeStamp = 0;
-  public isCollideWithEnemy = false;
+  /* public isCollideWithEnemy = false; */
 
   constructor(options: IObjectOptions, view: Game_2) {
     super(options, view);
@@ -16,7 +17,7 @@ class Player extends GameObject {
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
     this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height =  Math.min(Math.max(width, height) / 25, 50);
+    this.size.height = Math.min(Math.max(width, height) / 25, 50);
   }
 
   public draw() {
@@ -69,13 +70,24 @@ class Player extends GameObject {
   }
 
   public handleClick = (eventArgs: EventArgs<IMouseData>) => {
-    if (this.isPreColliding) {
+    const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
+    const unitVector = vectorToClickPoint.getUnitVector();
+    
+    const bullet = new Bullet({}, this.view);
+
+    const velocity = unitVector.multiplyByNumber(bullet.velocityBase);
+    const position = new Vector(this.position.x, this.position.y);
+    bullet.velocity = velocity;
+    bullet.position = position;
+
+    this.view.gameObjects.push(bullet);
+    /* if (this.isPreColliding) {
       const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
       const lengthToClickPoint = Math.max(vectorToClickPoint.length, 500);
       const unitVector = vectorToClickPoint.getUnitVector();
       const velocity = unitVector.multiplyByNumber(lengthToClickPoint / 10);
       this.velocity = this.velocity.sum(velocity);
-    }
+    } */
   }
 }
 
