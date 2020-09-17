@@ -67,6 +67,8 @@ class Game_2 extends SessionView {
     this.viewManager.onKeyDown.subscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.subscribe(this.player.handlerKeyUp);
     this.viewManager.onMouseClick.subscribe(this.player.handleClick);
+
+    this.spawnEnemy();
   }
 
   public unloadContent(): void {

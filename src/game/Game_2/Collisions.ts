@@ -47,7 +47,7 @@ class Collisions {
     /* sumOfRadiusesOfObjects = (isPreCollisions ? sumOfRadiusesOfObjects + this.preCollisionsDistance : sumOfRadiusesOfObjects); */
     /* sumOfHalfWidth = (isPreCollisions ? sumOfHalfWidth + this.preCollisionsDistance : sumOfHalfWidth);
     sumOfHalfHeight = (isPreCollisions ? sumOfHalfHeight + this.preCollisionsDistance : sumOfHalfHeight); */
-    const result = Math.abs(vectorBetweenObjects.width) <= sumOfHalfWidth && Math.abs(vectorBetweenObjects.height) <= sumOfHalfHeight;
+    const result = Math.abs(vectorBetweenObjects.width) < sumOfHalfWidth && Math.abs(vectorBetweenObjects.height) < sumOfHalfHeight;
     return result;
   }
 
@@ -180,25 +180,37 @@ class Collisions {
     return new Vector(width, height);
   }
 
+  public findClosesDirection(vector: Vector): Vector {
+
+    const angle = Math.abs(Math.atan2(vector.y, vector.x));
+    if (angle > Math.PI / 4 && angle <= (3 * Math.PI) / 4) return new Vector(0, 1);
+    else if (angle > (3 * Math.PI) / 4 && angle <= (5 * Math.PI) / 4) return new Vector(-1, 0);
+    else if (angle > (5 * Math.PI) / 4 && angle <= (7 * Math.PI) / 4) return new Vector(0, -1);
+    else return new Vector(1, 0);
+  }
+
   public handleSeparateObjects = (args: EventArgs<ICollisionData>) => {// расталкивает объекты если между ними образовалось пересечение(иначе слипнутся)
     const { object1, object2 } = args.data;
 
     const intersection = this.findIntersection(object1, object2);
     if (intersection.width === 0 && intersection.height === 0) return;
-    const side = Math.min(intersection.width, intersection.height);
 
     let vectorBetweenObjects = object2.position.subtract(object1.position);
     let unitVector = vectorBetweenObjects.getUnitVector();
-
-    const vectorizedSide = unitVector.multiplyByNumber(side);
+    const shiftLength = Math.min(intersection.x, intersection.y) + 1;
+    let shift = unitVector.multiplyByNumber(shiftLength);
 
     if (object1.isStatic) {
-      object2.position = object2.position.sum(vectorizedSide);
+      object2.position = object2.position.sum(shift);
+      /* object2.position = object2.position.subtract(shift); */
     } else if (object2.isStatic) {
-      object1.position = object1.position.subtract(vectorizedSide);
+      object1.position = object1.position.subtract(shift);
+      /* object1.position = object1.position.sum(shift); */
     } else {
-      object1.position = object1.position.subtract(vectorizedSide.multiplyByNumber(0.5));
-      object2.position = object2.position.sum(vectorizedSide.multiplyByNumber(0.5));
+      object1.position = object1.position.subtract(shift.multiplyByNumber(0.5));
+      object2.position = object2.position.sum(shift.multiplyByNumber(0.5));
+      /* object1.position = object1.position.sum(shift.multiplyByNumber(0.5));
+      object2.position = object2.position.subtract(shift.multiplyByNumber(0.5)); */
     }
   }
 
