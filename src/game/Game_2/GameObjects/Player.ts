@@ -27,10 +27,10 @@ class Player extends GameObject {
 
   public update(gameTime: DOMHighResTimeStamp) {
     super.update(gameTime);
-    if (this.isCollideWithEnemy && this.damageTimeStamp === 0) {
+    /* if (this.isCollideWithEnemy && this.damageTimeStamp === 0) {
       this.HP -= 5;
       this.damageTimeStamp += gameTime;
-    }
+    } */
 
     if (this.damageTimeStamp !== 0) {
       this.damageTimeStamp += gameTime;
@@ -72,7 +72,7 @@ class Player extends GameObject {
   public handleClick = (eventArgs: EventArgs<IMouseData>) => {
     const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
     const unitVector = vectorToClickPoint.getUnitVector();
-    
+
     const bullet = new Bullet({}, this.view);
 
     const velocity = unitVector.multiplyByNumber(bullet.velocityBase);

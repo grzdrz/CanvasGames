@@ -28,6 +28,7 @@ class GameObject implements IDrawableSquare {
   public isStatic = false;
   public layerLevel = 1;
   public isDestroyed = false;
+  public isCollideWithBorder = false;
 
   constructor(options: IObjectOptions, view: Game_2) {
     this.view = view;
