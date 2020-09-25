@@ -3,6 +3,8 @@ import IObjectOptions from "./IObjectOptions";
 import Game_2 from "../Game_2";
 import Bullet from "./Bullet";
 
+const imageSrc = './src/game/Images/Interface/buttonPlay.png';
+
 class Enemy extends GameObject {
   public HP = 100;
 
@@ -11,7 +13,7 @@ class Enemy extends GameObject {
   public activeTimeStamp = 0;
 
   constructor(options: IObjectOptions, view: Game_2) {
-    super(options, view);
+    super(options, view, imageSrc);
 
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;

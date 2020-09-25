@@ -1,10 +1,12 @@
-import GameObject from "./GameObject";
-import Vector from "../../Helpers/Vector";
-import EventArgs from "../../Events/EventArgs";
-import IObjectOptions from "./IObjectOptions";
-import IMouseData from "../../Data/IMouseData";
-import Game_2 from "../Game_2";
-import Bullet from "./Bullet";
+import GameObject from './GameObject';
+import Vector from '../../Helpers/Vector';
+import EventArgs from '../../Events/EventArgs';
+import IObjectOptions from './IObjectOptions';
+import IMouseData from '../../Data/IMouseData';
+import Game_2 from '../Game_2';
+import Bullet from './Bullet';
+
+const imageSrc = './src/game/Images/GameObjects/testFrames.png';
 
 class Player extends GameObject {
   public HP = 100;
@@ -12,7 +14,7 @@ class Player extends GameObject {
   /* public isCollideWithEnemy = false; */
 
   constructor(options: IObjectOptions, view: Game_2) {
-    super(options, view);
+    super(options, view, imageSrc);
 
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
@@ -41,20 +43,20 @@ class Player extends GameObject {
   }
 
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
-    if (this.firstKeyDowned === "") this.firstKeyDowned = eventArgs.data.key;
+    if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
     else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
 
-    if (this.isPreColliding && this.firstKeyDowned === "Space") {
-      if (this.firstKeyDowned === "Space") this.velocity.y -= 30;
+    if (this.isPreColliding && this.firstKeyDowned === 'Space') {
+      if (this.firstKeyDowned === 'Space') this.velocity.y -= 30;
     }
-    if (this.velocity.x <= 20 && this.firstKeyDowned === "KeyD") this.velocity.x += 10;
-    if (this.velocity.x >= -20 && this.firstKeyDowned === "KeyA") this.velocity.x -= 10;
+    if (this.velocity.x <= 20 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
+    if (this.velocity.x >= -20 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10;
 
   }
 
   public handlerKeyUp = (/* eventArgs: EventArgs<IKeyData> */) => {
-    if (this.secondKeyDowned === "") this.firstKeyDowned = "";
-    else this.secondKeyDowned = "";
+    if (this.secondKeyDowned === '') this.firstKeyDowned = '';
+    else this.secondKeyDowned = '';
   }
 
   public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
