@@ -4,11 +4,8 @@ import Vector from "../Helpers/Vector";
 import IDrawableImage from "./IDrawableImage";
 
 class AnimationFrames {
-  /* public framesImage: HTMLImageElement;
-  public isImageLoaded: boolean;
-  public position: Vector;
-  public size: Vector;
-  public angle: number; */
+  public isActive = false;
+
   public object: GameObject;
 
   public fps = 1000 / 10;
@@ -23,13 +20,15 @@ class AnimationFrames {
   public sizingWidthKoef: number;
   public sizingHeightKoef: number;
 
-  public framesCount = new Vector(3, 2);
+  public framesTablePosition = new Vector(3, 2);
+  public framesTotalCount = this.framesTablePosition.width * this.framesTablePosition.height;
+  public framesCurrentCount = 1;
 
   constructor(object: GameObject) {
     this.object = object;
 
     this.size = new Vector(this.object.image.naturalWidth, this.object.image.naturalHeight);
-    this.frameSize = new Vector(this.size.width / this.framesCount.x, this.size.height / this.framesCount.y);
+    this.frameSize = new Vector(this.size.width / this.framesTablePosition.x, this.size.height / this.framesTablePosition.y);
 
     this.sizingWidthKoef = this.object.size.width / this.frameSize.width;
     this.sizingHeightKoef = this.object.size.height / this.frameSize.height;
@@ -79,23 +78,32 @@ class AnimationFrames {
       this.deltaTime = 0;
       this.startTime = this.currentTime;
 
-      if (this.currentFrame.x < this.size.width - this.frameSize.width) {
-        this.currentFrame.x = this.currentFrame.x + this.frameSize.width;
-      }
-      else if (this.currentFrame.y < this.size.height - this.frameSize.height) {
-        this.currentFrame.x = 0;
-        this.currentFrame.y = this.currentFrame.y + this.frameSize.height;
-      }
-      else {
+      if (this.framesCurrentCount >= this.framesTotalCount) {
         this.currentFrame.x = 0;
         this.currentFrame.y = 0;
+        this.framesCurrentCount = 1;
+      } else {
+
+        if (this.currentFrame.x < this.size.width - this.frameSize.width) {
+          this.currentFrame.x = this.currentFrame.x + this.frameSize.width;
+        }
+        else if (this.currentFrame.y < this.size.height - this.frameSize.height) {
+          this.currentFrame.x = 0;
+          this.currentFrame.y = this.currentFrame.y + this.frameSize.height;
+        }
+        else {
+          this.currentFrame.x = 0;
+          this.currentFrame.y = 0;
+        }
+
+        this.framesCurrentCount += 1;
       }
     }
   }
 
   updateFrameSize() {
-    this.frameSize.width = this.size.width / this.framesCount.x;
-    this.frameSize.height = this.size.height / this.framesCount.y;
+    this.frameSize.width = this.size.width / this.framesTablePosition.x;
+    this.frameSize.height = this.size.height / this.framesTablePosition.y;
 
     this.sizingWidthKoef = this.object.size.width / this.frameSize.width;
     this.sizingHeightKoef = this.object.size.height / this.frameSize.height;

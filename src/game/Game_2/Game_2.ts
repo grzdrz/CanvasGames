@@ -14,6 +14,7 @@ import ViewEntry from "../ViewSystem/ViewEntry";
 import EntryType from "../States/EntryType";
 import SessionView from "../ViewSystem/SessionView";
 import Background from "./GameObjects/Background";
+import EnemiesPart from "./GameObjects/EnemiesPart";
 
 class Game_2 extends SessionView {
   public gameObjects = new Array<GameObject>();
@@ -96,13 +97,31 @@ class Game_2 extends SessionView {
       this.spawnEnemy();
     }
 
-    this.gameObjects.forEach((obj) => obj.update(gameTime));
+    this.gameObjects.forEach((obj) => {
+      obj.update(gameTime);
+    });
     this.collisionAnalyzer.findAllObjectsCollisions(this.gameObjects);
 
     if (this.player.position.y < 0) this.gameState = GameState.Win;
     if (this.player.HP <= 0) this.gameState = GameState.Lose;
 
-    this.gameObjects = this.gameObjects.filter((object) => !object.isDestroyed);
+    const deadEnemies = Array<GameObject>();
+    this.gameObjects = this.gameObjects.filter((object) => {
+      return !object.isDestroyed;
+    });
+
+    this.gameObjects = this.gameObjects.filter((object) => {
+      if (object instanceof Enemy && object.HP <= 0) {
+        deadEnemies.push(this.spawnEnemiesPart(object));
+        deadEnemies.push(this.spawnEnemiesPart(object));
+        deadEnemies.push(this.spawnEnemiesPart(object));
+
+        return false;
+      }
+      return true;
+    });
+
+    this.gameObjects.push(...deadEnemies);
   }
 
   public draw(): void {
@@ -132,6 +151,27 @@ class Game_2 extends SessionView {
     options.velocity = new Vector(velocityX, velocityY);
 
     this.gameObjects.push(new Enemy(options, this));
+  }
+
+  public spawnEnemiesPart(enemy: GameObject) {
+    const options = {
+      position: new Vector(0, 0),
+      size: new Vector(0, 0),
+      velocity: new Vector(0, 0),
+      mass: 1,
+      width: 50,
+    };
+
+    const positionX = enemy.position.x;
+    const positionY = enemy.position.y;
+    options.position = new Vector(positionX, positionY);
+
+    const velocityX = MathFunctions.randomInteger(-20, 20) / 1;
+    const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
+    options.velocity = new Vector(velocityX, velocityY);
+
+    /* this.gameObjects.push(new Enemy(options, this)); */
+    return new EnemiesPart(options, this);
   }
 }
 

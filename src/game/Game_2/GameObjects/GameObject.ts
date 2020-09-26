@@ -21,7 +21,7 @@ class GameObject implements IDrawableSquare,/* implements */ IDrawableImage {
   public color = "red";
   public image: HTMLImageElement;
   public isImageLoaded = false;
-  public animationFrames: AnimationFrames;
+  public animationFrames = new Map<string, AnimationFrames>();/* AnimationFrames[]; */
 
   public firstKeyDowned = "";
   public secondKeyDowned = "";
@@ -44,7 +44,6 @@ class GameObject implements IDrawableSquare,/* implements */ IDrawableImage {
       this.isImageLoaded = true;
 
     };
-    this.animationFrames = new AnimationFrames(this);
 
     this.initialize(options);
   }
@@ -59,8 +58,9 @@ class GameObject implements IDrawableSquare,/* implements */ IDrawableImage {
   }
 
   public draw() {
-    // this.view.viewManager.canvasManager.drawSquareObject(this);
-    this.animationFrames.draw();
+    this.animationFrames.forEach((frames) => {
+      if (frames.isActive) frames.draw();
+    });
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
@@ -78,7 +78,9 @@ class GameObject implements IDrawableSquare,/* implements */ IDrawableImage {
 
     this.angle = Math.atan2(this.velocity.y, this.velocity.x);
 
-    this.animationFrames.update();
+    this.animationFrames.forEach((frames) => {
+      if (frames.isActive) frames.update();
+    });
   }
 }
 

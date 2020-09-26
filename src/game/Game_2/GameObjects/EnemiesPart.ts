@@ -7,20 +7,19 @@ import Vector from "../../Helpers/Vector";
 
 const imageSrc = './src/game/Images/GameObjects/enemiesPartBeta.png';
 
-class Enemy extends GameObject {
-  public HP = 100;
-
-  public collideObjects = Array<GameObject>();
-  public readonly lifeTime = 3;
+class EnemiesPart extends GameObject {
   public activeTimeStamp = 0;
+  public readonly lifeTime = 3;
 
-  constructor(options: IObjectOptions, view: Game_2) {
+  constructor(options: IObjectOptions = {}, view: Game_2) {
     super(options, view, imageSrc);
 
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
-    this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height = Math.min(Math.max(width, height) / 25, 50);
+    /* this.size.width = Math.min(Math.max(width, height) / 30, 50);
+    this.size.height = Math.min(Math.max(width, height) / 30, 50); */
+    this.size.width = 30;
+    this.size.height = 30;
 
     const runAnimation = new AnimationFrames(this);
     runAnimation.framesTablePosition = new Vector(5, 2);
@@ -31,14 +30,10 @@ class Enemy extends GameObject {
     if (this.activeTimeStamp < this.lifeTime) {
       this.activeTimeStamp += gameTime;
     } else {
-      // this.isStatic = true;
+      this.isStatic = true;
       this.restitution = 1.4;
     }
 
-    if (this.isCollideWithEnemy && !this.isStatic) {
-      this.HP -= Bullet.damage;
-    }
-    if (this.HP <= 0) this.isStatic = true;
     if (this.isStatic) {
       this.color = "blue";
     }
@@ -56,4 +51,4 @@ class Enemy extends GameObject {
   }
 }
 
-export default Enemy;
+export default EnemiesPart;

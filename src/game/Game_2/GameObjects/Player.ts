@@ -5,6 +5,7 @@ import IObjectOptions from './IObjectOptions';
 import IMouseData from '../../Data/IMouseData';
 import Game_2 from '../Game_2';
 import Bullet from './Bullet';
+import AnimationFrames from '../../DrawingSystem/AnimationFrames';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -22,6 +23,13 @@ class Player extends GameObject {
     this.size.height = Math.min(Math.max(width, height) / 10, 150); */
     this.size.width = 150;
     this.size.height = 150;
+
+    const standAnimation = new AnimationFrames(this);
+    standAnimation.framesTotalCount = 1;
+    this.animationFrames.set('stand', standAnimation);
+
+    const runAnimation = new AnimationFrames(this);
+    this.animationFrames.set('run', runAnimation);
   }
 
   public draw() {
@@ -43,7 +51,22 @@ class Player extends GameObject {
       }
     }
 
-    this.angle = 0/* Math.PI / 2 */;
+    this.angle = 0;
+
+    this.updateAnimationState();
+  }
+
+  public updateAnimationState() {
+    this.animationFrames.forEach((frame) => frame.isActive = false);
+
+    const velocityUnitVector = this.velocity.getUnitVector();
+    if (Math.abs(velocityUnitVector.y) === 1) {
+      const frame = <AnimationFrames>this.animationFrames.get('stand');
+      frame.isActive = true;
+    } else {
+      const frame = <AnimationFrames>this.animationFrames.get('run');
+      frame.isActive = true;
+    }
   }
 
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
