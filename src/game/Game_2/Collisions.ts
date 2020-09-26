@@ -195,6 +195,7 @@ class Collisions {
       shiftLength = intersection.x;
       normal = unitVector.x > 0 ? new Vector(1, 0) : new Vector(-1, 0);
     }
+    shiftLength += 1; // доп. расталкивание
     const shift = normal.multiplyByNumber(shiftLength);
 
     if (object1.isStatic) {

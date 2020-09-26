@@ -69,21 +69,89 @@ class Player extends GameObject {
     }
   }
 
+  public move() {
+    const keys = Array.from(this.pressed);
+    if (keys.includes('Space') && keys.includes('KeyA')) {
+      this.velocity.x -= 10;
+      this.velocity.y -= 40;
+    } else if (keys.includes('Space') && keys.includes('KeyD')) {
+      this.velocity.x += 10;
+      this.velocity.y -= 40;
+    } else if (keys.includes('Space')) {
+      this.velocity.y -= 40;
+    } else if (keys.includes('KeyA') && this.velocity.x >= -40) {
+      this.velocity.x -= 40;
+    } else if (keys.includes('KeyD') && this.velocity.x <= 40) {
+      this.velocity.x += 40;
+    }
+  }
+
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
-    if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
+    /* if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
     else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
 
     if (this.isPreColliding && this.firstKeyDowned === 'Space') {
-      if (this.firstKeyDowned === 'Space') this.velocity.y -= 30;
+      if (this.firstKeyDowned === 'Space') this.velocity.y -= 50;
     }
-    if (this.velocity.x <= 20 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
-    if (this.velocity.x >= -20 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10;
-
+    if (this.velocity.x <= 40 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
+    if (this.velocity.x >= -40 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10; */
+    const codes = ['Space'];
+    this.pressed.add(eventArgs.data.key);
+    /* for (let code of codes) { // все ли клавиши из набора нажаты?
+      if (!this.pressed.has(code)) {
+        return;
+      }
+    } */
+    this.move();
+    this.pressed.clear();
   }
 
-  public handlerKeyUp = (/* eventArgs: EventArgs<IKeyData> */) => {
-    if (this.secondKeyDowned === '') this.firstKeyDowned = '';
-    else this.secondKeyDowned = '';
+  public pressed = new Set<string>();
+
+  public handlerTopLeftKeyDown = (eventArgs: EventArgs<IKeyData>) => {
+    /* if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
+    else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
+
+    if (this.isPreColliding && this.firstKeyDowned === 'Space') {
+      if (this.firstKeyDowned === 'Space') this.velocity.y -= 50;
+    }
+    if (this.velocity.x <= 40 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
+    if (this.velocity.x >= -40 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10; */
+    const codes = ['KeyA', 'Space'];
+    this.pressed.add(eventArgs.data.key);
+    for (let code of codes) { // все ли клавиши из набора нажаты?
+      if (!this.pressed.has(code)) {
+        return;
+      }
+    }
+    this.move();
+    this.pressed.clear();
+  }
+
+  public handlerTopRightKeyDown = (eventArgs: EventArgs<IKeyData>) => {
+    /* if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
+    else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
+
+    if (this.isPreColliding && this.firstKeyDowned === 'Space') {
+      if (this.firstKeyDowned === 'Space') this.velocity.y -= 50;
+    }
+    if (this.velocity.x <= 40 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
+    if (this.velocity.x >= -40 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10; */
+    const codes = ['KeyD', 'Space'];
+    this.pressed.add(eventArgs.data.key);
+    for (let code of codes) { // все ли клавиши из набора нажаты?
+      if (!this.pressed.has(code)) {
+        return;
+      }
+    }
+    this.move();
+    this.pressed.clear();
+  }
+
+  public handlerKeyUp = (eventArgs: EventArgs<IKeyData>) => {
+    /* if (this.secondKeyDowned === '') this.firstKeyDowned = '';
+    else this.secondKeyDowned = ''; */
+    this.pressed.delete(eventArgs.data.key);
   }
 
   public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {

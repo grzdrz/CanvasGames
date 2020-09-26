@@ -65,8 +65,12 @@ class Game_2 extends SessionView {
     this.viewManager.onMouseDown.subscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseMove.subscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseUp.subscribe(this.player.handlerUnhand);
+
     this.viewManager.onKeyDown.subscribe(this.player.handlerKeyDown);
+    this.viewManager.onKeyDown.subscribe(this.player.handlerTopLeftKeyDown);
+    this.viewManager.onKeyDown.subscribe(this.player.handlerTopRightKeyDown);
     this.viewManager.onKeyUp.subscribe(this.player.handlerKeyUp);
+
     this.viewManager.onMouseClick.subscribe(this.player.handleClick);
 
     this.spawnEnemy();
@@ -80,8 +84,12 @@ class Game_2 extends SessionView {
     this.viewManager.onMouseDown.unsubscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseMove.unsubscribe(this.player.handlerSetPosition);
     this.viewManager.onMouseUp.unsubscribe(this.player.handlerUnhand);
+
     this.viewManager.onKeyDown.unsubscribe(this.player.handlerKeyDown);
+    this.viewManager.onKeyDown.unsubscribe(this.player.handlerTopLeftKeyDown);
+    this.viewManager.onKeyDown.unsubscribe(this.player.handlerTopRightKeyDown);
     this.viewManager.onKeyUp.unsubscribe(this.player.handlerKeyUp);
+
     this.viewManager.onMouseClick.unsubscribe(this.player.handleClick);
   }
 
