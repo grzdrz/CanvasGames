@@ -7,6 +7,7 @@ import ICollisionData from "./ICollisionData";
 import EventArgs from "../Events/EventArgs";
 import ViewManager from "../ViewSystem/ViewManager";
 import Bullet from "./GameObjects/Bullet";
+import EnemiesPart from "./GameObjects/EnemiesPart";
 
 const borderRestitution = 0.5;
 
@@ -42,18 +43,22 @@ class Collisions {
   }
 
   public detectCollisionOfEnemies(object1: GameObject, object2: GameObject) {
-    if (object1 instanceof Player && object2 instanceof Enemy && !object2.isStatic) {
+    const isCollidePlayerWithEnemy = object1 instanceof Player && object2 instanceof Enemy && !object2.isStatic;
+    const isCollideEnemyWithPlayer = object2 instanceof Player && object1 instanceof Enemy && !object2.isStatic;
+    const isCollideWithPlayer = isCollidePlayerWithEnemy || isCollideEnemyWithPlayer;
+    if (isCollideWithPlayer) {
       object1.isCollideWithEnemy = true;
-    }
-    else if (object2 instanceof Player && object1 instanceof Enemy && !object1.isStatic) {
       object2.isCollideWithEnemy = true;
     }
 
-    if (object1 instanceof Bullet && object2 instanceof Enemy && !object2.isStatic) {
-      object2.isCollideWithEnemy = true;
-    }
-    else if (object2 instanceof Bullet && object1 instanceof Enemy && !object1.isStatic) {
+    const isCollideBulletWithEnemy = object1 instanceof Bullet && object2 instanceof Enemy && !object2.isStatic;
+    const isCollideEnemyWithBullet = object2 instanceof Bullet && object1 instanceof Enemy && !object2.isStatic;
+    const isCollideBulletWithEnemiesPart = object1 instanceof Bullet && object2 instanceof EnemiesPart && !object2.isStatic;
+    const isCollideEnemiesPartWithBullet = object2 instanceof Bullet && object1 instanceof EnemiesPart && !object2.isStatic;
+    const isCollideWithBullet = isCollideBulletWithEnemy || isCollideEnemyWithBullet || isCollideBulletWithEnemiesPart || isCollideEnemiesPartWithBullet;
+    if (isCollideWithBullet) {
       object1.isCollideWithEnemy = true;
+      object2.isCollideWithEnemy = true;
     }
   }
 

@@ -11,6 +11,7 @@ import IDrawableSquare from "./IDrawableSquare";
 interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,
   handlerMouseUp: (event: UIEvent) => void,
+  button: number,
 }
 
 class CanvasManager {
@@ -146,11 +147,12 @@ class CanvasManager {
   // d&d
   private handlerMouseDown(event: UIEvent): void {
     event.preventDefault();
-    if ((<MouseEvent>event).button !== 2) return;
+    /* if ((<MouseEvent>event).button !== 2) return; */
 
     const optionsForMouseEvents = {
       handlerMouseMove: (_event: UIEvent): void => { },
       handlerMouseUp: (_event: UIEvent): void => { },
+      button: (<MouseEvent>event).button,
     };
     const handlerMouseMove = this.handlerMouseMove.bind(this, optionsForMouseEvents);
     optionsForMouseEvents.handlerMouseMove = handlerMouseMove;
@@ -164,12 +166,18 @@ class CanvasManager {
     document.addEventListener("touchend", handlerMouseUp);
 
     const mousePosition = this.calculateMouseGlobalPosition(event);
-    this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({ mousePosition }));
+    this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({
+      mousePosition,
+      button: (<MouseEvent>event).button,
+    }));
   }
 
   private handlerMouseMove(optionsFromMouseDown: IMouseEventArgs, event: UIEvent): void {
     const mousePosition = this.calculateMouseGlobalPosition(event);
-    this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({ mousePosition }));
+    this.viewManager.onMouseMove.invoke(new EventArgs<IMouseData>({
+      mousePosition,
+      button: optionsFromMouseDown.button,
+    }));
   }
 
   private handlerMouseUp(optionsFromMouseDown: IMouseEventArgs, event: UIEvent): void {
@@ -179,7 +187,10 @@ class CanvasManager {
     document.removeEventListener("touchend", optionsFromMouseDown.handlerMouseUp);
 
     const mousePosition = this.calculateMouseGlobalPosition(event);
-    this.viewManager.onMouseUp.invoke(new EventArgs<IMouseData>({ mousePosition }));
+    this.viewManager.onMouseUp.invoke(new EventArgs<IMouseData>({
+      mousePosition,
+      button: optionsFromMouseDown.button,
+    }));
   }
 
   private calculateMouseGlobalPosition = (event: UIEvent) => {
@@ -209,7 +220,10 @@ class CanvasManager {
   private handleMouseClick = (event: UIEvent) => {
     if ((<MouseEvent>event).button !== 0 && !(<TouchEvent>event)) return;
     const mousePosition = this.calculateMouseGlobalPosition(event);
-    this.viewManager.onMouseClick.invoke(new EventArgs<IMouseData>({ mousePosition }));
+    this.viewManager.onMouseClick.invoke(new EventArgs<IMouseData>({
+      mousePosition,
+      button: (<MouseEvent>event).button,
+    }));
   }
 }
 

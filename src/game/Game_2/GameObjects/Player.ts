@@ -14,6 +14,8 @@ class Player extends GameObject {
   public damageTimeStamp = 0;
   /* public isCollideWithEnemy = false; */
 
+  public pressedKeys = new Set<string>();
+
   constructor(options: IObjectOptions, view: Game_2) {
     super(options, view, imageSrc);
 
@@ -69,92 +71,24 @@ class Player extends GameObject {
     }
   }
 
-  public move() {
-    const keys = Array.from(this.pressed);
-    if (keys.includes('Space') && keys.includes('KeyA')) {
-      this.velocity.x -= 10;
-      this.velocity.y -= 40;
-    } else if (keys.includes('Space') && keys.includes('KeyD')) {
-      this.velocity.x += 10;
-      this.velocity.y -= 40;
-    } else if (keys.includes('Space')) {
-      this.velocity.y -= 40;
-    } else if (keys.includes('KeyA') && this.velocity.x >= -40) {
-      this.velocity.x -= 40;
-    } else if (keys.includes('KeyD') && this.velocity.x <= 40) {
-      this.velocity.x += 40;
-    }
-  }
-
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
-    /* if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
-    else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
+    this.pressedKeys.add(eventArgs.data.key);
 
-    if (this.isPreColliding && this.firstKeyDowned === 'Space') {
-      if (this.firstKeyDowned === 'Space') this.velocity.y -= 50;
-    }
-    if (this.velocity.x <= 40 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
-    if (this.velocity.x >= -40 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10; */
-    const codes = ['Space'];
-    this.pressed.add(eventArgs.data.key);
-    /* for (let code of codes) { // все ли клавиши из набора нажаты?
-      if (!this.pressed.has(code)) {
-        return;
-      }
-    } */
-    this.move();
-    this.pressed.clear();
-  }
+    if (/* this.isPreColliding &&  */this.pressedKeys.has('Space')) this.velocity.y = -50;
+    if (this.pressedKeys.has('KeyD')) this.velocity.x = 40;
+    if (this.pressedKeys.has('KeyA')) this.velocity.x = -40;
 
-  public pressed = new Set<string>();
-
-  public handlerTopLeftKeyDown = (eventArgs: EventArgs<IKeyData>) => {
-    /* if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
-    else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
-
-    if (this.isPreColliding && this.firstKeyDowned === 'Space') {
-      if (this.firstKeyDowned === 'Space') this.velocity.y -= 50;
-    }
-    if (this.velocity.x <= 40 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
-    if (this.velocity.x >= -40 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10; */
-    const codes = ['KeyA', 'Space'];
-    this.pressed.add(eventArgs.data.key);
-    for (let code of codes) { // все ли клавиши из набора нажаты?
-      if (!this.pressed.has(code)) {
-        return;
-      }
-    }
-    this.move();
-    this.pressed.clear();
-  }
-
-  public handlerTopRightKeyDown = (eventArgs: EventArgs<IKeyData>) => {
-    /* if (this.firstKeyDowned === '') this.firstKeyDowned = eventArgs.data.key;
-    else if (eventArgs.data.key !== this.firstKeyDowned) this.secondKeyDowned = eventArgs.data.key;
-
-    if (this.isPreColliding && this.firstKeyDowned === 'Space') {
-      if (this.firstKeyDowned === 'Space') this.velocity.y -= 50;
-    }
-    if (this.velocity.x <= 40 && this.firstKeyDowned === 'KeyD') this.velocity.x += 10;
-    if (this.velocity.x >= -40 && this.firstKeyDowned === 'KeyA') this.velocity.x -= 10; */
-    const codes = ['KeyD', 'Space'];
-    this.pressed.add(eventArgs.data.key);
-    for (let code of codes) { // все ли клавиши из набора нажаты?
-      if (!this.pressed.has(code)) {
-        return;
-      }
-    }
-    this.move();
-    this.pressed.clear();
+    if (this.velocity.x <= -40) this.velocity.x = -40;
+    if (this.velocity.x >= 40) this.velocity.x = 40;
+    if (this.velocity.y <= -50) this.velocity.y = -50;
   }
 
   public handlerKeyUp = (eventArgs: EventArgs<IKeyData>) => {
-    /* if (this.secondKeyDowned === '') this.firstKeyDowned = '';
-    else this.secondKeyDowned = ''; */
-    this.pressed.delete(eventArgs.data.key);
+    this.pressedKeys.delete(eventArgs.data.key);
   }
 
   public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
+    if (eventArgs.data.button !== 2) return;
     this.isGriped = true;
     this.velocity.x = 0;
     this.velocity.y = 0;
@@ -166,7 +100,19 @@ class Player extends GameObject {
     this.isGriped = false;
   }
 
-  public handleClick = (eventArgs: EventArgs<IMouseData>) => {
+  public oldShotTime = Date.now();
+  public currentShotTime = Date.now();
+  public shotTimeStamp = 0;
+  public handleShot = (eventArgs: EventArgs<IMouseData>) => {
+    if (eventArgs.data.button !== 0) return;
+
+    this.currentShotTime = Date.now();
+    this.shotTimeStamp = this.currentShotTime - this.oldShotTime;
+    if (this.shotTimeStamp >= 100) {
+      this.oldShotTime = Date.now();
+      this.shotTimeStamp = 0;
+    } else return;
+
     const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
     const unitVector = vectorToClickPoint.getUnitVector();
 

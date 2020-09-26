@@ -22,7 +22,7 @@ class Bullet extends GameObject {
   }
 
   update(gameTime: DOMHighResTimeStamp) {
-    if (this.isColliding) {
+    if (this.isCollideWithBorder || this.isCollideWithEnemy) {
       this.isDestroyed = true;
     }
 

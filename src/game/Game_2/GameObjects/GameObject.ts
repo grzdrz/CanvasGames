@@ -21,10 +21,8 @@ class GameObject implements IDrawableSquare,/* implements */ IDrawableImage {
   public color = "red";
   public image: HTMLImageElement;
   public isImageLoaded = false;
-  public animationFrames = new Map<string, AnimationFrames>();/* AnimationFrames[]; */
+  public animationFrames = new Map<string, AnimationFrames>();
 
-  public firstKeyDowned = "";
-  public secondKeyDowned = "";
   public isColliding = false;
   public isPreColliding = false;
   public isCollideWithEnemy = false;
