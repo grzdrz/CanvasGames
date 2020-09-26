@@ -6,7 +6,7 @@ import IMouseData from '../../Data/IMouseData';
 import Game_2 from '../Game_2';
 import Bullet from './Bullet';
 
-const imageSrc = './src/game/Images/GameObjects/testFrames.png';
+const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
 class Player extends GameObject {
   public HP = 100;
@@ -18,10 +18,10 @@ class Player extends GameObject {
 
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
-    this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height = Math.min(Math.max(width, height) / 25, 50);
-
-    this.angle = Math.PI / 2;
+    /* this.size.width = Math.min(Math.max(width, height) / 10, 150);
+    this.size.height = Math.min(Math.max(width, height) / 10, 150); */
+    this.size.width = 150;
+    this.size.height = 150;
   }
 
   public draw() {
@@ -42,6 +42,8 @@ class Player extends GameObject {
         this.damageTimeStamp = 0;
       }
     }
+
+    this.angle = 0/* Math.PI / 2 */;
   }
 
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {

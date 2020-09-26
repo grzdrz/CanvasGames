@@ -1,3 +1,4 @@
+import Enemy from "../Game_2/GameObjects/Enemy";
 import GameObject from "../Game_2/GameObjects/GameObject";
 import Vector from "../Helpers/Vector";
 import IDrawableImage from "./IDrawableImage";
@@ -22,11 +23,13 @@ class AnimationFrames {
   public sizingWidthKoef: number;
   public sizingHeightKoef: number;
 
+  public framesCount = new Vector(3, 2);
+
   constructor(object: GameObject) {
     this.object = object;
 
     this.size = new Vector(this.object.image.naturalWidth, this.object.image.naturalHeight);
-    this.frameSize = new Vector(this.size.width / 4, this.size.height / 2);
+    this.frameSize = new Vector(this.size.width / this.framesCount.x, this.size.height / this.framesCount.y);
 
     this.sizingWidthKoef = this.object.size.width / this.frameSize.width;
     this.sizingHeightKoef = this.object.size.height / this.frameSize.height;
@@ -63,11 +66,13 @@ class AnimationFrames {
 
       canvas.context.resetTransform();
     } else { // заглушка, до подгрузки изображения
-      canvas.drawSquare(this.object.position, this.object.size, "rgb(12, 123, 222)");
+      this.drawObject(this.object);
     }
   }
 
   update() {
+    this.updateFrameSize();
+
     this.currentTime = Date.now();
     this.deltaTime = this.currentTime - this.startTime;
     if (this.deltaTime > this.fps) {
@@ -86,6 +91,31 @@ class AnimationFrames {
         this.currentFrame.y = 0;
       }
     }
+  }
+
+  updateFrameSize() {
+    this.frameSize.width = this.size.width / this.framesCount.x;
+    this.frameSize.height = this.size.height / this.framesCount.y;
+
+    this.sizingWidthKoef = this.object.size.width / this.frameSize.width;
+    this.sizingHeightKoef = this.object.size.height / this.frameSize.height;
+  }
+
+  public drawObject(object: GameObject): void {
+    const canvas = this.object.view.viewManager.canvasManager;
+
+    canvas.context.fillStyle = object.color;
+    if (object instanceof Enemy && object.isStatic) canvas.context.fillStyle = "blue";
+    canvas.context.fillRect(object.position.x - object.size.width / 2, object.position.y - object.size.height / 2, object.size.width, object.size.height);
+
+    //////TEST of velocity vector
+    canvas.context.beginPath();
+    canvas.context.moveTo(object.position.x, object.position.y);
+    let test = new Vector(50, 0);
+    test.rotateVector(object.angle);
+    const vectorTo = object.position.sum(test);
+    canvas.context.lineTo(vectorTo.x, vectorTo.y);
+    canvas.context.stroke();
   }
 }
 
