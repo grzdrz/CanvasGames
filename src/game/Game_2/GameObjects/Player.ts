@@ -20,6 +20,8 @@ class Player extends GameObject {
     const width = this.view.viewManager.canvasManager.width;
     this.size.width = Math.min(Math.max(width, height) / 25, 50);
     this.size.height = Math.min(Math.max(width, height) / 25, 50);
+
+    this.angle = Math.PI / 2;
   }
 
   public draw() {

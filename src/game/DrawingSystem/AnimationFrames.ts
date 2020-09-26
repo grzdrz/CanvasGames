@@ -10,7 +10,7 @@ class AnimationFrames {
   public angle: number; */
   public object: GameObject;
 
-  public fps = 1000 / 60;
+  public fps = 1000 / 10;
   public startTime = Date.now();
   public currentTime = Date.now();
   public deltaTime = 0;
@@ -26,30 +26,45 @@ class AnimationFrames {
     this.object = object;
 
     this.size = new Vector(this.object.image.naturalWidth, this.object.image.naturalHeight);
-    this.frameSize = new Vector(this.size.width / 4, this.size.height / 4);
+    this.frameSize = new Vector(this.size.width / 4, this.size.height / 2);
 
     this.sizingWidthKoef = this.object.size.width / this.frameSize.width;
     this.sizingHeightKoef = this.object.size.height / this.frameSize.height;
   }
 
   draw() {
-    if (!this.object.isImageLoaded) return;
     const canvas = this.object.view.viewManager.canvasManager;
+    if (this.object.isImageLoaded) {
+      const frameWidth = this.frameSize.width * this.sizingWidthKoef;
+      const frameHeight = this.frameSize.height * this.sizingHeightKoef;
+      const framePositionOnCanvasX = this.object.position.x - frameWidth / 2;
+      const framePositionOnCanvasY = this.object.position.y - frameHeight / 2;
 
-    const frameWidth = this.frameSize.width * this.sizingWidthKoef;
-    const frameHeight = this.frameSize.height * this.sizingHeightKoef;
+      //точка вращения относительно канваса
+      const frameCenterOnCanvasX = framePositionOnCanvasX + this.object.size.width / 2;
+      const frameCenterOnCanvasY = framePositionOnCanvasY + this.object.size.height / 2;
+      //центр объекта относительно самого себя
+      const frameCenterX = -this.object.size.width / 2;
+      const frameCenterY = -this.object.size.height / 2;
+      canvas.context.setTransform(1, 0, 0, 1, frameCenterOnCanvasX, frameCenterOnCanvasY);
+      canvas.context.rotate(this.object.angle);
 
-    canvas.context.drawImage(
-      this.object.image,
-      this.currentFrame.x,
-      this.currentFrame.y,
-      this.frameSize.width,
-      this.frameSize.height,
-      this.object.position.x - frameWidth / 2,
-      this.object.position.y - frameHeight / 2,
-      frameWidth,
-      frameHeight,
-    );
+      canvas.context.drawImage(
+        this.object.image,
+        this.currentFrame.x,
+        this.currentFrame.y,
+        this.frameSize.width,
+        this.frameSize.height,
+        frameCenterX,
+        frameCenterY,
+        frameWidth,
+        frameHeight,
+      );
+
+      canvas.context.resetTransform();
+    } else { // заглушка, до подгрузки изображения
+      canvas.drawSquare(this.object.position, this.object.size, "rgb(12, 123, 222)");
+    }
   }
 
   update() {
