@@ -2,12 +2,12 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IMouseData from "../../Data/IMouseData";
 import IObjectOptions from "./IObjectOptions";
-import Game_TEST from "../Game_TEST";
+import Game_Beta_2 from "../Game_Beta_2";
 import Vertex from "../../Helpers/Vertex";
 import IDrawablePolygon from "../../DrawingSystem/IDrawablePolygon";
 
 class GameObject implements IDrawablePolygon {
-  public view: Game_TEST;
+  public view: Game_Beta_2;
 
   public vertices = new Array<Vertex>();
   public center = Vector.zero;
@@ -27,7 +27,7 @@ class GameObject implements IDrawablePolygon {
 
   public isStatic = false;
 
-  constructor(options: IObjectOptions, view: Game_TEST) {
+  constructor(options: IObjectOptions, view: Game_Beta_2) {
     this.view = view;
     this.initialize(options);
   }

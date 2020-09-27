@@ -1,6 +1,6 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import Game_1 from "../Game_1";
+import Game_Beta_1 from "../Game_Beta_1";
 import IDrawableImage from "../../DrawingSystem/IDrawableImage";
 
 class Background extends GameObject implements IDrawableImage {
@@ -8,7 +8,7 @@ class Background extends GameObject implements IDrawableImage {
   public image: HTMLImageElement;
   public isImageLoaded = false;
 
-  constructor(options: IObjectOptions = {}, view: Game_1) {
+  constructor(options: IObjectOptions = {}, view: Game_Beta_1) {
     super(options, view);
     this.layerLevel = 2;
     this.isStatic = true;

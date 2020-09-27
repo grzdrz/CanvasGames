@@ -1,41 +1,38 @@
-import View from "../ViewSystem/View";
 import ViewManager from "../ViewSystem/ViewManager";
 import GameObject from "./GameObjects/GameObject";
 import Vector from "../Helpers/Vector";
-import Collisions from "./Collisions";
 import MathFunctions from "../Helpers/MathFunctions";
 import Player from "./GameObjects/Player";
 import Enemy from "./GameObjects/Enemy";
 import GameState from "../States/GameState";
-import EventArgs from "../Events/EventArgs";
-import IMouseData from "../Data/IMouseData";
-import ViewState from "../Data/ViewState";
-import ViewEntry from "../ViewSystem/ViewEntry";
-import EntryType from "../States/EntryType";
 import SessionView from "../ViewSystem/SessionView";
 import Background from "./GameObjects/Background";
 import EnemiesPart from "./GameObjects/EnemiesPart";
+import World from "./Physic/World";
 
 const enemySpawnTimeStamp = 2;
 
-class Game_2 extends SessionView {
+class Game extends SessionView {
+  public world: World;
   public gameObjects = new Array<GameObject>();
   public player: Player;
 
   public spawnTimeStamp = 0;
 
-  public collisionAnalyzer: Collisions;
-
   constructor(viewManager: ViewManager) {
     super(viewManager);
-    this.collisionAnalyzer = new Collisions(this.viewManager);
-    this.player = new Player({
-      size: new Vector(40, 40),
-      position: new Vector(50, 50),
-      color: "green",
-      mass: 1,
-      restitution: 0.9,
-    }, this);
+
+    this.world = new World(this);
+    this.player = new Player(
+      this,
+      {
+        size: new Vector(40, 40),
+        position: new Vector(50, 50),
+        color: "green",
+        mass: 1,
+        restitution: 0.9,
+      },
+    );
   }
 
   public initialize() {
@@ -47,22 +44,30 @@ class Game_2 extends SessionView {
 
     this.gameObjects = new Array<GameObject>();
 
-    this.gameObjects.push(new Background({
-      size: new Vector(500, 300),
-      position: new Vector(400, 150),
-    }, this));
+    this.gameObjects.push(
+      new Background(
+        this,
+        {
+          size: new Vector(500, 300),
+          position: new Vector(400, 150),
+        }
+      ),
+    );
 
-    this.player = new Player({
-      size: new Vector(40, 40),
-      position: new Vector(50, 50),
-      color: "green",
-      mass: 1,
-      restitution: 0.9,
-    }, this);
+    this.player = new Player(
+      this,
+      {
+        size: new Vector(40, 40),
+        position: new Vector(50, 50),
+        color: "green",
+        mass: 1,
+        restitution: 0.9,
+      },
+    );
 
     this.gameObjects.push(this.player);
 
-    this.collisionAnalyzer.loadContent();
+    this.world.loadContent();
 
     this.viewManager.onMouseDown.subscribe(this.player.handleShot);
     this.viewManager.onMouseMove.subscribe(this.player.handleShot);
@@ -74,15 +79,13 @@ class Game_2 extends SessionView {
     this.viewManager.onKeyDown.subscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.subscribe(this.player.handlerKeyUp);
 
-    /* this.viewManager.onMouseClick.subscribe(this.player.handleClick); */
-
     this.spawnEnemy();
   }
 
   public unloadContent(): void {
     super.unloadContent();
 
-    this.collisionAnalyzer.unloadContent();
+    this.world.unloadContent();
 
     this.viewManager.onMouseDown.unsubscribe(this.player.handleShot);
     this.viewManager.onMouseMove.unsubscribe(this.player.handleShot);
@@ -93,8 +96,6 @@ class Game_2 extends SessionView {
 
     this.viewManager.onKeyDown.unsubscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.unsubscribe(this.player.handlerKeyUp);
-
-    /* this.viewManager.onMouseClick.unsubscribe(this.player.handleClick); */
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
@@ -109,10 +110,10 @@ class Game_2 extends SessionView {
       this.spawnEnemy();
     }
 
-    this.gameObjects.forEach((obj) => {
+    /* this.gameObjects.forEach((obj) => {
       obj.update(gameTime);
-    });
-    this.collisionAnalyzer.findAllObjectsCollisions(this.gameObjects);
+    }); */
+    /* this.world.collisions.findAllObjectsCollisions(this.gameObjects); */
 
     if (this.player.position.y < 0) this.gameState = GameState.Win;
     if (this.player.HP <= 0) this.gameState = GameState.Lose;
@@ -134,6 +135,8 @@ class Game_2 extends SessionView {
     });
 
     this.gameObjects.push(...deadEnemies);
+
+    this.world.update(gameTime);
   }
 
   public draw(): void {
@@ -162,7 +165,7 @@ class Game_2 extends SessionView {
     const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
     options.velocity = new Vector(velocityX, velocityY);
 
-    this.gameObjects.push(new Enemy(options, this));
+    this.gameObjects.push(new Enemy(this, options));
   }
 
   public spawnEnemiesPart(enemy: GameObject) {
@@ -182,9 +185,8 @@ class Game_2 extends SessionView {
     const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
     options.velocity = new Vector(velocityX, velocityY);
 
-    /* this.gameObjects.push(new Enemy(options, this)); */
-    return new EnemiesPart(options, this);
+    return new EnemiesPart(this, options);
   }
 }
 
-export default Game_2;
+export default Game;

@@ -2,10 +2,13 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IMouseData from "../../Data/IMouseData";
 import IObjectOptions from "./IObjectOptions";
-import Game_1 from "../Game_1";
+import Game from "../Game";
+import IDrawableSimpleShape from "../../DrawingSystem/IDrawableSimpleShape";
+import IDrawableImage from "../../DrawingSystem/IDrawableImage";
+import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 
-class GameObject {
-  public view: Game_1;
+class GameObject implements IDrawableSimpleShape, IDrawableImage {
+  public view: Game;
 
   public position = new Vector(0, 0);
   public size = new Vector(50, 50);
@@ -16,22 +19,34 @@ class GameObject {
   public restitution = 0.9;
 
   public color = "red";
+  public image: HTMLImageElement;
+  public isImageLoaded = false;
+  public animationFrames = new Map<string, AnimationFrames>();
 
-  public firstKeyDowned = "";
-  public secondKeyDowned = "";
   public isColliding = false;
   public isPreColliding = false;
+  public isCollideWithEnemy = false;
   public isGriped = false;
 
   public isStatic = false;
   public layerLevel = 1;
+  public isDestroyed = false;
+  public isCollideWithBorder = false;
 
-  constructor(options: IObjectOptions, view: Game_1) {
+  constructor(view: Game, imageSrc: string, options: IObjectOptions) {
     this.view = view;
-    this.initialize(options);
+
+    this.image = new Image();
+    this.image.src = imageSrc;
+    this.image.onload = () => {
+      this.isImageLoaded = true;
+
+    };
+
+    this.updateState(options);
   }
 
-  public initialize(options: IObjectOptions): void {
+  public updateState(options: IObjectOptions): void {
     if (options.size !== undefined) this.size = options.size;
     if (options.position !== undefined) this.position = options.position;
     if (options.velocity !== undefined) this.velocity = options.velocity;
@@ -41,23 +56,20 @@ class GameObject {
   }
 
   public draw() {
-    this.view.viewManager.canvasManager.drawObject(this);
+    this.animationFrames.forEach((frames) => {
+      if (frames.isActive) frames.draw();
+    });
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
-    gameTime *= 10;
-    if (!this.isGriped) {
-      if (!this.isStatic) {
-        this.velocity.y += 9.81 * gameTime;
-        this.position.x += this.velocity.x * gameTime;
-        this.position.y += this.velocity.y * gameTime;
-      } else {
-        this.velocity.x = 0;
-        this.velocity.y = 0;
-      }
-    }
-
     this.angle = Math.atan2(this.velocity.y, this.velocity.x);
+    this.animationFrames.forEach((frames) => {
+      if (frames.isActive) frames.update();
+    });
+  }
+
+  public updateAnimationState() {
+    this.animationFrames.forEach((frame) => frame.isActive = false);
   }
 }
 

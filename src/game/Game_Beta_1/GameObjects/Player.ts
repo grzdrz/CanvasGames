@@ -3,20 +3,20 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IObjectOptions from "./IObjectOptions";
 import IMouseData from "../../Data/IMouseData";
-import Game_1 from "../Game_1";
+import Game_Beta_1 from "../Game_Beta_1";
 
 class Player extends GameObject {
   public HP = 100;
   public damageTimeStamp = 0;
   public isCollideWithEnemy = false;
 
-  constructor(options: IObjectOptions, view: Game_1) {
+  constructor(options: IObjectOptions, view: Game_Beta_1) {
     super(options, view);
 
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
     this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height =  Math.min(Math.max(width, height) / 25, 50);
+    this.size.height = Math.min(Math.max(width, height) / 25, 50);
   }
 
   public draw() {

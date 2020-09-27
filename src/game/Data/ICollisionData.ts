@@ -1,4 +1,4 @@
-import GameObject from "../Game_1/GameObjects/GameObject";
+import GameObject from "../Game_Beta_1/GameObjects/GameObject";
 
 interface ICollisionData {
   object1: GameObject;

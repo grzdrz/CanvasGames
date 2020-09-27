@@ -1,23 +1,23 @@
-import Vector from "../Helpers/Vector";
-import GameObject from "./GameObjects/GameObject";
-import Enemy from "./GameObjects/Enemy";
-import Player from "./GameObjects/Player";
-import Event from "../Events/Event";
+import Vector from "../../Helpers/Vector";
+import GameObject from "../GameObjects/GameObject";
+import Enemy from "../GameObjects/Enemy";
+import Player from "../GameObjects/Player";
+import Event from "../../Events/Event";
 import ICollisionData from "./ICollisionData";
-import EventArgs from "../Events/EventArgs";
-import ViewManager from "../ViewSystem/ViewManager";
-import Bullet from "./GameObjects/Bullet";
-import EnemiesPart from "./GameObjects/EnemiesPart";
+import EventArgs from "../../Events/EventArgs";
+import ViewManager from "../../ViewSystem/ViewManager";
+import Bullet from "../GameObjects/Bullet";
+import EnemiesPart from "../GameObjects/EnemiesPart";
 
 const borderRestitution = 0.5;
 
 class Collisions {
   public viewManager: ViewManager;
 
-  public preCollisionsDistance = 30;
-
   public onCollisionDetected = new Event<ICollisionData>();
   public onPreCollisionDetected = new Event<ICollisionData>();
+
+  public preCollisionsDistance = 30;
 
   public constructor(viewManager: ViewManager) {
     this.viewManager = viewManager;
@@ -31,45 +31,6 @@ class Collisions {
   public unloadContent() {
     this.onCollisionDetected.unsubscribe(this.handleSeparateObjects);
     this.onCollisionDetected.unsubscribe(this.handleObjectsImpact);
-  }
-
-  public detectCollision(object1: GameObject, object2: GameObject, isPreCollisions = false): boolean {
-    if (object1.layerLevel !== object2.layerLevel) return false;
-    const vectorBetweenObjects = object2.position.subtract(object1.position);
-    let sumOfHalfWidth = object1.size.width / 2 + object2.size.width / 2;
-    let sumOfHalfHeight = object1.size.height / 2 + object2.size.height / 2;
-    const result = Math.abs(vectorBetweenObjects.width) < sumOfHalfWidth && Math.abs(vectorBetweenObjects.height) < sumOfHalfHeight;
-    return result;
-  }
-
-  public detectCollisionOfEnemies(object1: GameObject, object2: GameObject) {
-    const isCollidePlayerWithEnemy = object1 instanceof Player && object2 instanceof Enemy && !object2.isStatic;
-    const isCollideEnemyWithPlayer = object2 instanceof Player && object1 instanceof Enemy && !object2.isStatic;
-    const isCollideWithPlayer = isCollidePlayerWithEnemy || isCollideEnemyWithPlayer;
-    if (isCollideWithPlayer) {
-      object1.isCollideWithEnemy = true;
-      object2.isCollideWithEnemy = true;
-    }
-
-    const isCollideBulletWithEnemy = object1 instanceof Bullet && object2 instanceof Enemy && !object2.isStatic;
-    const isCollideEnemyWithBullet = object2 instanceof Bullet && object1 instanceof Enemy && !object2.isStatic;
-    const isCollideBulletWithEnemiesPart = object1 instanceof Bullet && object2 instanceof EnemiesPart && !object2.isStatic;
-    const isCollideEnemiesPartWithBullet = object2 instanceof Bullet && object1 instanceof EnemiesPart && !object2.isStatic;
-    const isCollideWithBullet = isCollideBulletWithEnemy || isCollideEnemyWithBullet || isCollideBulletWithEnemiesPart || isCollideEnemiesPartWithBullet;
-    if (isCollideWithBullet) {
-      object1.isCollideWithEnemy = true;
-      object2.isCollideWithEnemy = true;
-    }
-  }
-
-  public throwOffCollisions(objects: GameObject[]): void {
-    // сброс состояний коллизий
-    for (let i = 0; i < objects.length; i++) {
-      objects[i].isPreColliding = false;
-      objects[i].isColliding = false;
-      objects[i].isCollideWithEnemy = false;
-      objects[i].isCollideWithBorder = false;
-    }
   }
 
   public findAllObjectsCollisions(objects: GameObject[]): void {
@@ -107,7 +68,7 @@ class Collisions {
           object2.isColliding = true;
 
           //поиск коллизии игрока с врагом
-          this.detectCollisionOfEnemies(object1, object2);
+          this.detectCollisionWithEnemy(object1, object2);
 
           this.onCollisionDetected.invoke(new EventArgs<ICollisionData>({
             object1: object1,
@@ -117,11 +78,56 @@ class Collisions {
       }
 
       const canvas = this.viewManager.canvasManager;
-      this.findCollisionWithBorders(object1, canvas.width, canvas.height)
+      this.detectCollisionWithBorders(object1, canvas.width, canvas.height)
     }
   }
 
-  public findCollisionWithBorders(obj: GameObject, canvasWidth: number, canvasHeight: number) {
+  private throwOffCollisions(objects: GameObject[]): void {
+    // сброс состояний коллизий
+    for (let i = 0; i < objects.length; i++) {
+      objects[i].isPreColliding = false;
+      objects[i].isColliding = false;
+      objects[i].isCollideWithEnemy = false;
+      objects[i].isCollideWithBorder = false;
+    }
+  }
+
+  private detectCollision(object1: GameObject, object2: GameObject, isPreCollisions = false): boolean {
+    if (object1.layerLevel !== object2.layerLevel) return false;
+    const vectorBetweenObjects = object2.position.subtract(object1.position);
+    let sumOfHalfWidth = object1.size.width / 2 + object2.size.width / 2;
+    let sumOfHalfHeight = object1.size.height / 2 + object2.size.height / 2;
+    const result = Math.abs(vectorBetweenObjects.width) < sumOfHalfWidth && Math.abs(vectorBetweenObjects.height) < sumOfHalfHeight;
+    return result;
+  }
+
+  private detectCollisionWithEnemy(object1: GameObject, object2: GameObject) {
+    const isCollidePlayerWithEnemy = object1 instanceof Player && object2 instanceof Enemy && !object2.isStatic;
+    const isCollideEnemyWithPlayer = object2 instanceof Player && object1 instanceof Enemy && !object2.isStatic;
+    const isCollideWithPlayer = isCollidePlayerWithEnemy || isCollideEnemyWithPlayer;
+    if (isCollideWithPlayer) {
+      object1.isCollideWithEnemy = true;
+      object2.isCollideWithEnemy = true;
+    }
+
+    const isCollideBulletWithEnemy = object1 instanceof Bullet && object2 instanceof Enemy && !object2.isStatic;
+    const isCollideEnemyWithBullet = object2 instanceof Bullet && object1 instanceof Enemy && !object2.isStatic;
+    const isCollideBulletWithEnemiesPart = object1 instanceof Bullet && object2 instanceof EnemiesPart && !object2.isStatic;
+    const isCollideEnemiesPartWithBullet = object2 instanceof Bullet && object1 instanceof EnemiesPart && !object2.isStatic;
+    const isCollideWithBullet = isCollideBulletWithEnemy || isCollideEnemyWithBullet || isCollideBulletWithEnemiesPart || isCollideEnemiesPartWithBullet;
+    if (isCollideWithBullet) {
+      object1.isCollideWithEnemy = true;
+      object2.isCollideWithEnemy = true;
+    }
+
+    const isCollideBulletWithBullet = object1 instanceof Bullet && object2 instanceof Bullet && !object2.isStatic;
+    if (isCollideBulletWithBullet) {
+      object1.isCollideWithEnemy = true;
+      object2.isCollideWithEnemy = true;
+    }
+  }
+
+  private detectCollisionWithBorders(obj: GameObject, canvasWidth: number, canvasHeight: number) {
     const isLeftPreCollision = (obj.position.x < obj.size.width / 2 + this.preCollisionsDistance);
     const isLeftCollision = (obj.position.x < obj.size.width / 2);
     const isRightPreCollision = (obj.position.x > canvasWidth - obj.size.width / 2 - this.preCollisionsDistance);
@@ -154,7 +160,7 @@ class Collisions {
     } if (isBottomPreCollision) { obj.isPreColliding = true; }
   }
 
-  public findIntersection(object1: GameObject, object2: GameObject) {// считаем что они пересекаются
+  private findIntersection(object1: GameObject, object2: GameObject) {// считаем что они пересекаются
     // верхняя левая координата
     const object1_x1 = object1.position.x - object1.size.width / 2;
     const object1_y1 = object1.position.y - object1.size.height / 2;
@@ -182,7 +188,7 @@ class Collisions {
     return new Vector(width, height);
   }
 
-  public handleSeparateObjects = (args: EventArgs<ICollisionData>) => {// расталкивает объекты если между ними образовалось пересечение(иначе слипнутся)
+  private handleSeparateObjects = (args: EventArgs<ICollisionData>) => {// расталкивает объекты если между ними образовалось пересечение(иначе слипнутся)
     const { object1, object2 } = args.data;
 
     const intersection = this.findIntersection(object1, object2);
@@ -213,7 +219,7 @@ class Collisions {
     }
   }
 
-  public handleObjectsImpact = (args: EventArgs<ICollisionData>) => {
+  private handleObjectsImpact = (args: EventArgs<ICollisionData>) => {
     const { object1, object2 } = args.data;
 
     if (object1.isStatic && !object2.isStatic) {
@@ -225,7 +231,7 @@ class Collisions {
     }
   }
 
-  public calculateImpactWithStaticObject(staticObj: GameObject, dinamicObj: GameObject) {
+  private calculateImpactWithStaticObject(staticObj: GameObject, dinamicObj: GameObject) {
     /* const vectorBetweenObjects = dinamicObj.position.subtract(staticObj.position);
     const unitVector = vectorBetweenObjects.getUnitVector();
     const relativeVelocity = staticObj.velocity.subtract(dinamicObj.velocity);
@@ -239,7 +245,7 @@ class Collisions {
     dinamicObj.velocity.y *= 0.3;
   }
 
-  public calculateDinamicObjectsImpact(object1: GameObject, object2: GameObject) {
+  private calculateDinamicObjectsImpact(object1: GameObject, object2: GameObject) {
     /* const vectorBetweenObjects = object2.position.subtract(object1.position);
     const unitVector = vectorBetweenObjects.getUnitVector();
     const relativeVelocity = object1.velocity.subtract(object2.velocity);

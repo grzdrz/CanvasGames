@@ -1,9 +1,8 @@
-import Enemy from "../Game_2/GameObjects/Enemy";
-import GameObject from "../Game_2/GameObjects/GameObject";
+import Enemy from "../Game/GameObjects/Enemy";
+import GameObject from "../Game/GameObjects/GameObject";
 import Vector from "../Helpers/Vector";
-import IDrawableImage from "./IDrawableImage";
 
-const test = 10;
+const additionalSize = 10;
 
 class AnimationFrames {
   public isActive = false;
@@ -32,8 +31,8 @@ class AnimationFrames {
     this.size = new Vector(this.object.image.naturalWidth, this.object.image.naturalHeight);
     this.frameSize = new Vector(this.size.width / this.framesTablePosition.x, this.size.height / this.framesTablePosition.y);
 
-    this.sizingWidthKoef = (this.object.size.width + test) / this.frameSize.width;
-    this.sizingHeightKoef = (this.object.size.height + test) / this.frameSize.height;
+    this.sizingWidthKoef = (this.object.size.width + additionalSize) / this.frameSize.width;
+    this.sizingHeightKoef = (this.object.size.height + additionalSize) / this.frameSize.height;
   }
 
   draw() {
@@ -45,11 +44,11 @@ class AnimationFrames {
       const framePositionOnCanvasY = this.object.position.y - frameHeight / 2;
 
       //точка вращения относительно канваса
-      const frameCenterOnCanvasX = framePositionOnCanvasX + (this.object.size.width + test) / 2;
-      const frameCenterOnCanvasY = framePositionOnCanvasY + (this.object.size.height + test) / 2;
+      const frameCenterOnCanvasX = framePositionOnCanvasX + (this.object.size.width + additionalSize) / 2;
+      const frameCenterOnCanvasY = framePositionOnCanvasY + (this.object.size.height + additionalSize) / 2;
       //центр объекта относительно самого себя
-      const frameCenterX = -(this.object.size.width + test) / 2;
-      const frameCenterY = -(this.object.size.height + test) / 2;
+      const frameCenterX = -(this.object.size.width + additionalSize) / 2;
+      const frameCenterY = -(this.object.size.height + additionalSize) / 2;
       canvas.context.setTransform(1, 0, 0, 1, frameCenterOnCanvasX, frameCenterOnCanvasY);
       canvas.context.rotate(this.object.angle);
 
@@ -107,8 +106,8 @@ class AnimationFrames {
     this.frameSize.width = this.size.width / this.framesTablePosition.x;
     this.frameSize.height = this.size.height / this.framesTablePosition.y;
 
-    this.sizingWidthKoef = (this.object.size.width + test) / this.frameSize.width;
-    this.sizingHeightKoef = (this.object.size.height + test) / this.frameSize.height;
+    this.sizingWidthKoef = (this.object.size.width + additionalSize) / this.frameSize.width;
+    this.sizingHeightKoef = (this.object.size.height + additionalSize) / this.frameSize.height;
   }
 
   public drawObject(object: GameObject): void {
@@ -117,20 +116,13 @@ class AnimationFrames {
     canvas.context.fillStyle = object.color;
     if (object instanceof Enemy && object.isStatic) canvas.context.fillStyle = "blue";
     canvas.context.fillRect(
-      object.position.x - (object.size.width + test) / 2,
-      object.position.y - (object.size.height + test) / 2,
-      object.size.width + test,
-      object.size.height + test
+      object.position.x - (object.size.width + additionalSize) / 2,
+      object.position.y - (object.size.height + additionalSize) / 2,
+      object.size.width + additionalSize,
+      object.size.height + additionalSize
     );
 
-    //////TEST of velocity vector
-    canvas.context.beginPath();
-    canvas.context.moveTo(object.position.x, object.position.y);
-    let direction = new Vector(50, 0);
-    direction.rotateVector(object.angle);
-    const vectorTo = object.position.sum(direction);
-    canvas.context.lineTo(vectorTo.x, vectorTo.y);
-    canvas.context.stroke();
+    canvas.drawDirection(object.position, object.angle);
   }
 }
 

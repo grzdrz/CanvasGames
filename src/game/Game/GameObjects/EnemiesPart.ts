@@ -1,6 +1,6 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import Game_2 from "../Game_2";
+import Game from "../Game";
 import Bullet from "./Bullet";
 import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 import Vector from "../../Helpers/Vector";
@@ -11,13 +11,13 @@ class EnemiesPart extends GameObject {
   public activeTimeStamp = 0;
   public readonly lifeTime = 3;
 
-  constructor(options: IObjectOptions = {}, view: Game_2) {
-    super(options, view, imageSrc);
+  constructor(view: Game, options: IObjectOptions = {}) {
+    super(view, imageSrc, options);
 
-    const height = this.view.viewManager.canvasManager.height;
-    const width = this.view.viewManager.canvasManager.width;
-    /* this.size.width = Math.min(Math.max(width, height) / 30, 50);
-    this.size.height = Math.min(Math.max(width, height) / 30, 50); */
+    this.initialize();
+  }
+
+  initialize() {
     this.size.width = 30;
     this.size.height = 30;
 
@@ -30,21 +30,16 @@ class EnemiesPart extends GameObject {
     if (this.activeTimeStamp < this.lifeTime) {
       this.activeTimeStamp += gameTime;
     } else {
-      this.isStatic = true;
+      /* this.isStatic = true; */
       this.restitution = 1.4;
     }
 
-    if (this.isStatic) {
-      this.color = "blue";
-    }
-
     this.updateAnimationState();
-
     super.update(gameTime);
   }
 
   public updateAnimationState() {
-    this.animationFrames.forEach((frame) => frame.isActive = false);
+    super.updateAnimationState();
 
     const frame = <AnimationFrames>this.animationFrames.get('run');
     frame.isActive = true;

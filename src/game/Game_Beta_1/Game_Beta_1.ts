@@ -1,4 +1,3 @@
-import View from "../ViewSystem/View";
 import ViewManager from "../ViewSystem/ViewManager";
 import GameObject from "./GameObjects/GameObject";
 import Vector from "../Helpers/Vector";
@@ -7,15 +6,10 @@ import MathFunctions from "../Helpers/MathFunctions";
 import Player from "./GameObjects/Player";
 import Enemy from "./GameObjects/Enemy";
 import GameState from "../States/GameState";
-import EventArgs from "../Events/EventArgs";
-import IMouseData from "../Data/IMouseData";
-import ViewState from "../Data/ViewState";
-import ViewEntry from "../ViewSystem/ViewEntry";
-import EntryType from "../States/EntryType";
 import SessionView from "../ViewSystem/SessionView";
 import Background from "./GameObjects/Background";
 
-class Game_1 extends SessionView {
+class Game_Beta_1 extends SessionView {
   public gameObjects = new Array<GameObject>();
   public player: Player;
 
@@ -131,4 +125,4 @@ class Game_1 extends SessionView {
   }
 }
 
-export default Game_1;
+export default Game_Beta_1;

@@ -3,7 +3,7 @@ import Vector from "../../Helpers/Vector";
 import EventArgs from "../../Events/EventArgs";
 import IObjectOptions from "./IObjectOptions";
 import IMouseData from "../../Data/IMouseData";
-import Game_TEST from "../Game_TEST";
+import Game_Beta_2 from "../Game_Beta_2";
 import Vertex from "../../Helpers/Vertex";
 
 class Player extends GameObject {
@@ -11,7 +11,7 @@ class Player extends GameObject {
 
   public damageTimeStamp = 0;
 
-  constructor(view: Game_TEST) {
+  constructor(view: Game_Beta_2) {
     super({
       vertices: [
         new Vertex(new Vector(50, 50)),

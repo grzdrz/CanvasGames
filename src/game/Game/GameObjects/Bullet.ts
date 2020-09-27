@@ -1,5 +1,5 @@
 import GameObject from "./GameObject";
-import Game_2 from "../Game_2";
+import Game from "../Game";
 import IObjectOptions from "./IObjectOptions";
 import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 
@@ -9,9 +9,13 @@ class Bullet extends GameObject {
   public velocityBase = 100;
   public static damage = 20;
 
-  constructor(options: IObjectOptions = {}, view: Game_2) {
-    super(options, view, imageSrc);
+  constructor(view: Game, options: IObjectOptions = {}) {
+    super(view, imageSrc, options);
 
+    this.initialize();
+  }
+
+  initialize() {
     this.size.x = 30;
     this.size.y = 20;
     this.color = "yellow";
@@ -31,12 +35,8 @@ class Bullet extends GameObject {
     super.update(gameTime);
   }
 
-  /* draw() {
-    this.view.viewManager.canvasManager.drawSquare(this.position, this.size, this.color);
-  } */
-
-  public updateAnimationState() {
-    this.animationFrames.forEach((frame) => frame.isActive = false);
+  updateAnimationState() {
+    super.updateAnimationState();
 
     const frame = <AnimationFrames>this.animationFrames.get('run');
     frame.isActive = true;

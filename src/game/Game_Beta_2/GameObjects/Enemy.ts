@@ -1,23 +1,17 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import Game_1 from "../Game_1";
+import Game_Beta_2 from "../Game_Beta_2";
 
 class Enemy extends GameObject {
   public collideObjects = Array<GameObject>();
-  public readonly lifeTime = 3;
   public activeTimeStamp = 0;
 
-  constructor(options: IObjectOptions, view: Game_1) {
+  constructor(options: IObjectOptions, view: Game_Beta_2) {
     super(options, view);
-
-    const height = this.view.viewManager.canvasManager.height;
-    const width = this.view.viewManager.canvasManager.width;
-    this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height = Math.min(Math.max(width, height) / 25, 50);
   }
 
   update(gameTime: DOMHighResTimeStamp) {
-    if (this.activeTimeStamp < this.lifeTime) {
+    if (this.activeTimeStamp < 10) {
       this.activeTimeStamp += gameTime;
     } else {
       this.isStatic = true;

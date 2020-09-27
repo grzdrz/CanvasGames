@@ -1,16 +1,18 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import Game_2 from "../Game_2";
+import Game from "../Game";
 import IDrawableImage from "../../DrawingSystem/IDrawableImage";
 
 const imagePath = './src/game/Images/GameObjects/arrow.png';
 
 class Background extends GameObject implements IDrawableImage {
-  public image: HTMLImageElement;
-  public isImageLoaded = false;
+  constructor(view: Game, options: IObjectOptions = {}) {
+    super(view, imagePath, options);
 
-  constructor(options: IObjectOptions = {}, view: Game_2) {
-    super(options, view, imagePath);
+    this.initialize();
+  }
+
+  initialize() {
     this.layerLevel = 2;
     this.isStatic = true;
 
@@ -20,12 +22,6 @@ class Background extends GameObject implements IDrawableImage {
     this.size.height = Math.min(width, height) / 4;
     this.position.x = width / 2 - this.size.width * 0.5;
     this.position.y = height / 2 - this.size.height * 1.5;
-
-    this.image = new Image();
-    this.image.src = imagePath;
-    this.image.onload = () => {
-      this.isImageLoaded = true;
-    };
   }
 
   update(gameTime: number) {
@@ -35,7 +31,6 @@ class Background extends GameObject implements IDrawableImage {
 
   draw() {
     this.view.viewManager.canvasManager.drawImage(this);
-    // super.draw();
   }
 }
 

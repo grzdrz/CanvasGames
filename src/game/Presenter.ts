@@ -4,16 +4,19 @@ import EventArgs from "./Events/EventArgs";
 import GameComponent from "./ViewSystem/GameComponent";
 import ModelData from "./Data/ModelData";
 import ViewData from "./Data/ViewData";
-import Game_1 from "./Game_1/Game_1";
 import IModelData from "./Data/IModelData";
 import IViewData from "./Data/IViewData";
 import MainMenuView from "./ViewSystem/MainMenuView";
 import EntryType from "./States/EntryType";
 import LvlsListView from "./ViewSystem/LvlsListView";
 
+import Game from "./Game/Game";
+import Game_Beta_1 from "./Game_Beta_1/Game_Beta_1";
+import Game_Beta_2 from "./Game_Beta_2/Game_Beta_2";
+
 import "./Styles/Game.scss";
-import Game_TEST from "./Game_TEST/Game_TEST";
-import Game_2 from "./Game_2/Game_2";
+
+
 
 const defaultModelData = {};
 const defaultViewData = {};
@@ -49,13 +52,13 @@ class Presenter {
 
     const mainMenuView = new MainMenuView(this.viewManager);
     const lvlsListView = new LvlsListView(this.viewManager);
-    const game1 = new Game_1(this.viewManager);
-    const game2 = new Game_2(this.viewManager);
-    const gameTEST = new Game_TEST(this.viewManager);
+    const game = new Game(this.viewManager);
+    const game_beta_1 = new Game_Beta_1(this.viewManager);
+    const game_beta_2 = new Game_Beta_2(this.viewManager);
 
-    lvlsListView.addMenuItem(EntryType.Screen, game1);
-    lvlsListView.addMenuItem(EntryType.Screen, game2);
-    lvlsListView.addMenuItem(EntryType.Screen, gameTEST);// тест физики
+    lvlsListView.addMenuItem(EntryType.Screen, game);
+    lvlsListView.addMenuItem(EntryType.Screen, game_beta_1);
+    lvlsListView.addMenuItem(EntryType.Screen, game_beta_2);
 
     mainMenuView.addMenuItem(EntryType.Screen, lvlsListView);
     this.viewManager.addView(mainMenuView);

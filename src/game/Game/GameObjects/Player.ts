@@ -3,7 +3,7 @@ import Vector from '../../Helpers/Vector';
 import EventArgs from '../../Events/EventArgs';
 import IObjectOptions from './IObjectOptions';
 import IMouseData from '../../Data/IMouseData';
-import Game_2 from '../Game_2';
+import Game from '../Game';
 import Bullet from './Bullet';
 import AnimationFrames from '../../DrawingSystem/AnimationFrames';
 
@@ -12,17 +12,16 @@ const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 class Player extends GameObject {
   public HP = 100;
   public damageTimeStamp = 0;
-  /* public isCollideWithEnemy = false; */
 
   public pressedKeys = new Set<string>();
 
-  constructor(options: IObjectOptions, view: Game_2) {
-    super(options, view, imageSrc);
+  constructor(view: Game, options: IObjectOptions = {}) {
+    super(view, imageSrc, options);
 
-    const height = this.view.viewManager.canvasManager.height;
-    const width = this.view.viewManager.canvasManager.width;
-    /* this.size.width = Math.min(Math.max(width, height) / 10, 150);
-    this.size.height = Math.min(Math.max(width, height) / 10, 150); */
+    this.initialize();
+  }
+
+  initialize() {
     this.size.width = 150;
     this.size.height = 150;
 
@@ -59,7 +58,7 @@ class Player extends GameObject {
   }
 
   public updateAnimationState() {
-    this.animationFrames.forEach((frame) => frame.isActive = false);
+    super.updateAnimationState();
 
     const velocityUnitVector = this.velocity.getUnitVector();
     if (Math.abs(velocityUnitVector.y) === 1) {
@@ -116,7 +115,7 @@ class Player extends GameObject {
     const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
     const unitVector = vectorToClickPoint.getUnitVector();
 
-    const bullet = new Bullet({}, this.view);
+    const bullet = new Bullet(this.view);
 
     const velocity = unitVector.multiplyByNumber(bullet.velocityBase);
     const position = new Vector(this.position.x, this.position.y);

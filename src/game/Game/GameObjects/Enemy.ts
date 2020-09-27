@@ -1,6 +1,6 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
-import Game_2 from "../Game_2";
+import Game from "../Game";
 import Bullet from "./Bullet";
 import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 import Vector from "../../Helpers/Vector";
@@ -14,9 +14,13 @@ class Enemy extends GameObject {
   public readonly lifeTime = 3;
   public activeTimeStamp = 0;
 
-  constructor(options: IObjectOptions, view: Game_2) {
-    super(options, view, imageSrc);
+  constructor(view: Game, options: IObjectOptions = {}) {
+    super(view, imageSrc, options);
 
+    this.initialize();
+  }
+
+  initialize() {
     const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
     this.size.width = Math.min(Math.max(width, height) / 25, 50);
@@ -39,17 +43,13 @@ class Enemy extends GameObject {
       this.HP -= Bullet.damage;
     }
     if (this.HP <= 0) this.isStatic = true;
-    if (this.isStatic) {
-      this.color = "blue";
-    }
 
     this.updateAnimationState();
-
     super.update(gameTime);
   }
 
   public updateAnimationState() {
-    this.animationFrames.forEach((frame) => frame.isActive = false);
+    super.updateAnimationState();
 
     const frame = <AnimationFrames>this.animationFrames.get('run');
     frame.isActive = true;
