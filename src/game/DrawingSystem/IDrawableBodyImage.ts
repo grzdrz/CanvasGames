@@ -7,6 +7,7 @@ interface IDrawableBodyImage {
   isImageLoaded: boolean,
   body: Body,
   size: Vector,
+  color: string,
 }
 
 export default IDrawableBodyImage;

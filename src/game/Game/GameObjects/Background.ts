@@ -17,13 +17,6 @@ class Background extends GameObject {
   initialize() {
     this.layerLevel = 2;
     this.isStatic = true;
-
-    /* const height = this.view.viewManager.canvasManager.height;
-    const width = this.view.viewManager.canvasManager.width; */
-    /* this.size.width = Math.max(width, height) / 4;
-    this.size.height = Math.min(width, height) / 4;
-    this.position.x = width / 2 - this.size.width * 0.5;
-    this.position.y = height / 2 - this.size.height * 1.5; */
   }
 
   update(gameTime: number) {
@@ -32,7 +25,8 @@ class Background extends GameObject {
   }
 
   draw() {
-    this.view.viewManager.canvasManager.drawBodyImage(this);
+    super.draw();
+    /* this.view.viewManager.canvasManager.drawBodyImage(this); */
   }
 }
 

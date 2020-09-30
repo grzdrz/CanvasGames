@@ -11,18 +11,10 @@ import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 import IDrawableBodyImage from "../../DrawingSystem/IDrawableBodyImage";
 
 class GameObject implements /* IDrawableSimpleShape, */ IDrawableBodyImage {
-  public body: Body;
-  public size: Vector;
-
   public view: Game;
 
-  /* public position = new Vector(0, 0);
-  public size = new Vector(50, 50);
-  public angle = 0;
-
-  public velocity = new Vector(0, 0);
-  public mass = 1;
-  public restitution = 0.9; */
+  public body: Body;
+  public size: Vector;
 
   public color = "red";
   public image: HTMLImageElement;
@@ -49,35 +41,28 @@ class GameObject implements /* IDrawableSimpleShape, */ IDrawableBodyImage {
 
     };
 
+
     this.size = new Vector(options.size.width, options.size.height);
     this.body = Bodies.rectangle(options.position.x, options.position.y, options.size.width, options.size.height);
-
-
 
 
     this.updateState(options);
   }
 
   public updateState(options: IObjectOptions): void {
-    /* if (options.size !== undefined) this.size = options.size;
-    if (options.position !== undefined) this.position = options.position;
-    if (options.velocity !== undefined) this.velocity = options.velocity;
-    if (options.mass !== undefined) this.mass = options.mass;
-    if (options.restitution !== undefined) this.restitution = options.restitution; */
     if (options.color !== undefined) this.color = options.color;
   }
 
   public draw() {
-    const position = new Vector(this.body.position.x, this.body.position.y);
-    const size = this.size;
-    this.view.viewManager.canvasManager.drawSquare(position, size, 'blue');
+    const canvas = this.view.viewManager.canvasManager;
+    canvas.drawPerimeter(this);
+
     /* this.animationFrames.forEach((frames) => {
       if (frames.isActive) frames.draw();
     }); */
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
-    /* this.angle = Math.atan2(this.velocity.y, this.velocity.x); */
     this.animationFrames.forEach((frames) => {
       if (frames.isActive) frames.update();
     });

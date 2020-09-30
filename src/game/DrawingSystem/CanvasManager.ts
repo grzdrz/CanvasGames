@@ -51,6 +51,25 @@ class CanvasManager {
     this.context.fill();
   }
 
+  public drawPerimeter = (object: IDrawableBodyImage) => {
+    const position = new Vector(object.body.position.x, object.body.position.y);
+    const size = object.size;
+
+    this.context.beginPath();
+
+    var vertices = object.body.vertices;
+    this.context.moveTo(vertices[0].x, vertices[0].y);
+    for (var j = 1; j < vertices.length; j += 1) {
+      this.context.lineTo(vertices[j].x, vertices[j].y);
+    }
+
+    this.context.lineTo(vertices[0].x, vertices[0].y);
+
+    this.context.lineWidth = 1;
+    this.context.strokeStyle = object.color;
+    this.context.stroke();
+  }
+
   public drawBodyImage(object: IDrawableBodyImage) {
     if (object.isImageLoaded) {
       //точка вращения относительно канваса

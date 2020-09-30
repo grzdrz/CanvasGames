@@ -6,6 +6,7 @@ import IMouseData from '../../Data/IMouseData';
 import Game from '../Game';
 import Bullet from './Bullet';
 import AnimationFrames from '../../DrawingSystem/AnimationFrames';
+import { Body } from 'matter-js';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -90,10 +91,9 @@ class Player extends GameObject {
   public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
     if (eventArgs.data.button !== 2) return;
     this.isGriped = true;
-    this.body.velocity.x = 0;
-    this.body.velocity.y = 0;
-    this.body.position.x = eventArgs.data.mousePosition.x;
-    this.body.position.y = eventArgs.data.mousePosition.y;
+
+    Body.setVelocity(this.body, { x: 0, y: 0 });
+    Body.setPosition(this.body, { x: eventArgs.data.mousePosition.x, y: eventArgs.data.mousePosition.y });
   }
 
   public handlerUnhand = (eventArgs: EventArgs<IMouseData>) => {

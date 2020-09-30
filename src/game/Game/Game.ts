@@ -3,6 +3,8 @@ import {
   World,
   Bodies,
   Body,
+  Events,
+  Runner,
 } from 'matter-js';
 
 import ViewManager from "../ViewSystem/ViewManager";
@@ -20,10 +22,10 @@ import EnemiesPart from "./GameObjects/EnemiesPart";
 const enemySpawnTimeStamp = 2;
 
 class Game extends SessionView {
-  public engine: Engine;
-  public world: World;
+  public engine = Engine.create();
+  public world = this.engine.world;
+  public runner = Runner.create();
 
-  /* public world: World; */
   public gameObjects = new Array<GameObject>();
   public player: Player;
 
@@ -32,16 +34,11 @@ class Game extends SessionView {
   constructor(viewManager: ViewManager) {
     super(viewManager);
 
-    /* this.engine = new Engine(); */
-    this.engine = Engine.create();
-    this.world = this.engine.world;
-    /* this.world = World.create({}); */
-
     this.player = new Player(
       this,
       {
-        size: new Vector(40, 40),
-        position: new Vector(50, 50),
+        size: new Vector(50, 50),
+        position: new Vector(150, 150),
         color: "green",
         mass: 1,
         restitution: 0.9,
@@ -61,7 +58,8 @@ class Game extends SessionView {
       this,
       {
         size: new Vector(this.viewManager.canvasManager.width, 20),
-        position: new Vector(0, this.viewManager.canvasManager.height - 20),
+        position: new Vector(this.viewManager.canvasManager.width / 2, this.viewManager.canvasManager.height - 20),
+        color: 'blue',
       }
     );
 
@@ -82,8 +80,6 @@ class Game extends SessionView {
     this.gameObjects.push(this.player);
     this.gameObjects.push(enemy);
 
-    /* this.world.loadContent(); */
-
     this.viewManager.onMouseDown.subscribe(this.player.handleShot);
     this.viewManager.onMouseMove.subscribe(this.player.handleShot);
 
@@ -94,20 +90,19 @@ class Game extends SessionView {
     this.viewManager.onKeyDown.subscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.subscribe(this.player.handlerKeyUp);
 
-    /* this.spawnEnemy(); */
 
-    /* const ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true }); */
+    this.engine = Engine.create();
+    this.world = this.engine.world;
     World.add(this.world, [this.player.body, enemy.body, background.body]);
-    Engine.run(this.engine);
+    Runner.run(this.runner, this.engine);
   }
 
   public unloadContent(): void {
     super.unloadContent();
 
-    World.clear(this.world, true);
+    Runner.stop(this.runner);
+    World.clear(this.world, false);
     Engine.clear(this.engine);
-
-    /* this.world.unloadContent(); */
 
     this.viewManager.onMouseDown.unsubscribe(this.player.handleShot);
     this.viewManager.onMouseMove.unsubscribe(this.player.handleShot);
@@ -123,19 +118,19 @@ class Game extends SessionView {
   public update(gameTime: DOMHighResTimeStamp): void {
     super.update(gameTime);
     if (this.gameState === GameState.Lose || this.gameState === GameState.Win || this.gameState === GameState.Pause) {
+      this.runner.enabled = false;
+      this.spawnTimeStamp = 0;
       return;
     }
+    this.runner.enabled = true;
 
     this.spawnTimeStamp += gameTime;
     if (this.spawnTimeStamp > enemySpawnTimeStamp) {
       this.spawnTimeStamp = 0;
-      this.spawnEnemy();
+      const enemy = this.spawnEnemy();
+      World.add(this.world, [enemy.body]);
+      this.gameObjects.push(enemy);
     }
-
-    /* this.gameObjects.forEach((obj) => {
-      obj.update(gameTime);
-    }); */
-    /* this.world.collisions.findAllObjectsCollisions(this.gameObjects); */
 
     if (this.player.body.position.y < 0) this.gameState = GameState.Win;
     if (this.player.HP <= 0) this.gameState = GameState.Lose;
@@ -157,8 +152,6 @@ class Game extends SessionView {
     });
 
     this.gameObjects.push(...deadEnemies);
-
-    /* this.world.update(gameTime); */
   }
 
   public draw(): void {
@@ -174,30 +167,19 @@ class Game extends SessionView {
     const options = {
       position: new Vector(0, 0),
       size: new Vector(0, 0),
-      velocity: new Vector(0, 0),
-      mass: 1,
-      width: 50,
+      color: 'red',
     };
-
-    /* const positionX = MathFunctions.randomInteger(0, this.viewManager.canvasManager.width);
-    const positionY = options.width / 2;
-    options.position = new Vector(positionX, positionY);
-
-    const velocityX = MathFunctions.randomInteger(-20, 20) / 1;
-    const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
-    options.velocity = new Vector(velocityX, velocityY); */
-    const positionX = this.viewManager.canvasManager.width / 2;
-    const positionY = this.viewManager.canvasManager.height / 2;
-    options.position = new Vector(positionX, positionY);
-    options.size = new Vector(50, 50);
 
     /* const velocityX = MathFunctions.randomInteger(-20, 20) / 1;
     const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
     options.velocity = new Vector(velocityX, velocityY); */
 
-    const enemy = new Enemy(this, options);
+    options.size = new Vector(50, 50);
+    const positionX = MathFunctions.randomInteger(0, this.viewManager.canvasManager.width);
+    const positionY = options.size.height / 2;
+    options.position = new Vector(positionX, positionY);
 
-    return enemy;
+    return new Enemy(this, options);
   }
 
   public spawnEnemiesPart(enemy: GameObject) {
