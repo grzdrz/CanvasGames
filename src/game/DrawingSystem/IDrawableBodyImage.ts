@@ -2,12 +2,11 @@ import { Body } from 'matter-js';
 
 import Vector from "../Helpers/Vector";
 
-interface IDrawableImage {
+interface IDrawableBodyImage {
   image: HTMLImageElement,
   isImageLoaded: boolean,
-  position: Vector,
+  body: Body,
   size: Vector,
-  angle: number,
 }
 
-export default IDrawableImage;
+export default IDrawableBodyImage;

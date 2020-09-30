@@ -11,15 +11,15 @@ class EnemiesPart extends GameObject {
   public activeTimeStamp = 0;
   public readonly lifeTime = 3;
 
-  constructor(view: Game, options: IObjectOptions = {}) {
+  constructor(view: Game, options: IObjectOptions) {
     super(view, imageSrc, options);
 
     this.initialize();
   }
 
   initialize() {
-    this.size.width = 30;
-    this.size.height = 30;
+    /* this.size.width = 30;
+    this.size.height = 30; */
 
     const runAnimation = new AnimationFrames(this);
     runAnimation.framesTablePosition = new Vector(5, 2);
@@ -29,10 +29,10 @@ class EnemiesPart extends GameObject {
   update(gameTime: DOMHighResTimeStamp) {
     if (this.activeTimeStamp < this.lifeTime) {
       this.activeTimeStamp += gameTime;
-    } else {
-      /* this.isStatic = true; */
+    } /* else {
+      // this.isStatic = true;
       this.restitution = 1.4;
-    }
+    } */
 
     this.updateAnimationState();
     super.update(gameTime);

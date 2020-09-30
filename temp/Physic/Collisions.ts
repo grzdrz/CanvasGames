@@ -1,4 +1,4 @@
-import Vector from "../../Helpers/Vector";
+/* import Vector from "../../Helpers/Vector";
 import GameObject from "../GameObjects/GameObject";
 import Enemy from "../GameObjects/Enemy";
 import Player from "../GameObjects/Player";
@@ -232,36 +232,18 @@ class Collisions {
   }
 
   private calculateImpactWithStaticObject(staticObj: GameObject, dinamicObj: GameObject) {
-    /* const vectorBetweenObjects = dinamicObj.position.subtract(staticObj.position);
-    const unitVector = vectorBetweenObjects.getUnitVector();
-    const relativeVelocity = staticObj.velocity.subtract(dinamicObj.velocity);
-    let speed = relativeVelocity.x * unitVector.x + relativeVelocity.y * unitVector.y;
-    speed *= Math.max(staticObj.restitution, dinamicObj.restitution);
-    const impulse = 2 * speed / (staticObj.mass + dinamicObj.mass);
-    dinamicObj.velocity.x += (impulse * staticObj.mass * unitVector.x);
-    dinamicObj.velocity.y += (impulse * staticObj.mass * unitVector.y); */
 
     dinamicObj.velocity.x *= 0.3;
     dinamicObj.velocity.y *= 0.3;
   }
 
   private calculateDinamicObjectsImpact(object1: GameObject, object2: GameObject) {
-    /* const vectorBetweenObjects = object2.position.subtract(object1.position);
-    const unitVector = vectorBetweenObjects.getUnitVector();
-    const relativeVelocity = object1.velocity.subtract(object2.velocity);
-    let speed = relativeVelocity.x * unitVector.x + relativeVelocity.y * unitVector.y;
-    speed *= Math.min(object1.restitution, object2.restitution);
-    const impulse = 2 * speed / (object1.mass + object2.mass);
-    object1.velocity.x -= (impulse * object2.mass * unitVector.x);
-    object1.velocity.y -= (impulse * object2.mass * unitVector.y);
-    object2.velocity.x += (impulse * object1.mass * unitVector.x);
-    object2.velocity.y += (impulse * object1.mass * unitVector.y); */
 
-    object1.velocity.x *= 0.3;
-    object1.velocity.y *= 0.3;
-    object2.velocity.x *= 0.3;
-    object2.velocity.y *= 0.3;
+object1.velocity.x *= 0.3;
+object1.velocity.y *= 0.3;
+object2.velocity.x *= 0.3;
+object2.velocity.y *= 0.3;
   }
 }
 
-export default Collisions;
+export default Collisions;*/

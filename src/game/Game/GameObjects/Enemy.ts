@@ -14,17 +14,17 @@ class Enemy extends GameObject {
   public readonly lifeTime = 3;
   public activeTimeStamp = 0;
 
-  constructor(view: Game, options: IObjectOptions = {}) {
+  constructor(view: Game, options: IObjectOptions) {
     super(view, imageSrc, options);
 
     this.initialize();
   }
 
   initialize() {
-    const height = this.view.viewManager.canvasManager.height;
+    /* const height = this.view.viewManager.canvasManager.height;
     const width = this.view.viewManager.canvasManager.width;
     this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height = Math.min(Math.max(width, height) / 25, 50);
+    this.size.height = Math.min(Math.max(width, height) / 25, 50); */
 
     const runAnimation = new AnimationFrames(this);
     runAnimation.framesTablePosition = new Vector(5, 2);
@@ -34,10 +34,10 @@ class Enemy extends GameObject {
   update(gameTime: DOMHighResTimeStamp) {
     if (this.activeTimeStamp < this.lifeTime) {
       this.activeTimeStamp += gameTime;
-    } else {
+    } /* else {
       // this.isStatic = true;
       this.restitution = 1.4;
-    }
+    } */
 
     if (this.isCollideWithEnemy && !this.isStatic) {
       this.HP -= Bullet.damage;

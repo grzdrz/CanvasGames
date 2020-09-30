@@ -1,4 +1,4 @@
-import GameObject from "../GameObjects/GameObject";
+/* import GameObject from "../GameObjects/GameObject";
 
 interface ICollisionData {
   object1: GameObject;
@@ -6,3 +6,4 @@ interface ICollisionData {
 }
 
 export default ICollisionData;
+ */

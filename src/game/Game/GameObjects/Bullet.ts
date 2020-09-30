@@ -9,17 +9,17 @@ class Bullet extends GameObject {
   public velocityBase = 100;
   public static damage = 20;
 
-  constructor(view: Game, options: IObjectOptions = {}) {
+  constructor(view: Game, options: IObjectOptions) {
     super(view, imageSrc, options);
 
     this.initialize();
   }
 
   initialize() {
-    this.size.x = 30;
+    /* this.size.x = 30;
     this.size.y = 20;
+    this.mass = 0.00001; */
     this.color = "yellow";
-    this.mass = 0.00001;
 
     const runAnimation = new AnimationFrames(this);
     this.animationFrames.set('run', runAnimation);

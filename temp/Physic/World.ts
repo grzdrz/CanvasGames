@@ -1,4 +1,4 @@
-import ViewManager from "../../ViewSystem/ViewManager";
+/* import ViewManager from "../../ViewSystem/ViewManager";
 import Game from "../Game";
 import GameObject from "../GameObjects/GameObject";
 import Collisions from "./Collisions";
@@ -48,4 +48,4 @@ class World {
   }
 }
 
-export default World;
+export default World; */

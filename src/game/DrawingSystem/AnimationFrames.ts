@@ -40,8 +40,8 @@ class AnimationFrames {
     if (this.object.isImageLoaded) {
       const frameWidth = this.frameSize.width * this.sizingWidthKoef;
       const frameHeight = this.frameSize.height * this.sizingHeightKoef;
-      const framePositionOnCanvasX = this.object.position.x - frameWidth / 2;
-      const framePositionOnCanvasY = this.object.position.y - frameHeight / 2;
+      const framePositionOnCanvasX = this.object.body.position.x - frameWidth / 2;
+      const framePositionOnCanvasY = this.object.body.position.y - frameHeight / 2;
 
       //точка вращения относительно канваса
       const frameCenterOnCanvasX = framePositionOnCanvasX + (this.object.size.width + additionalSize) / 2;
@@ -50,7 +50,7 @@ class AnimationFrames {
       const frameCenterX = -(this.object.size.width + additionalSize) / 2;
       const frameCenterY = -(this.object.size.height + additionalSize) / 2;
       canvas.context.setTransform(1, 0, 0, 1, frameCenterOnCanvasX, frameCenterOnCanvasY);
-      canvas.context.rotate(this.object.angle);
+      canvas.context.rotate(this.object.body.angle);
 
       canvas.context.drawImage(
         this.object.image,
@@ -116,13 +116,13 @@ class AnimationFrames {
     canvas.context.fillStyle = object.color;
     if (object instanceof Enemy && object.isStatic) canvas.context.fillStyle = "blue";
     canvas.context.fillRect(
-      object.position.x - (object.size.width + additionalSize) / 2,
-      object.position.y - (object.size.height + additionalSize) / 2,
+      object.body.position.x - (object.size.width + additionalSize) / 2,
+      object.body.position.y - (object.size.height + additionalSize) / 2,
       object.size.width + additionalSize,
       object.size.height + additionalSize
     );
 
-    canvas.drawDirection(object.position, object.angle);
+    canvas.drawDirection(new Vector(object.body.position.x, object.body.position.y), object.body.angle);
   }
 }
 

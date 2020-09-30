@@ -1,5 +1,6 @@
 import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
+import IDrawableBodyImage from "./IDrawableBodyImage";
 import IDrawableImage from "./IDrawableImage";
 import IDrawablePolygon from "./IDrawablePolygon";
 import IDrawableSimpleShape from "./IDrawableSimpleShape";
@@ -50,6 +51,24 @@ class CanvasManager {
     this.context.fill();
   }
 
+  public drawBodyImage(object: IDrawableBodyImage) {
+    if (object.isImageLoaded) {
+      //точка вращения относительно канваса
+      const x = object.body.position.x + object.size.width / 2;
+      const y = object.body.position.y + object.size.height / 2;
+      //центр объекта относительно самого себя
+      const objCenterX = -object.size.width / 2;
+      const objCenterY = -object.size.height / 2;
+      this.context.setTransform(1, 0, 0, 1, x, y);
+      this.context.rotate(object.body.angle);
+      this.context.drawImage(object.image, objCenterX, objCenterY, object.size.width, object.size.height);
+      this.context.resetTransform();
+    } else { // заглушка, до подгрузки изображения
+      const position = new Vector(object.body.position.x, object.body.position.y);
+      this.drawSquare(position, object.size, "rgb(12, 123, 222)");
+    }
+  }
+
   public drawImage(object: IDrawableImage) {
     if (object.isImageLoaded) {
       //точка вращения относительно канваса
@@ -63,7 +82,8 @@ class CanvasManager {
       this.context.drawImage(object.image, objCenterX, objCenterY, object.size.width, object.size.height);
       this.context.resetTransform();
     } else { // заглушка, до подгрузки изображения
-      this.drawSquare(object.position, object.size, "rgb(12, 123, 222)");
+      const position = new Vector(object.position.x, object.position.y);
+      this.drawSquare(position, object.size, "rgb(12, 123, 222)");
     }
   }
 

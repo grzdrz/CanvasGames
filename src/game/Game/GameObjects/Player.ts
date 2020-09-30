@@ -15,15 +15,15 @@ class Player extends GameObject {
 
   public pressedKeys = new Set<string>();
 
-  constructor(view: Game, options: IObjectOptions = {}) {
+  constructor(view: Game, options: IObjectOptions) {
     super(view, imageSrc, options);
 
     this.initialize();
   }
 
   initialize() {
-    this.size.width = 150;
-    this.size.height = 150;
+    /* this.size.width = 150;
+    this.size.height = 150; */
 
     const standAnimation = new AnimationFrames(this);
     standAnimation.framesTotalCount = 1;
@@ -52,7 +52,7 @@ class Player extends GameObject {
       }
     }
 
-    this.angle = 0;
+    /* this.angle = 0; */
 
     this.updateAnimationState();
   }
@@ -60,7 +60,8 @@ class Player extends GameObject {
   public updateAnimationState() {
     super.updateAnimationState();
 
-    const velocityUnitVector = this.velocity.getUnitVector();
+    const velocityVector = new Vector(this.body.velocity.x, this.body.velocity.y);
+    const velocityUnitVector = velocityVector.getUnitVector();
     if (Math.abs(velocityUnitVector.y) === 1) {
       const frame = <AnimationFrames>this.animationFrames.get('stand');
       frame.isActive = true;
@@ -73,13 +74,13 @@ class Player extends GameObject {
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
     this.pressedKeys.add(eventArgs.data.key);
 
-    if (/* this.isPreColliding &&  */this.pressedKeys.has('Space')) this.velocity.y = -50;
-    if (this.pressedKeys.has('KeyD')) this.velocity.x = 40;
-    if (this.pressedKeys.has('KeyA')) this.velocity.x = -40;
+    if (/* this.isPreColliding &&  */this.pressedKeys.has('Space')) this.body.velocity.y = -50;
+    if (this.pressedKeys.has('KeyD')) this.body.velocity.x = 40;
+    if (this.pressedKeys.has('KeyA')) this.body.velocity.x = -40;
 
-    if (this.velocity.x <= -40) this.velocity.x = -40;
-    if (this.velocity.x >= 40) this.velocity.x = 40;
-    if (this.velocity.y <= -50) this.velocity.y = -50;
+    if (this.body.velocity.x <= -40) this.body.velocity.x = -40;
+    if (this.body.velocity.x >= 40) this.body.velocity.x = 40;
+    if (this.body.velocity.y <= -50) this.body.velocity.y = -50;
   }
 
   public handlerKeyUp = (eventArgs: EventArgs<IKeyData>) => {
@@ -89,10 +90,10 @@ class Player extends GameObject {
   public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
     if (eventArgs.data.button !== 2) return;
     this.isGriped = true;
-    this.velocity.x = 0;
-    this.velocity.y = 0;
-    this.position.x = eventArgs.data.mousePosition.x;
-    this.position.y = eventArgs.data.mousePosition.y;
+    this.body.velocity.x = 0;
+    this.body.velocity.y = 0;
+    this.body.position.x = eventArgs.data.mousePosition.x;
+    this.body.position.y = eventArgs.data.mousePosition.y;
   }
 
   public handlerUnhand = (eventArgs: EventArgs<IMouseData>) => {
@@ -112,7 +113,7 @@ class Player extends GameObject {
       this.shotTimeStamp = 0;
     } else return;
 
-    const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
+    /* const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
     const unitVector = vectorToClickPoint.getUnitVector();
 
     const bullet = new Bullet(this.view);
@@ -122,14 +123,7 @@ class Player extends GameObject {
     bullet.velocity = velocity;
     bullet.position = position;
 
-    this.view.gameObjects.push(bullet);
-    /* if (this.isPreColliding) {
-      const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
-      const lengthToClickPoint = Math.max(vectorToClickPoint.length, 500);
-      const unitVector = vectorToClickPoint.getUnitVector();
-      const velocity = unitVector.multiplyByNumber(lengthToClickPoint / 10);
-      this.velocity = this.velocity.sum(velocity);
-    } */
+    this.view.gameObjects.push(bullet); */
   }
 }
 
