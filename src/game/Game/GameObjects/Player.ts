@@ -1,3 +1,5 @@
+import { Body, World } from 'matter-js';
+
 import GameObject from './GameObject';
 import Vector from '../../Helpers/Vector';
 import EventArgs from '../../Events/EventArgs';
@@ -6,7 +8,6 @@ import IMouseData from '../../Data/IMouseData';
 import Game from '../Game';
 import Bullet from './Bullet';
 import AnimationFrames from '../../DrawingSystem/AnimationFrames';
-import { Body } from 'matter-js';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -113,17 +114,23 @@ class Player extends GameObject {
       this.shotTimeStamp = 0;
     } else return;
 
-    /* const vectorToClickPoint = eventArgs.data.mousePosition.subtract(this.position);
+    const playerPosition = new Vector(this.body.position.x, this.body.position.y);
+    const vectorToClickPoint = eventArgs.data.mousePosition.subtract(playerPosition);
     const unitVector = vectorToClickPoint.getUnitVector();
 
-    const bullet = new Bullet(this.view);
+    const velocity = unitVector.multiplyByNumber(Bullet.velocityBase);
+    const size = new Vector(20, 10);
+    const position = playerPosition.sum(size).sum(this.size); // ///
+    position.y -= (size.height + this.size.height) * 2; // ///
+    const bullet = new Bullet(this.view, {
+      position,
+      size,
+      velocity,
+      color: 'yellow',
+    });
 
-    const velocity = unitVector.multiplyByNumber(bullet.velocityBase);
-    const position = new Vector(this.position.x, this.position.y);
-    bullet.velocity = velocity;
-    bullet.position = position;
-
-    this.view.gameObjects.push(bullet); */
+    World.add(this.view.world, bullet.body);
+    this.view.gameObjects.push(bullet);
   }
 }
 

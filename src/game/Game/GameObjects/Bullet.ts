@@ -1,3 +1,5 @@
+import Matter from 'matter-js';
+
 import GameObject from "./GameObject";
 import Game from "../Game";
 import IObjectOptions from "./IObjectOptions";
@@ -6,7 +8,7 @@ import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
 class Bullet extends GameObject {
-  public velocityBase = 100;
+  public static velocityBase = 20;
   public static damage = 20;
 
   constructor(view: Game, options: IObjectOptions) {

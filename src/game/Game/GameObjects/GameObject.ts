@@ -45,6 +45,7 @@ class GameObject implements /* IDrawableSimpleShape, */ IDrawableBodyImage {
     this.size = new Vector(options.size.width, options.size.height);
     this.body = Bodies.rectangle(options.position.x, options.position.y, options.size.width, options.size.height);
 
+    if (options.velocity) Body.setVelocity(this.body, options.velocity);
 
     this.updateState(options);
   }

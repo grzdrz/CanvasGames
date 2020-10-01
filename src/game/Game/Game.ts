@@ -17,6 +17,8 @@ import GameState from "../States/GameState";
 import SessionView from "../ViewSystem/SessionView";
 import Background from "./GameObjects/Background";
 import EnemiesPart from "./GameObjects/EnemiesPart";
+import Matter from 'matter-js';
+import Bullet from './GameObjects/Bullet';
 /* import World from "./Physic/World"; */
 
 const enemySpawnTimeStamp = 2;
@@ -95,6 +97,9 @@ class Game extends SessionView {
     this.world = this.engine.world;
     World.add(this.world, [this.player.body, enemy.body, background.body]);
     Runner.run(this.runner, this.engine);
+
+
+    Events.on(this.engine, 'collisionStart', this.handleCollisionStartWithBullet);
   }
 
   public unloadContent(): void {
@@ -113,6 +118,8 @@ class Game extends SessionView {
 
     this.viewManager.onKeyDown.unsubscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.unsubscribe(this.player.handlerKeyUp);
+
+    Events.off(this.engine, 'collisionStart', this.handleCollisionStartWithBullet);
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
@@ -137,6 +144,7 @@ class Game extends SessionView {
 
     const deadEnemies = Array<GameObject>();
     this.gameObjects = this.gameObjects.filter((object) => {
+      if (object.isDestroyed) World.remove(this.world, object.body);
       return !object.isDestroyed;
     });
 
@@ -200,6 +208,20 @@ class Game extends SessionView {
     options.velocity = new Vector(velocityX, velocityY);
 
     return new EnemiesPart(this, options);
+  }
+
+  public handleCollisionStartWithBullet = (event: Matter.IEventCollision<Engine>) => {
+    this.gameObjects.forEach((object) => {
+      if (!(object instanceof Bullet)) return;
+      
+      let isObjectBullet = false;
+      event.pairs.forEach((pair) => {
+        if (pair.bodyA.id === object.body.id || pair.bodyB.id === object.body.id)
+          isObjectBullet = true;
+      });
+
+      if (isObjectBullet) object.isDestroyed = true;
+    });
   }
 }
 
