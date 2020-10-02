@@ -143,23 +143,30 @@ class Game extends SessionView {
     if (this.player.HP <= 0) this.gameState = GameState.Lose;
 
     const deadEnemies = Array<GameObject>();
+    this.gameObjects.forEach((object) => {
+      if (object instanceof Enemy && object.HP <= 0) {
+        const part1 = this.spawnEnemiesPart(object);
+        World.add(this.world, [part1.body]);
+        deadEnemies.push(part1);
+
+        const part2 = this.spawnEnemiesPart(object);
+        World.add(this.world, [part2.body]);
+        deadEnemies.push(part2);
+
+        const part3 = this.spawnEnemiesPart(object);
+        World.add(this.world, [part3.body]);
+        deadEnemies.push(part3);
+
+        object.isDestroyed = true;
+      }
+    });
+
+    this.gameObjects.push(...deadEnemies);
+
     this.gameObjects = this.gameObjects.filter((object) => {
       if (object.isDestroyed) World.remove(this.world, object.body);
       return !object.isDestroyed;
     });
-
-    this.gameObjects = this.gameObjects.filter((object) => {
-      if (object instanceof Enemy && object.HP <= 0) {
-        deadEnemies.push(this.spawnEnemiesPart(object));
-        deadEnemies.push(this.spawnEnemiesPart(object));
-        deadEnemies.push(this.spawnEnemiesPart(object));
-
-        return false;
-      }
-      return true;
-    });
-
-    this.gameObjects.push(...deadEnemies);
   }
 
   public draw(): void {
@@ -193,34 +200,46 @@ class Game extends SessionView {
   public spawnEnemiesPart(enemy: GameObject) {
     const options = {
       position: new Vector(0, 0),
-      size: new Vector(0, 0),
+      size: new Vector(10, 15),
       velocity: new Vector(0, 0),
       mass: 1,
       width: 50,
+      color: 'black',
     };
 
     const positionX = enemy.body.position.x;
     const positionY = enemy.body.position.y;
     options.position = new Vector(positionX, positionY);
 
-    const velocityX = MathFunctions.randomInteger(-20, 20) / 1;
-    const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
-    options.velocity = new Vector(velocityX, velocityY);
+    /* const velocityX = MathFunctions.randomInteger(-10, 10) / 1;
+    const velocityY = MathFunctions.randomInteger(-10, 10) / 1;
+    options.velocity = new Vector(velocityX, velocityY); */
 
     return new EnemiesPart(this, options);
   }
 
   public handleCollisionStartWithBullet = (event: Matter.IEventCollision<Engine>) => {
-    this.gameObjects.forEach((object) => {
-      if (!(object instanceof Bullet)) return;
-      
-      let isObjectBullet = false;
-      event.pairs.forEach((pair) => {
-        if (pair.bodyA.id === object.body.id || pair.bodyB.id === object.body.id)
-          isObjectBullet = true;
-      });
+    const objectPairs = event.pairs.map((pair) => {
+      return {
+        objectA: this.gameObjects.find((object) => object.body.id === pair.bodyA.id),
+        objectB: this.gameObjects.find((object) => object.body.id === pair.bodyB.id),
+      };
+    });
 
-      if (isObjectBullet) object.isDestroyed = true;
+    objectPairs.forEach((pair) => {
+      if (pair.objectA instanceof Bullet && !(pair.objectB instanceof Bullet)) {
+        pair.objectA.isDestroyed = true;
+      }
+      if (pair.objectB instanceof Bullet && !(pair.objectA instanceof Bullet)) {
+        pair.objectB.isDestroyed = true;
+      }
+
+      if (pair.objectA instanceof Bullet && pair.objectB instanceof Enemy) {
+        pair.objectB.getDamaged();
+      }
+      if (pair.objectB instanceof Bullet && pair.objectA instanceof Enemy) {
+        pair.objectA.getDamaged();
+      }
     });
   }
 }

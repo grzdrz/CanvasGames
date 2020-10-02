@@ -76,13 +76,16 @@ class Player extends GameObject {
   public handlerKeyDown = (eventArgs: EventArgs<IKeyData>) => {
     this.pressedKeys.add(eventArgs.data.key);
 
-    if (/* this.isPreColliding &&  */this.pressedKeys.has('Space')) this.body.velocity.y = -50;
-    if (this.pressedKeys.has('KeyD')) this.body.velocity.x = 40;
-    if (this.pressedKeys.has('KeyA')) this.body.velocity.x = -40;
+    const velocity = { ...this.body.velocity };
+    if (/* this.isPreColliding &&  */this.pressedKeys.has('Space')) velocity.y -= 10;
+    if (this.pressedKeys.has('KeyD')) velocity.x = 10;
+    if (this.pressedKeys.has('KeyA')) velocity.x = -10;
 
-    if (this.body.velocity.x <= -40) this.body.velocity.x = -40;
-    if (this.body.velocity.x >= 40) this.body.velocity.x = 40;
-    if (this.body.velocity.y <= -50) this.body.velocity.y = -50;
+    if (this.body.velocity.x <= -10) velocity.x = -10;
+    if (this.body.velocity.x >= 10) velocity.x = 10;
+    if (this.body.velocity.y <= -10) velocity.y = -10;
+
+    Body.setVelocity(this.body, velocity);
   }
 
   public handlerKeyUp = (eventArgs: EventArgs<IKeyData>) => {

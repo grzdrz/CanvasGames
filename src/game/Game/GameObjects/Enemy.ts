@@ -54,6 +54,10 @@ class Enemy extends GameObject {
     const frame = <AnimationFrames>this.animationFrames.get('run');
     frame.isActive = true;
   }
+
+  public getDamaged() {
+    this.HP -= 10;
+  }
 }
 
 export default Enemy;
