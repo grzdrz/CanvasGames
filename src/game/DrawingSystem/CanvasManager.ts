@@ -1,3 +1,4 @@
+import AmmunitionType from "../Game/GameObjects/Ammunution/AmmunitionType";
 import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
 import IDrawableBodyImage from "./IDrawableBodyImage";
@@ -120,6 +121,12 @@ class CanvasManager {
     this.context.fillStyle = "black";
     this.context.font = "30px san-serif";
     this.context.fillText(`HP: ${HP}`, 60, 60);
+  }
+
+  public drawAmmoType(ammoType: AmmunitionType) {
+    this.context.fillStyle = "black";
+    this.context.font = "30px san-serif";
+    this.context.fillText(`Ammo type: ${AmmunitionType[ammoType]}`, 60, 120);
   }
 
   public drawPause() {

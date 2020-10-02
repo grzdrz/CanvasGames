@@ -1,7 +1,7 @@
 import GameObject from "./GameObject";
 import IObjectOptions from "./IObjectOptions";
 import Game from "../Game";
-import Bullet from "./Bullet";
+import Ammunition from "./Ammunution/Ammunition";
 import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 import Vector from "../../Helpers/Vector";
 

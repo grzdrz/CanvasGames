@@ -6,8 +6,10 @@ import EventArgs from '../../Events/EventArgs';
 import IObjectOptions from './IObjectOptions';
 import IMouseData from '../../Data/IMouseData';
 import Game from '../Game';
-import Bullet from './Bullet';
+import Bullet from './Ammunution/Bullet';
 import AnimationFrames from '../../DrawingSystem/AnimationFrames';
+import AmmunitionType from './Ammunution/AmmunitionType';
+import Bomb from './Ammunution/Bomb';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -16,6 +18,8 @@ class Player extends GameObject {
   public damageTimeStamp = 0;
 
   public pressedKeys = new Set<string>();
+
+  public activeAmmunution = AmmunitionType.Bullet;
 
   constructor(view: Game, options: IObjectOptions) {
     super(view, imageSrc, options);
@@ -35,11 +39,10 @@ class Player extends GameObject {
     this.animationFrames.set('run', runAnimation);
   }
 
-  public draw() {
+  /* public draw() {
     super.draw();
-    this.view.viewManager.canvasManager.drawHP(this.HP);
   }
-
+ */
   public update(gameTime: DOMHighResTimeStamp) {
     super.update(gameTime);
     /* if (this.isCollideWithEnemy && this.damageTimeStamp === 0) {
@@ -92,6 +95,20 @@ class Player extends GameObject {
     this.pressedKeys.delete(eventArgs.data.key);
   }
 
+  public handleChangeAmmo = (eventArgs: EventArgs<IKeyData>) => {
+    const key = eventArgs.data.key;
+    switch (key) {
+      case 'Digit1': {
+        this.activeAmmunution = AmmunitionType.Bullet;
+        break;
+      }
+      case 'Digit2': {
+        this.activeAmmunution = AmmunitionType.Bomb;
+        break;
+      }
+    }
+  }
+
   public handlerSetPosition = (eventArgs: EventArgs<IMouseData>) => {
     if (eventArgs.data.button !== 2) return;
     this.isGriped = true;
@@ -110,9 +127,16 @@ class Player extends GameObject {
   public handleShot = (eventArgs: EventArgs<IMouseData>) => {
     if (eventArgs.data.button !== 0) return;
 
+    // периодичность между выстрелами(мили секунды)
+    let timeStamp = 0;
+    if (this.activeAmmunution === AmmunitionType.Bullet)
+      timeStamp = Bullet.timeStamp;
+    else
+      timeStamp = Bomb.timeStamp;
+
     this.currentShotTime = Date.now();
     this.shotTimeStamp = this.currentShotTime - this.oldShotTime;
-    if (this.shotTimeStamp >= 100) {
+    if (this.shotTimeStamp >= timeStamp) {
       this.oldShotTime = Date.now();
       this.shotTimeStamp = 0;
     } else return;
@@ -125,15 +149,19 @@ class Player extends GameObject {
     const size = new Vector(20, 10);
     const position = playerPosition.sum(size).sum(this.size); // ///
     position.y -= (size.height + this.size.height) * 2; // ///
-    const bullet = new Bullet(this.view, {
+    const options = {
       position,
       size,
       velocity,
-      color: 'yellow',
-    });
+    };
+    let ammo;
+    if (this.activeAmmunution === AmmunitionType.Bullet)
+      ammo = new Bullet(this.view, options);
+    else
+      ammo = new Bomb(this.view, options);
 
-    World.add(this.view.world, bullet.body);
-    this.view.gameObjects.push(bullet);
+    World.add(this.view.world, ammo.body);
+    this.view.gameObjects.push(ammo);
   }
 }
 

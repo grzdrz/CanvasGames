@@ -18,7 +18,7 @@ import SessionView from "../ViewSystem/SessionView";
 import Background from "./GameObjects/Background";
 import EnemiesPart from "./GameObjects/EnemiesPart";
 import Matter from 'matter-js';
-import Bullet from './GameObjects/Bullet';
+import Ammunition from './GameObjects/Ammunution/Ammunition';
 /* import World from "./Physic/World"; */
 
 const enemySpawnTimeStamp = 2;
@@ -92,6 +92,7 @@ class Game extends SessionView {
     this.viewManager.onKeyDown.subscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.subscribe(this.player.handlerKeyUp);
 
+    this.viewManager.onKeyUp.subscribe(this.player.handleChangeAmmo);
 
     this.engine = Engine.create();
     this.world = this.engine.world;
@@ -99,7 +100,7 @@ class Game extends SessionView {
     Runner.run(this.runner, this.engine);
 
 
-    Events.on(this.engine, 'collisionStart', this.handleCollisionStartWithBullet);
+    Events.on(this.engine, 'collisionStart', this.handleCollisionStartWithAmmunition);
   }
 
   public unloadContent(): void {
@@ -119,7 +120,9 @@ class Game extends SessionView {
     this.viewManager.onKeyDown.unsubscribe(this.player.handlerKeyDown);
     this.viewManager.onKeyUp.unsubscribe(this.player.handlerKeyUp);
 
-    Events.off(this.engine, 'collisionStart', this.handleCollisionStartWithBullet);
+    this.viewManager.onKeyUp.unsubscribe(this.player.handleChangeAmmo);
+
+    Events.off(this.engine, 'collisionStart', this.handleCollisionStartWithAmmunition);
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
@@ -167,13 +170,15 @@ class Game extends SessionView {
       if (object.isDestroyed) World.remove(this.world, object.body);
       return !object.isDestroyed;
     });
+
+    this.gameObjects.forEach((object) => object.update(gameTime));
   }
 
   public draw(): void {
-    this.gameObjects.forEach(obj => {
-      obj.draw();
-    });
+    this.gameObjects.forEach(object => object.draw());
     this.player.draw();
+    this.viewManager.canvasManager.drawHP(this.player.HP);
+    this.viewManager.canvasManager.drawAmmoType(this.player.activeAmmunution);
 
     super.draw();
   }
@@ -200,7 +205,7 @@ class Game extends SessionView {
   public spawnEnemiesPart(enemy: GameObject) {
     const options = {
       position: new Vector(0, 0),
-      size: new Vector(10, 15),
+      size: new Vector(20, 25),
       velocity: new Vector(0, 0),
       mass: 1,
       width: 50,
@@ -218,7 +223,7 @@ class Game extends SessionView {
     return new EnemiesPart(this, options);
   }
 
-  public handleCollisionStartWithBullet = (event: Matter.IEventCollision<Engine>) => {
+  public handleCollisionStartWithAmmunition = (event: Matter.IEventCollision<Engine>) => {
     const objectPairs = event.pairs.map((pair) => {
       return {
         objectA: this.gameObjects.find((object) => object.body.id === pair.bodyA.id),
@@ -227,18 +232,20 @@ class Game extends SessionView {
     });
 
     objectPairs.forEach((pair) => {
-      if (pair.objectA instanceof Bullet && !(pair.objectB instanceof Bullet)) {
+      if (pair.objectA instanceof Ammunition && !(pair.objectB instanceof Ammunition)) {
         pair.objectA.isDestroyed = true;
       }
-      if (pair.objectB instanceof Bullet && !(pair.objectA instanceof Bullet)) {
+      if (pair.objectB instanceof Ammunition && !(pair.objectA instanceof Ammunition)) {
         pair.objectB.isDestroyed = true;
       }
 
-      if (pair.objectA instanceof Bullet && pair.objectB instanceof Enemy) {
-        pair.objectB.getDamaged();
+      if (pair.objectA instanceof Ammunition && pair.objectB instanceof Enemy) {
+        const damage = pair.objectA.damage;
+        pair.objectB.getDamaged(damage);
       }
-      if (pair.objectB instanceof Bullet && pair.objectA instanceof Enemy) {
-        pair.objectA.getDamaged();
+      if (pair.objectB instanceof Ammunition && pair.objectA instanceof Enemy) {
+        const damage = pair.objectB.damage;
+        pair.objectA.getDamaged(damage);
       }
     });
   }
