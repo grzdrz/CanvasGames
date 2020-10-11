@@ -5,7 +5,7 @@ import IDrawableImage from "../../DrawingSystem/IDrawableImage";
 
 const imagePath = './src/game/Images/GameObjects/arrow1231241231.png';
 
-class Background extends GameObject {
+class Border extends GameObject {
   constructor(view: Game, options: IObjectOptions) {
     super(view, imagePath, options);
 
@@ -15,6 +15,8 @@ class Background extends GameObject {
   }
 
   initialize() {
+    this.body.collisionFilter.category = 0x0002;
+
     this.layerLevel = 2;
     this.isStatic = true;
   }
@@ -30,4 +32,4 @@ class Background extends GameObject {
   }
 }
 
-export default Background;
+export default Border;

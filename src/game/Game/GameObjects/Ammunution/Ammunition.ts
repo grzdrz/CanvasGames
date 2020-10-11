@@ -17,15 +17,14 @@ class Ammunition extends GameObject {
   }
 
   initialize() {
+    /* this.body.collisionFilter.category = 0x0002; */
+    this.body.collisionFilter.mask = 0x0002;
+
     const runAnimation = new AnimationFrames(this);
     this.animationFrames.set('run', runAnimation);
   }
 
   update(gameTime: DOMHighResTimeStamp) {
-    if (this.isCollideWithBorder || this.isCollideWithEnemy) {
-      this.isDestroyed = true;
-    }
-
     this.updateAnimationState();
 
     super.update(gameTime);
@@ -36,6 +35,10 @@ class Ammunition extends GameObject {
 
     const frame = <AnimationFrames>this.animationFrames.get('run');
     frame.isActive = true;
+  }
+
+  destroy() {
+    this.isDestroyed = true;
   }
 }
 

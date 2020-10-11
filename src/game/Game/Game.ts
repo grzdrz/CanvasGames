@@ -15,11 +15,10 @@ import Player from "./GameObjects/Player";
 import Enemy from "./GameObjects/Enemy";
 import GameState from "../States/GameState";
 import SessionView from "../ViewSystem/SessionView";
-import Background from "./GameObjects/Background";
+import Border from "./GameObjects/Border";
 import EnemiesPart from "./GameObjects/EnemiesPart";
 import Matter from 'matter-js';
 import Ammunition from './GameObjects/Ammunution/Ammunition';
-/* import World from "./Physic/World"; */
 
 const enemySpawnTimeStamp = 2;
 
@@ -29,23 +28,12 @@ class Game extends SessionView {
   public runner = Runner.create();
 
   public gameObjects = new Array<GameObject>();
-  public player: Player;
+  public player = Player.create(this);
 
   public spawnTimeStamp = 0;
 
   constructor(viewManager: ViewManager) {
     super(viewManager);
-
-    this.player = new Player(
-      this,
-      {
-        size: new Vector(50, 50),
-        position: new Vector(150, 150),
-        color: "green",
-        mass: 1,
-        restitution: 0.9,
-      },
-    );
   }
 
   public initialize() {
@@ -56,7 +44,7 @@ class Game extends SessionView {
     super.loadContent();
 
     this.gameObjects = new Array<GameObject>();
-    const background = new Background(
+    const border = new Border(
       this,
       {
         size: new Vector(this.viewManager.canvasManager.width, 20),
@@ -65,20 +53,11 @@ class Game extends SessionView {
       }
     );
 
-    this.player = new Player(
-      this,
-      {
-        size: new Vector(50, 50),
-        position: new Vector(150, 150),
-        color: "green",
-        mass: 1,
-        restitution: 0.9,
-      },
-    );
+    this.player = Player.create(this);
 
     const enemy = this.spawnEnemy();
 
-    this.gameObjects.push(background);
+    this.gameObjects.push(border);
     this.gameObjects.push(this.player);
     this.gameObjects.push(enemy);
 
@@ -96,7 +75,7 @@ class Game extends SessionView {
 
     this.engine = Engine.create();
     this.world = this.engine.world;
-    World.add(this.world, [this.player.body, enemy.body, background.body]);
+    World.add(this.world, [this.player.body, enemy.body, border.body]);
     Runner.run(this.runner, this.engine);
 
 
@@ -184,70 +163,67 @@ class Game extends SessionView {
   }
 
   public spawnEnemy() {
-    const options = {
-      position: new Vector(0, 0),
-      size: new Vector(0, 0),
-      color: 'red',
-    };
+    const enemy = Enemy.create(this);
 
-    /* const velocityX = MathFunctions.randomInteger(-20, 20) / 1;
-    const velocityY = MathFunctions.randomInteger(-20, 20) / 1;
-    options.velocity = new Vector(velocityX, velocityY); */
-
-    options.size = new Vector(50, 50);
     const positionX = MathFunctions.randomInteger(0, this.viewManager.canvasManager.width);
-    const positionY = options.size.height / 2;
-    options.position = new Vector(positionX, positionY);
+    const positionY = enemy.size.height / 2;
+    const position = new Vector(positionX, positionY);
+    Body.setPosition(enemy.body, position);
 
-    return new Enemy(this, options);
+    return enemy;
   }
 
   public spawnEnemiesPart(enemy: GameObject) {
-    const options = {
-      position: new Vector(0, 0),
-      size: new Vector(20, 25),
-      velocity: new Vector(0, 0),
-      mass: 1,
-      width: 50,
-      color: 'black',
-    };
+    const enemiesPart = EnemiesPart.create(this);
 
     const positionX = enemy.body.position.x;
     const positionY = enemy.body.position.y;
-    options.position = new Vector(positionX, positionY);
+    const position = new Vector(positionX, positionY);
+    Body.setPosition(enemiesPart.body, position);
 
-    /* const velocityX = MathFunctions.randomInteger(-10, 10) / 1;
-    const velocityY = MathFunctions.randomInteger(-10, 10) / 1;
-    options.velocity = new Vector(velocityX, velocityY); */
-
-    return new EnemiesPart(this, options);
+    return enemiesPart;
   }
 
   public handleCollisionStartWithAmmunition = (event: Matter.IEventCollision<Engine>) => {
-    const objectPairs = event.pairs.map((pair) => {
+    const objectPairs = this.formObjectPairs(event.pairs);
+
+    objectPairs.forEach((pair) => {
+      if (pair.objectA instanceof Ammunition && !(pair.objectB instanceof Ammunition)) {
+        pair.objectA.destroy();
+      }
+      if (pair.objectB instanceof Ammunition && !(pair.objectA instanceof Ammunition)) {
+        pair.objectB.destroy();
+      }
+
+      if (pair.objectA instanceof Ammunition && pair.objectB instanceof Enemy) {
+        const damage = pair.objectA.damage;
+        pair.objectB.damage(damage);
+      }
+      if (pair.objectB instanceof Ammunition && pair.objectA instanceof Enemy) {
+        const damage = pair.objectB.damage;
+        pair.objectA.damage(damage);
+      }
+
+      if (pair.objectA instanceof Ammunition && pair.objectB instanceof EnemiesPart) {
+        const damage = pair.objectA.damage;
+        pair.objectB.damage(damage);
+      }
+      if (pair.objectB instanceof Ammunition && pair.objectA instanceof EnemiesPart) {
+        const damage = pair.objectB.damage;
+        pair.objectA.damage(damage);
+      }
+    });
+  }
+
+  public formObjectPairs(pairs: Matter.IPair[]) {
+    const objectPairs = pairs.map((pair) => {
       return {
         objectA: this.gameObjects.find((object) => object.body.id === pair.bodyA.id),
         objectB: this.gameObjects.find((object) => object.body.id === pair.bodyB.id),
       };
     });
 
-    objectPairs.forEach((pair) => {
-      if (pair.objectA instanceof Ammunition && !(pair.objectB instanceof Ammunition)) {
-        pair.objectA.isDestroyed = true;
-      }
-      if (pair.objectB instanceof Ammunition && !(pair.objectA instanceof Ammunition)) {
-        pair.objectB.isDestroyed = true;
-      }
-
-      if (pair.objectA instanceof Ammunition && pair.objectB instanceof Enemy) {
-        const damage = pair.objectA.damage;
-        pair.objectB.getDamaged(damage);
-      }
-      if (pair.objectB instanceof Ammunition && pair.objectA instanceof Enemy) {
-        const damage = pair.objectB.damage;
-        pair.objectA.getDamaged(damage);
-      }
-    });
+    return objectPairs;
   }
 }
 

@@ -21,16 +21,25 @@ class Player extends GameObject {
 
   public activeAmmunution = AmmunitionType.Bullet;
 
+  public angle = 0;
+
   constructor(view: Game, options: IObjectOptions) {
     super(view, imageSrc, options);
 
     this.initialize();
   }
 
-  initialize() {
-    /* this.size.width = 150;
-    this.size.height = 150; */
+  public static create(view: Game) {
+    return new Player(view, {
+      size: new Vector(50, 65),
+      position: new Vector(150, 150),
+      color: "green",
+      mass: 1,
+      restitution: 0.9,
+    });
+  }
 
+  initialize() {
     const standAnimation = new AnimationFrames(this);
     standAnimation.framesTotalCount = 1;
     this.animationFrames.set('stand', standAnimation);
@@ -41,8 +50,8 @@ class Player extends GameObject {
 
   /* public draw() {
     super.draw();
-  }
- */
+  } */
+
   public update(gameTime: DOMHighResTimeStamp) {
     super.update(gameTime);
     /* if (this.isCollideWithEnemy && this.damageTimeStamp === 0) {
@@ -57,7 +66,7 @@ class Player extends GameObject {
       }
     }
 
-    /* this.angle = 0; */
+    Body.setAngle(this.body, 0);
 
     this.updateAnimationState();
   }
@@ -67,11 +76,11 @@ class Player extends GameObject {
 
     const velocityVector = new Vector(this.body.velocity.x, this.body.velocity.y);
     const velocityUnitVector = velocityVector.getUnitVector();
-    if (Math.abs(velocityUnitVector.y) === 1) {
-      const frame = <AnimationFrames>this.animationFrames.get('stand');
+    if (this.pressedKeys.has('KeyD') || this.pressedKeys.has('KeyA')) {
+      const frame = <AnimationFrames>this.animationFrames.get('run');
       frame.isActive = true;
     } else {
-      const frame = <AnimationFrames>this.animationFrames.get('run');
+      const frame = <AnimationFrames>this.animationFrames.get('stand');
       frame.isActive = true;
     }
   }
@@ -81,8 +90,14 @@ class Player extends GameObject {
 
     const velocity = { ...this.body.velocity };
     if (/* this.isPreColliding &&  */this.pressedKeys.has('Space')) velocity.y -= 10;
-    if (this.pressedKeys.has('KeyD')) velocity.x = 10;
-    if (this.pressedKeys.has('KeyA')) velocity.x = -10;
+    if (this.pressedKeys.has('KeyD')) {
+      velocity.x = 10;
+      this.angle = 0;
+    }
+    if (this.pressedKeys.has('KeyA')) {
+      velocity.x = -10;
+      this.angle = Math.PI;
+    }
 
     if (this.body.velocity.x <= -10) velocity.x = -10;
     if (this.body.velocity.x >= 10) velocity.x = 10;
@@ -146,19 +161,16 @@ class Player extends GameObject {
     const unitVector = vectorToClickPoint.getUnitVector();
 
     const velocity = unitVector.multiplyByNumber(Bullet.velocityBase);
-    const size = new Vector(20, 10);
-    const position = playerPosition.sum(size).sum(this.size); // ///
-    position.y -= (size.height + this.size.height) * 2; // ///
-    const options = {
-      position,
-      size,
-      velocity,
-    };
+    const position = playerPosition;
     let ammo;
-    if (this.activeAmmunution === AmmunitionType.Bullet)
-      ammo = new Bullet(this.view, options);
-    else
-      ammo = new Bomb(this.view, options);
+    if (this.activeAmmunution === AmmunitionType.Bullet) {
+      ammo = new Bullet(this.view);
+    }
+    else {
+      ammo = new Bomb(this.view);
+    }
+    Body.setVelocity(ammo.body, velocity);
+    Body.setPosition(ammo.body, position);
 
     World.add(this.view.world, ammo.body);
     this.view.gameObjects.push(ammo);

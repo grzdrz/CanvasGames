@@ -8,10 +8,10 @@ import Player from "./Player";
 import { Body, Engine, World } from "matter-js";
 
 const imageSrc = './src/game/Images/GameObjects/enemiesPartBeta.png';
-const enemyVelocityCoefficient = 0.2;
+const enemyVelocityCoefficient = 0.1;
 
 class Enemy extends GameObject {
-  public HP = 100;
+  public HP = 150;
 
   public collideObjects = Array<GameObject>();
   public readonly lifeTime = 3;
@@ -23,11 +23,18 @@ class Enemy extends GameObject {
     this.initialize();
   }
 
+  public static create(view: Game) {
+    return new Enemy(view, {
+      size: new Vector(100, 100),
+      position: new Vector(0, 0),
+      color: "red",
+      mass: 1,
+      restitution: 0.9,
+    });
+  }
+
   initialize() {
-    /* const height = this.view.viewManager.canvasManager.height;
-    const width = this.view.viewManager.canvasManager.width;
-    this.size.width = Math.min(Math.max(width, height) / 25, 50);
-    this.size.height = Math.min(Math.max(width, height) / 25, 50); */
+    this.body.collisionFilter.category = 0x0002;
 
     const runAnimation = new AnimationFrames(this);
     runAnimation.framesTablePosition = new Vector(5, 2);
@@ -39,7 +46,6 @@ class Enemy extends GameObject {
       this.activeTimeStamp += gameTime;
     } /* else {
       // this.isStatic = true;
-      this.restitution = 1.4;
     } */
 
     /* if (this.isCollideWithEnemy && !this.isStatic) {
@@ -60,7 +66,7 @@ class Enemy extends GameObject {
     frame.isActive = true;
   }
 
-  public getDamaged(damage: number) {
+  public damage(damage: number) {
     this.HP -= damage;
   }
 

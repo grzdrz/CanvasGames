@@ -10,7 +10,7 @@ import IDrawableImage from "../../DrawingSystem/IDrawableImage";
 import AnimationFrames from "../../DrawingSystem/AnimationFrames";
 import IDrawableBodyImage from "../../DrawingSystem/IDrawableBodyImage";
 
-class GameObject implements /* IDrawableSimpleShape, */ IDrawableBodyImage {
+class GameObject implements IDrawableBodyImage {
   public view: Game;
 
   public body: Body;
@@ -55,12 +55,12 @@ class GameObject implements /* IDrawableSimpleShape, */ IDrawableBodyImage {
   }
 
   public draw() {
+    this.animationFrames.forEach((frames) => {
+      if (frames.isActive) frames.draw();
+    });
+
     const canvas = this.view.viewManager.canvasManager;
     canvas.drawPerimeter(this);
-
-    /* this.animationFrames.forEach((frames) => {
-      if (frames.isActive) frames.draw();
-    }); */
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {

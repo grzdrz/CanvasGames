@@ -8,6 +8,7 @@ import Vector from "../../Helpers/Vector";
 const imageSrc = './src/game/Images/GameObjects/enemiesPartBeta.png';
 
 class EnemiesPart extends GameObject {
+  public HP = 50;
   public activeTimeStamp = 0;
   public readonly lifeTime = 3;
 
@@ -17,9 +18,18 @@ class EnemiesPart extends GameObject {
     this.initialize();
   }
 
+  public static create(view: Game) {
+    return new EnemiesPart(view, {
+      size: new Vector(50, 60),
+      position: new Vector(0, 0),
+      color: "black",
+      mass: 1,
+      restitution: 0.9,
+    });
+  }
+
   initialize() {
-    /* this.size.width = 30;
-    this.size.height = 30; */
+    this.body.collisionFilter.category = 0x0002;
 
     const runAnimation = new AnimationFrames(this);
     runAnimation.framesTablePosition = new Vector(5, 2);
@@ -31,8 +41,9 @@ class EnemiesPart extends GameObject {
       this.activeTimeStamp += gameTime;
     } /* else {
       // this.isStatic = true;
-      this.restitution = 1.4;
     } */
+
+    if (this.HP <= 0) this.isDestroyed = true;
 
     this.updateAnimationState();
     super.update(gameTime);
@@ -44,6 +55,11 @@ class EnemiesPart extends GameObject {
     const frame = <AnimationFrames>this.animationFrames.get('run');
     frame.isActive = true;
   }
+
+  public damage(damage: number) {
+    this.HP -= damage;
+  }
+
 }
 
 export default EnemiesPart;
