@@ -1,15 +1,15 @@
 import { Body, World } from 'matter-js';
 
-import GameObject from './GameObject';
-import Vector from '../../Helpers/Vector';
-import EventArgs from '../../Events/EventArgs';
-import IObjectOptions from './IObjectOptions';
-import IMouseData from '../../Data/IMouseData';
-import Game from '../Game';
-import Bullet from './Ammunution/Bullet';
-import AnimationFrames from '../../DrawingSystem/AnimationFrames';
-import AmmunitionType from './Ammunution/AmmunitionType';
-import Bomb from './Ammunution/Bomb';
+import AnimationFrames from '../../../DrawingSystem/AnimationFrames';
+import Vector from '../../../Helpers/Vector';
+import EventArgs from '../../../Events/EventArgs';
+import IMouseData from '../../../Data/IMouseData';
+import GameObject from '../../Types/GameObject';
+import IObjectOptions from '../../Types/IObjectOptions';
+import Game from '../../Game';
+import AmmunitionType from '../Ammunition/Ammunition.types';
+import Bullet from '../Ammunition/Bullet';
+import Bomb from '../Ammunition/Bomb';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -19,24 +19,20 @@ class Player extends GameObject {
 
   public pressedKeys = new Set<string>();
 
-  public activeAmmunution = AmmunitionType.Bullet;
+  public activeAmmunition = AmmunitionType.Bullet;
 
   public angle = 0;
 
-  constructor(view: Game, options: IObjectOptions) {
-    super(view, imageSrc, options);
+  constructor(game: Game, options: IObjectOptions = {
+    size: new Vector(50, 65),
+    position: new Vector(150, 150),
+    color: "green",
+    mass: 1,
+    restitution: 0.9,
+  }) {
+    super(game, imageSrc, options);
 
     this.initialize();
-  }
-
-  public static create(view: Game) {
-    return new Player(view, {
-      size: new Vector(50, 65),
-      position: new Vector(150, 150),
-      color: "green",
-      mass: 1,
-      restitution: 0.9,
-    });
   }
 
   initialize() {
@@ -48,9 +44,9 @@ class Player extends GameObject {
     this.animationFrames.set('run', runAnimation);
   }
 
-  /* public draw() {
+  public draw() {
     super.draw();
-  } */
+  }
 
   public update(gameTime: DOMHighResTimeStamp) {
     super.update(gameTime);
@@ -114,11 +110,11 @@ class Player extends GameObject {
     const key = eventArgs.data.key;
     switch (key) {
       case 'Digit1': {
-        this.activeAmmunution = AmmunitionType.Bullet;
+        this.activeAmmunition = AmmunitionType.Bullet;
         break;
       }
       case 'Digit2': {
-        this.activeAmmunution = AmmunitionType.Bomb;
+        this.activeAmmunition = AmmunitionType.Bomb;
         break;
       }
     }
@@ -144,7 +140,7 @@ class Player extends GameObject {
 
     // периодичность между выстрелами(мили секунды)
     let timeStamp = 0;
-    if (this.activeAmmunution === AmmunitionType.Bullet)
+    if (this.activeAmmunition === AmmunitionType.Bullet)
       timeStamp = Bullet.timeStamp;
     else
       timeStamp = Bomb.timeStamp;
@@ -163,17 +159,17 @@ class Player extends GameObject {
     const velocity = unitVector.multiplyByNumber(Bullet.velocityBase);
     const position = playerPosition;
     let ammo;
-    if (this.activeAmmunution === AmmunitionType.Bullet) {
-      ammo = new Bullet(this.view);
+    if (this.activeAmmunition === AmmunitionType.Bullet) {
+      ammo = new Bullet(this.game);
     }
     else {
-      ammo = new Bomb(this.view);
+      ammo = new Bomb(this.game);
     }
     Body.setVelocity(ammo.body, velocity);
     Body.setPosition(ammo.body, position);
 
-    World.add(this.view.world, ammo.body);
-    this.view.gameObjects.push(ammo);
+    World.add(this.game.model.world, ammo.body);
+    this.game.model.gameObjects.push(ammo);
   }
 }
 

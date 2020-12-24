@@ -1,5 +1,5 @@
-import Enemy from "../Game/GameObjects/Enemy";
-import GameObject from "../Game/GameObjects/GameObject";
+import Enemy from "../Game/GameObjects/Units/Enemy";
+import GameObject from "../Game/Types/GameObject";
 import Vector from "../Helpers/Vector";
 
 const additionalSize = 10;
@@ -36,7 +36,7 @@ class AnimationFrames {
   }
 
   draw() {
-    const canvas = this.object.view.viewManager.canvasManager;
+    const canvas = this.object.game.viewManager.canvasManager;
     if (this.object.isImageLoaded) {
       const frameWidth = this.frameSize.width * this.sizingWidthKoef;
       const frameHeight = this.frameSize.height * this.sizingHeightKoef;
@@ -111,7 +111,7 @@ class AnimationFrames {
   }
 
   public drawObject(object: GameObject): void {
-    const canvas = this.object.view.viewManager.canvasManager;
+    const canvas = this.object.game.viewManager.canvasManager;
 
     canvas.context.fillStyle = object.color;
     if (object instanceof Enemy && object.isStatic) canvas.context.fillStyle = "blue";

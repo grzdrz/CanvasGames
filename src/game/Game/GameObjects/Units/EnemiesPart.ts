@@ -1,9 +1,8 @@
-import GameObject from "./GameObject";
-import IObjectOptions from "./IObjectOptions";
-import Game from "../Game";
-import Ammunition from "./Ammunution/Ammunition";
-import AnimationFrames from "../../DrawingSystem/AnimationFrames";
-import Vector from "../../Helpers/Vector";
+import GameObject from '../../Types/GameObject';
+import IObjectOptions from '../../Types/IObjectOptions';
+import AnimationFrames from '../../../DrawingSystem/AnimationFrames';
+import Vector from '../../../Helpers/Vector';
+import Game from '../../Game';
 
 const imageSrc = './src/game/Images/GameObjects/enemiesPartBeta.png';
 
@@ -12,20 +11,16 @@ class EnemiesPart extends GameObject {
   public activeTimeStamp = 0;
   public readonly lifeTime = 3;
 
-  constructor(view: Game, options: IObjectOptions) {
+  constructor(view: Game, options: IObjectOptions = {
+    size: new Vector(50, 60),
+    position: new Vector(0, 0),
+    color: 'black',
+    mass: 1,
+    restitution: 0.9,
+  }) {
     super(view, imageSrc, options);
 
     this.initialize();
-  }
-
-  public static create(view: Game) {
-    return new EnemiesPart(view, {
-      size: new Vector(50, 60),
-      position: new Vector(0, 0),
-      color: "black",
-      mass: 1,
-      restitution: 0.9,
-    });
   }
 
   initialize() {

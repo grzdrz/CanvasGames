@@ -1,7 +1,6 @@
-import GameObject from "./GameObject";
-import IObjectOptions from "./IObjectOptions";
-import Game from "../Game";
-import IDrawableImage from "../../DrawingSystem/IDrawableImage";
+import GameObject from '../../Types/GameObject';
+import IObjectOptions from '../../Types/IObjectOptions';
+import Game from '../../Game';
 
 const imagePath = './src/game/Images/GameObjects/arrow1231241231.png';
 

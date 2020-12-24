@@ -1,9 +1,10 @@
-import Game from "../../Game";
-import Ammunition from "./Ammunition";
-import IObjectOptions from "../IObjectOptions";
-import Vector from "../../../Helpers/Vector";
-import Explosion from "./Explosion";
-import { Body, World } from "matter-js";
+import { Body, World } from 'matter-js';
+
+import Vector from '../../../Helpers/Vector';
+import IObjectOptions from '../../Types/IObjectOptions';
+import Game from '../../Game';
+import Explosion from './Explosion';
+import Ammunition from './Ammunition';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -35,11 +36,11 @@ class Bomb extends Ammunition {
   }
 
   detonate = () => {
-    const explosion = new Explosion(this.view);
+    const explosion = new Explosion(this.game);
     Body.setPosition(explosion.body, this.body.position);
 
-    this.view.gameObjects.push(explosion);
-    World.add(this.view.world, [explosion.body]);
+    this.game.model.gameObjects.push(explosion);
+    World.add(this.game.model.world, [explosion.body]);
   }
 }
 

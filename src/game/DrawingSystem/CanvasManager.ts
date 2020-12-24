@@ -1,4 +1,4 @@
-import AmmunitionType from "../Game/GameObjects/Ammunution/AmmunitionType";
+import AmmunitionType from "../Game/GameObjects/Ammunition/Ammunition.types";
 import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
 import IDrawableBodyImage from "./IDrawableBodyImage";

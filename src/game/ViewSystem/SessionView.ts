@@ -1,12 +1,12 @@
-import View from "./View";
-import ViewManager from "./ViewManager";
-import EntryType from "../States/EntryType";
-import Vector from "../Helpers/Vector";
-import ViewEntry from "./ViewEntry";
-import EventArgs from "../Events/EventArgs";
-import GameState from "../States/GameState";
-import IMouseData from "../Data/IMouseData";
-import ViewState from "../Data/ViewState";
+import EntryType from '../States/EntryType';
+import GameState from '../States/GameState';
+import IMouseData from '../Data/IMouseData';
+import ViewState from '../Data/ViewState';
+import Vector from '../Helpers/Vector';
+import EventArgs from '../Events/EventArgs';
+import ViewManager from './ViewManager';
+import ViewEntry from './ViewEntry';
+import View from './View';
 
 class SessionView extends View {
   public gameState = GameState.Active;
@@ -61,7 +61,7 @@ class SessionView extends View {
     const height = this.viewManager.canvasManager.height;
     const width = this.viewManager.canvasManager.width;
 
-    let src = "";
+    let src = '';
     let size = Vector.zero;
     let position = Vector.zero;
     if (type === EntryType.ExitItem) {
@@ -89,7 +89,7 @@ class SessionView extends View {
 
   public handleKeyClick = (args: EventArgs<IKeyData>) => {
     if (this.viewState === ViewState.Hidden) return;
-    if (args.data.key === "Escape") {
+    if (args.data.key === 'Escape') {
       switch (this.gameState) {
         case GameState.Win: {
           this.viewManager.removeView(this);

@@ -1,15 +1,15 @@
-import View from "./View";
-import Vector from "../Helpers/Vector";
-import EventArgs from "../Events/EventArgs";
-import IMouseData from "../Data/IMouseData";
-import EntryType from "../States/EntryType";
-import ViewState from "../Data/ViewState";
-import ViewManager from "./ViewManager";
-import ViewEntry from "./ViewEntry";
-import MathFunctions from "../Helpers/MathFunctions";
+import Vector from '../Helpers/Vector';
+import MathFunctions from '../Helpers/MathFunctions';
+import EventArgs from '../Events/EventArgs';
+import IMouseData from '../Data/IMouseData';
+import ViewState from '../Data/ViewState';
+import EntryType from '../States/EntryType';
+import ViewManager from './ViewManager';
+import ViewEntry from './ViewEntry';
+import View from './View';
 
 class LvlsListView extends View {
-  public playerGamesInfo = "";
+  public playerGamesInfo = '';
 
   constructor(viewManager: ViewManager) {
     super(viewManager);
@@ -35,7 +35,7 @@ class LvlsListView extends View {
   }
 
   public addMenuItem(type: EntryType, view?: View) {
-    let src = "";
+    let src = '';
     let size = Vector.zero;
     if (type === EntryType.Screen)
       src = `./src/game/Images/Interface/buttonGameLevel_${MathFunctions.randomInteger(0, 5)}stars.png`;
@@ -118,7 +118,7 @@ class LvlsListView extends View {
 
   public handleKeyClick = (args: EventArgs<IKeyData>) => {
     if (this.viewState === ViewState.Hidden) return;
-    if (args.data.key === "Escape") {
+    if (args.data.key === 'Escape') {
       this.viewManager.removeView(this);
     }
   }

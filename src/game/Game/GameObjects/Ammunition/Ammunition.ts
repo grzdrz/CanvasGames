@@ -1,9 +1,7 @@
-import Matter from 'matter-js';
-
-import GameObject from "../GameObject";
-import Game from "../../Game";
-import IObjectOptions from "../IObjectOptions";
-import AnimationFrames from "../../../DrawingSystem/AnimationFrames";
+import GameObject from '../../Types/GameObject';
+import Game from '../../Game';
+import IObjectOptions from '../../Types/IObjectOptions';
+import AnimationFrames from '../../../DrawingSystem/AnimationFrames';
 
 class Ammunition extends GameObject {
   public static velocityBase = 20;

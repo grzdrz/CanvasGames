@@ -1,7 +1,7 @@
-import Game from "../../Game";
-import Ammunition from "./Ammunition";
-import IObjectOptions from "../IObjectOptions";
-import Vector from "../../../Helpers/Vector";
+import Game from '../../Game';
+import Ammunition from './Ammunition';
+import IObjectOptions from '../../Types/IObjectOptions';
+import Vector from '../../../Helpers/Vector';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 

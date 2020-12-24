@@ -1,15 +1,12 @@
-import ViewData from "../Data/ViewData";
-import IViewData from "../Data/IViewData";
-import Event from "../Events/Event";
-import ModelData from "../Data/ModelData";
-import View from "./View";
-import CanvasManager from "../DrawingSystem/CanvasManager";
-import ViewState from "../Data/ViewState";
-import GameComponent from "./GameComponent";
-import IModelData from "../Data/IModelData";
-import IMouseData from "../Data/IMouseData";
-import EventArgs from "../Events/EventArgs";
-import Vector from "../Helpers/Vector";
+import ViewData from '../Data/ViewData';
+import ViewState from '../Data/ViewState';
+import IMouseData from '../Data/IMouseData';
+import EventArgs from '../Events/EventArgs';
+import Event from '../Events/Event';
+import Vector from '../Helpers/Vector';
+import CanvasManager from '../DrawingSystem/CanvasManager';
+import View from './View';
+import GameComponent from './GameComponent';
 
 interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,
@@ -29,11 +26,6 @@ class ViewManager extends GameComponent {
   public isGameActive: boolean;
   public isInitialized: boolean = false;
 
-  public onSetViewData = new Event<IViewData>();
-  public onSetModelData = new Event<IModelData>();
-  public onGetModelData = new Event<IModelData>();
-  public onHandleMove = new Event<IModelData>();
-  public onInputsChange = new Event<IModelData>();
   public onMouseDown = new Event<IMouseData>();
   public onMouseMove = new Event<IMouseData>();
   public onMouseUp = new Event<IMouseData>();
@@ -60,20 +52,19 @@ class ViewManager extends GameComponent {
   public initialize(): void {
     this.isInitialized = true;
 
-    this.setDragAndDropHandlers();
-    this.setData(this.viewData);
+    this.setEventsHandlers();
   }
 
-  public setDragAndDropHandlers(): void {
+  public setEventsHandlers(): void {
     this.canvasManager.canvas.ondragstart = () => false;
-    this.canvasManager.canvas.addEventListener("mousedown", this.handlerMouseDown.bind(this));
-    this.canvasManager.canvas.addEventListener("touchstart", this.handlerMouseDown.bind(this));
+    this.canvasManager.canvas.addEventListener('mousedown', this.handlerMouseDown.bind(this));
+    this.canvasManager.canvas.addEventListener('touchstart', this.handlerMouseDown.bind(this));
 
-    window.addEventListener("keydown", this.handlerKeyDown);
-    window.addEventListener("keyup", this.handlerKeyUp);
+    window.addEventListener('keydown', this.handlerKeyDown);
+    window.addEventListener('keyup', this.handlerKeyUp);
 
-    this.canvasManager.canvas.addEventListener("click", this.handleMouseClick);
-    this.canvasManager.canvas.addEventListener("touchstart", this.handleMouseClick);
+    this.canvasManager.canvas.addEventListener('click', this.handleMouseClick);
+    this.canvasManager.canvas.addEventListener('touchstart', this.handleMouseClick);
   }
 
   public loadContent(): void {
@@ -151,20 +142,6 @@ class ViewManager extends GameComponent {
     }
   }
 
-  public setData(data: IViewData): void {
-    /* if (data.sliderStripThickness !== undefined) this.viewData.sliderStripThickness = data.sliderStripThickness; */
-  }
-
-  public getModelData(): ModelData {
-    const optionsEventArgs = new EventArgs<IModelData>({});
-    this.onGetModelData.invoke(optionsEventArgs);
-    return <ModelData>optionsEventArgs.data;
-  }
-
-  public getData(args: EventArgs<IViewData>): void {
-    args.data = new ViewData(this.viewData);
-  }
-
   private calculateMouseGlobalPosition = (event: UIEvent) => {
     let x;
     let y;
@@ -196,10 +173,10 @@ class ViewManager extends GameComponent {
     const handlerMouseUp = this.handlerMouseUp.bind(this, optionsForMouseEvents);
     optionsForMouseEvents.handlerMouseUp = handlerMouseUp;// чтобы обработчик mouseMove можно было отписать
 
-    document.addEventListener("mousemove", handlerMouseMove);
-    document.addEventListener("mouseup", handlerMouseUp);
-    document.addEventListener("touchmove", handlerMouseMove);
-    document.addEventListener("touchend", handlerMouseUp);
+    document.addEventListener('mousemove', handlerMouseMove);
+    document.addEventListener('mouseup', handlerMouseUp);
+    document.addEventListener('touchmove', handlerMouseMove);
+    document.addEventListener('touchend', handlerMouseUp);
 
     const mousePosition = this.calculateMouseGlobalPosition(event);
     this.onMouseMove.invoke(new EventArgs<IMouseData>({
@@ -217,10 +194,10 @@ class ViewManager extends GameComponent {
   }
 
   private handlerMouseUp(optionsFromMouseDown: IMouseEventArgs, event: UIEvent): void {
-    document.removeEventListener("mousemove", optionsFromMouseDown.handlerMouseMove);
-    document.removeEventListener("mouseup", optionsFromMouseDown.handlerMouseUp);
-    document.removeEventListener("touchmove", optionsFromMouseDown.handlerMouseMove);
-    document.removeEventListener("touchend", optionsFromMouseDown.handlerMouseUp);
+    document.removeEventListener('mousemove', optionsFromMouseDown.handlerMouseMove);
+    document.removeEventListener('mouseup', optionsFromMouseDown.handlerMouseUp);
+    document.removeEventListener('touchmove', optionsFromMouseDown.handlerMouseMove);
+    document.removeEventListener('touchend', optionsFromMouseDown.handlerMouseUp);
 
     const mousePosition = this.calculateMouseGlobalPosition(event);
     this.onMouseUp.invoke(new EventArgs<IMouseData>({

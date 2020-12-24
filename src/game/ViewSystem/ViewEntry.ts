@@ -1,11 +1,11 @@
-import View from "./View";
-import Vector from "../Helpers/Vector";
-import EntryType from "../States/EntryType";
+import Vector from '../Helpers/Vector';
+import EntryType from '../States/EntryType';
+import View from './View';
 
 class ViewEntry {
   public view?: View;
   public type: EntryType;
-  public parrentView: View;
+  public parentView: View;
   public position = Vector.zero;
 
   public size = new Vector(0, 0);
@@ -22,13 +22,13 @@ class ViewEntry {
     return this.type !== EntryType.Separator;
   }
 
-  constructor(parrentView: View, type: EntryType, imageSrc: string, size: Vector, view?: View) {
+  constructor(parentView: View, type: EntryType, imageSrc: string, size: Vector, view?: View) {
     this.view = view;
     this.type = type;
-    this.parrentView = parrentView;
+    this.parentView = parentView;
 
     this.size = size;
-    
+
     this.image = new Image();
     this.image.src = imageSrc;
     this.image.onload = () => {
@@ -43,7 +43,7 @@ class ViewEntry {
   }
 
   public draw() {
-    const canvas = this.parrentView.viewManager.canvasManager;
+    const canvas = this.parentView.viewManager.canvasManager;
     canvas.drawImage(this);
   }
 }

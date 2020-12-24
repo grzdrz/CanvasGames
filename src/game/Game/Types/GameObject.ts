@@ -1,22 +1,20 @@
-import { Bodies, Body } from "matter-js";
+import { Bodies, Body } from 'matter-js';
 
-import Vector from "../../Helpers/Vector";
-import EventArgs from "../../Events/EventArgs";
-import IMouseData from "../../Data/IMouseData";
-import IObjectOptions from "./IObjectOptions";
-import Game from "../Game";
-import IDrawableSimpleShape from "../../DrawingSystem/IDrawableSimpleShape";
-import IDrawableImage from "../../DrawingSystem/IDrawableImage";
-import AnimationFrames from "../../DrawingSystem/AnimationFrames";
-import IDrawableBodyImage from "../../DrawingSystem/IDrawableBodyImage";
+import Vector from '../../Helpers/Vector';
+import Game from '../Game';
+import AnimationFrames from '../../DrawingSystem/AnimationFrames';
+import IDrawableBodyImage from '../../DrawingSystem/IDrawableBodyImage';
+import IGameObjectModel from './IGameObjectModel';
+import IGameObjectView from './IGameObjectView';
+import IObjectOptions from './IObjectOptions';
 
-class GameObject implements IDrawableBodyImage {
-  public view: Game;
+class GameObject implements IDrawableBodyImage, IGameObjectModel, IGameObjectView {
+  public game: Game;
 
   public body: Body;
   public size: Vector;
 
-  public color = "red";
+  public color = 'red';
   public image: HTMLImageElement;
   public isImageLoaded = false;
   public animationFrames = new Map<string, AnimationFrames>();
@@ -31,16 +29,14 @@ class GameObject implements IDrawableBodyImage {
   public isDestroyed = false;
   public isCollideWithBorder = false;
 
-  constructor(view: Game, imageSrc: string, options: IObjectOptions) {
-    this.view = view;
+  constructor(game: Game, imageSrc: string, options: IObjectOptions) {
+    this.game = game;
 
     this.image = new Image();
     this.image.src = imageSrc;
     this.image.onload = () => {
       this.isImageLoaded = true;
-
     };
-
 
     this.size = new Vector(options.size.width, options.size.height);
     this.body = Bodies.rectangle(options.position.x, options.position.y, options.size.width, options.size.height);
@@ -59,11 +55,11 @@ class GameObject implements IDrawableBodyImage {
       if (frames.isActive) frames.draw();
     });
 
-    const canvas = this.view.viewManager.canvasManager;
+    const canvas = this.game.viewManager.canvasManager;
     canvas.drawPerimeter(this);
   }
 
-  public update(gameTime: DOMHighResTimeStamp): void {
+  public update(gameTime: DOMHighResTimeStamp, options?: IObjectOptions): void {
     this.animationFrames.forEach((frames) => {
       if (frames.isActive) frames.update();
     });

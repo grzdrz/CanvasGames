@@ -1,8 +1,8 @@
 import { Bodies, Body, World } from "matter-js";
 import Vector from "../../../Helpers/Vector";
 import Game from "../../Game";
-import GameObject from "../GameObject";
-import IObjectOptions from "../IObjectOptions";
+import GameObject from "../../Types/GameObject";
+import IObjectOptions from "../../Types/IObjectOptions";
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
@@ -41,10 +41,10 @@ class Explosion extends GameObject {
       this.timeStamp = 0;
 
       this.size = this.size.multiplyByNumber(1.4);
-      World.remove(this.view.world, this.body);
+      World.remove(this.game.model.world, this.body);
       this.body = Bodies.rectangle(this.body.position.x, this.body.position.y, this.size.width, this.size.height);
       this.body.mass = 50;
-      World.add(this.view.world, this.body);
+      World.add(this.game.model.world, this.body);
     }
 
     if (this.lifeTimeStamp >= this.lifeTime) this.isDestroyed = true;

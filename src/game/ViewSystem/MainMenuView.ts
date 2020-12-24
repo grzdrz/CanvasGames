@@ -1,11 +1,11 @@
-import View from "./View";
-import ViewManager from "./ViewManager";
-import Vector from "../Helpers/Vector";
-import EntryType from "../States/EntryType";
-import EventArgs from "../Events/EventArgs";
-import IMouseData from "../Data/IMouseData";
-import ViewState from "../Data/ViewState";
-import ViewEntry from "./ViewEntry";
+import Vector from '../Helpers/Vector';
+import EntryType from '../States/EntryType';
+import EventArgs from '../Events/EventArgs';
+import IMouseData from '../Data/IMouseData';
+import ViewState from '../Data/ViewState';
+import ViewEntry from './ViewEntry';
+import ViewManager from './ViewManager';
+import View from './View';
 
 class MainMenuView extends View {
   constructor(viewManager: ViewManager) {
@@ -49,7 +49,7 @@ class MainMenuView extends View {
   }
 
   public addMenuItem(type: EntryType, view?: View) {
-    let src = "";
+    let src = '';
     let size = Vector.zero;
     if (type === EntryType.Screen) {
       src = './src/game/Images/Interface/buttonPlay.png';
