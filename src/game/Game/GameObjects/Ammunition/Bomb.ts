@@ -18,7 +18,7 @@ class Bomb extends Ammunition {
   public static timeStamp = 500;
   public get damage() { return 50; }
 
-  constructor(view: Game, options: IObjectOptions = defaultOptions) {
+  constructor(view: Game, options: IObjectOptions = { ...defaultOptions }) {
     super(view, imageSrc, options);
   }
 

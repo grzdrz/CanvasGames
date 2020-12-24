@@ -8,7 +8,7 @@ import CanvasManager from '../DrawingSystem/CanvasManager';
 import View from './View';
 import GameComponent from './GameComponent';
 
-interface IMouseEventArgs {
+export interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,
   handlerMouseUp: (event: UIEvent) => void,
   button: number,
@@ -142,7 +142,7 @@ class ViewManager extends GameComponent {
     }
   }
 
-  private calculateMouseGlobalPosition = (event: UIEvent) => {
+  public calculateMouseGlobalPosition = (event: UIEvent) => {
     let x;
     let y;
     if (event instanceof TouchEvent) {
@@ -160,7 +160,6 @@ class ViewManager extends GameComponent {
 
   private handlerMouseDown(event: UIEvent): void {
     event.preventDefault();
-    /* if ((<MouseEvent>event).button !== 2) return; */
 
     const optionsForMouseEvents = {
       handlerMouseMove: (_event: UIEvent): void => { },
@@ -171,7 +170,7 @@ class ViewManager extends GameComponent {
     optionsForMouseEvents.handlerMouseMove = handlerMouseMove;
 
     const handlerMouseUp = this.handlerMouseUp.bind(this, optionsForMouseEvents);
-    optionsForMouseEvents.handlerMouseUp = handlerMouseUp;// чтобы обработчик mouseMove можно было отписать
+    optionsForMouseEvents.handlerMouseUp = handlerMouseUp;
 
     document.addEventListener('mousemove', handlerMouseMove);
     document.addEventListener('mouseup', handlerMouseUp);
@@ -179,7 +178,7 @@ class ViewManager extends GameComponent {
     document.addEventListener('touchend', handlerMouseUp);
 
     const mousePosition = this.calculateMouseGlobalPosition(event);
-    this.onMouseMove.invoke(new EventArgs<IMouseData>({
+    this.onMouseDown.invoke(new EventArgs<IMouseData>({
       mousePosition,
       button: (<MouseEvent>event).button,
     }));

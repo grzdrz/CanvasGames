@@ -15,7 +15,7 @@ class Bullet extends Ammunition {
   public static timeStamp = 100;
   public get damage() { return 20; }
 
-  constructor(view: Game, options: IObjectOptions = defaultOptions) {
+  constructor(view: Game, options: IObjectOptions = { ...defaultOptions }) {
     options.size = new Vector(20, 10);
     super(view, imageSrc, options);
   }

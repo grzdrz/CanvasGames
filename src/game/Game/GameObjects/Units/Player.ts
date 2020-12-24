@@ -2,6 +2,7 @@ import { Body, World } from 'matter-js';
 
 import AnimationFrames from '../../../DrawingSystem/AnimationFrames';
 import Vector from '../../../Helpers/Vector';
+import Event from '../../../Events/Event';
 import EventArgs from '../../../Events/EventArgs';
 import IMouseData from '../../../Data/IMouseData';
 import GameObject from '../../Types/GameObject';
@@ -10,18 +11,18 @@ import Game from '../../Game';
 import AmmunitionType from '../Ammunition/Ammunition.types';
 import Bullet from '../Ammunition/Bullet';
 import Bomb from '../Ammunition/Bomb';
+import IShotData from '../../Types/IShotData';
 
 const imageSrc = './src/game/Images/GameObjects/playerBeta.png';
 
 class Player extends GameObject {
   public HP = 100;
   public damageTimeStamp = 0;
-
   public pressedKeys = new Set<string>();
-
   public activeAmmunition = AmmunitionType.Bullet;
-
   public angle = 0;
+
+  public onTakeAShot = new Event<IShotData>();
 
   constructor(game: Game, options: IObjectOptions = {
     size: new Vector(50, 65),
@@ -61,6 +62,8 @@ class Player extends GameObject {
         this.damageTimeStamp = 0;
       }
     }
+
+    if (this.mouseButtonPressedData.pressed) this.takeAShot();
 
     Body.setAngle(this.body, 0);
 
@@ -135,9 +138,29 @@ class Player extends GameObject {
   public oldShotTime = Date.now();
   public currentShotTime = Date.now();
   public shotTimeStamp = 0;
-  public handleShot = (eventArgs: EventArgs<IMouseData>) => {
+  public mouseButtonPressedData: {
+    pressed: boolean,
+    mouseData: IMouseData,
+  } = {
+      pressed: false,
+      mouseData: {
+        mousePosition: Vector.zero,
+        button: 0,
+      },
+    };
+  public handleMouseDown = (eventArgs: EventArgs<IMouseData>) => {
     if (eventArgs.data.button !== 0) return;
+    this.mouseButtonPressedData.pressed = true;
+    this.mouseButtonPressedData.mouseData = eventArgs.data;
+  }
 
+  public handleMouseUp = (eventArgs: EventArgs<IMouseData>) => {
+    if (eventArgs.data.button !== 0) return;
+    this.mouseButtonPressedData.pressed = false;
+    this.mouseButtonPressedData.mouseData = eventArgs.data;
+  }
+
+  public takeAShot() {
     // периодичность между выстрелами(мили секунды)
     let timeStamp = 0;
     if (this.activeAmmunition === AmmunitionType.Bullet)
@@ -152,24 +175,12 @@ class Player extends GameObject {
       this.shotTimeStamp = 0;
     } else return;
 
-    const playerPosition = new Vector(this.body.position.x, this.body.position.y);
-    const vectorToClickPoint = eventArgs.data.mousePosition.subtract(playerPosition);
-    const unitVector = vectorToClickPoint.getUnitVector();
-
-    const velocity = unitVector.multiplyByNumber(Bullet.velocityBase);
-    const position = playerPosition;
-    let ammo;
-    if (this.activeAmmunition === AmmunitionType.Bullet) {
-      ammo = new Bullet(this.game);
-    }
-    else {
-      ammo = new Bomb(this.game);
-    }
-    Body.setVelocity(ammo.body, velocity);
-    Body.setPosition(ammo.body, position);
-
-    World.add(this.game.model.world, ammo.body);
-    this.game.model.gameObjects.push(ammo);
+    this.onTakeAShot.invoke(new EventArgs({
+      mousePosition: this.mouseButtonPressedData.mouseData.mousePosition,
+      button: this.mouseButtonPressedData.mouseData.button,
+      ammoType: this.activeAmmunition,
+      unit: this,
+    }));
   }
 }
 

@@ -18,6 +18,11 @@ import EnemiesPart from '../GameObjects/Units/EnemiesPart';
 import Ammunition from '../GameObjects/Ammunition/Ammunition';
 import Game from '../Game';
 import Border from '../GameObjects/Terrain/Border';
+import IShotData from '../Types/IShotData';
+import EventArgs from '../../Events/EventArgs';
+import Bullet from '../GameObjects/Ammunition/Bullet';
+import AmmunitionType from '../GameObjects/Ammunition/Ammunition.types';
+import Bomb from '../GameObjects/Ammunition/Bomb';
 
 const enemySpawnTimeStamp = 2;
 
@@ -139,6 +144,37 @@ class Model {
       return !object.isDestroyed;
     });
   }
+
+  public playerTakeAShot = (args?: EventArgs<IShotData>) => {
+    if (args) {
+      const {
+        unit,
+        ammoType,
+        mousePosition,
+      } = args.data;
+
+      const playerPosition = new Vector(unit.body.position.x, unit.body.position.y);
+      const vectorToClickPoint = mousePosition.subtract(playerPosition);
+      const unitVector = vectorToClickPoint.getUnitVector();
+      const velocity = unitVector.multiplyByNumber(Bullet.velocityBase);
+      const position = playerPosition;
+
+      let ammo;
+      switch (ammoType) {
+        case AmmunitionType.Bomb: {
+          ammo = new Bomb(this.game);
+          break;
+        }
+        default: ammo = new Bullet(this.game);
+      }
+
+      Body.setVelocity(ammo.body, velocity);
+      Body.setPosition(ammo.body, position);
+
+      World.add(this.game.model.world, ammo.body);
+      this.game.model.gameObjects.push(ammo);
+    }
+  };
 
   public handleCollisionStartWithAmmunition = (event: Matter.IEventCollision<Engine>) => {
     const objectPairs = this.formObjectPairs(event.pairs);
