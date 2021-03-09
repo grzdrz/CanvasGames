@@ -1,4 +1,4 @@
-import IViewData from "./IViewData";
+import IViewData from "./Types/IViewData";
 
 class ViewData implements IViewData {
 

@@ -1,5 +1,5 @@
-import Enemy from "../Game/GameObjects/Units/Enemy";
-import GameObject from "../Game/Types/GameObject";
+import Enemy from "../Games/Game/GameObjects/Units/Enemy";
+import GameObject from "../Games/Game/Types/GameObject";
 import Vector from "../Helpers/Vector";
 
 const additionalSize = 10;

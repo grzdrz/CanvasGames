@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development",
-    "server": "webpack-dev-server --open --mode development",
+    "dev:build": "webpack --mode development",
+    "dev:server": "webpack-dev-server --open --mode development",
     "deploy": "gh-pages -d bandle"
   },
   "author": "",

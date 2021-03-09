@@ -1,33 +1,28 @@
-import LvlsListView from './ViewSystem/LvlsListView';
-import ViewManager from './ViewSystem/ViewManager';
-import MainMenuView from './ViewSystem/MainMenuView';
-import GameComponent from './ViewSystem/GameComponent';
-import Model from './Model/Model';
-import ModelData from './Data/ModelData';
-import ViewData from './Data/ViewData';
-import EntryType from './States/EntryType';
+import LvlsListView from "./ViewSystem/Views/LvlsListView";
+import ViewManager from "./ViewSystem/ViewManager";
+import MainMenuView from "./ViewSystem/Views/MainMenuView";
+import GameComponent from "./ViewSystem/Base/GameComponent";
+import ModelData from "./Data/ModelData";
+import ViewData from "./Data/ViewData";
+import EntryType from "./States/EntryType";
 
-import Game from './Game/Game';
-import Game_Beta_1 from './Game_Beta_1/Game_Beta_1';
-import Game_Beta_2 from './Game_Beta_2/Game_Beta_2';
+import Game from "./Games/Game/Game";
 
-import './Styles/Game.scss';
+import "./Styles/Game.scss";
 
 const defaultModelData = {};
 const defaultViewData = {};
 
 class Presenter {
-  public model: Model;
   public viewManager: ViewManager;
   public gameComponents: GameComponent[] = new Array<GameComponent>();
 
   constructor() {
-    const canvas = <HTMLElement>(document.querySelector('.game'));
+    const canvas = <HTMLElement>document.querySelector(".game");
 
     const modelData = new ModelData(defaultModelData);
     const viewData = new ViewData(defaultViewData);
 
-    this.model = new Model(modelData);
     this.viewManager = new ViewManager(viewData, canvas);
 
     this.gameComponents.push(this.viewManager);
@@ -36,25 +31,20 @@ class Presenter {
   }
 
   private initialize(): void {
-    document.addEventListener('contextmenu', this.handleContextmenu);
+    document.addEventListener("contextmenu", this.handleContextmenu);
 
-    this.model.initialize();
     this.viewManager.initialize();
 
     const mainMenuView = new MainMenuView(this.viewManager);
     const lvlsListView = new LvlsListView(this.viewManager);
     const game = new Game(this.viewManager);
-    const game_beta_1 = new Game_Beta_1(this.viewManager);
-    const game_beta_2 = new Game_Beta_2(this.viewManager);
 
     lvlsListView.addMenuItem(EntryType.Screen, game);
-    lvlsListView.addMenuItem(EntryType.Screen, game_beta_1);
-    lvlsListView.addMenuItem(EntryType.Screen, game_beta_2);
 
     mainMenuView.addMenuItem(EntryType.Screen, lvlsListView);
     this.viewManager.addView(mainMenuView);
 
-    this.gameComponents.forEach(component => {
+    this.gameComponents.forEach((component) => {
       component.loadContent();
     });
     this.invokeGameCycle(0);
@@ -67,16 +57,16 @@ class Presenter {
     this.secondsPassed = Math.min(this.secondsPassed, 0.1);
     this.oldTimeStamp = gameTime;
 
-    this.gameComponents.forEach(component => {
+    this.gameComponents.forEach((component) => {
       component.update(this.secondsPassed);
       component.draw();
     });
     requestAnimationFrame(this.invokeGameCycle);
-  }
+  };
 
   private handleContextmenu = (event: UIEvent) => {
     event.preventDefault();
-  }
+  };
 }
 
 export default Presenter;

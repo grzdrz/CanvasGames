@@ -1,10 +1,10 @@
-import AmmunitionType from "../Game/GameObjects/Ammunition/Ammunition.types";
+import AmmunitionType from "../Games/Game/GameObjects/Ammunition/Ammunition.types";
 import Vector from "../Helpers/Vector";
 import ViewManager from "../ViewSystem/ViewManager";
-import IDrawableBodyImage from "./IDrawableBodyImage";
-import IDrawableImage from "./IDrawableImage";
-import IDrawablePolygon from "./IDrawablePolygon";
-import IDrawableSimpleShape from "./IDrawableSimpleShape";
+import IDrawableBodyImage from "./Types/IDrawableBodyImage";
+import IDrawableImage from "./Types/IDrawableImage";
+import IDrawablePolygon from "./Types/IDrawablePolygon";
+import IDrawableSimpleShape from "./Types/IDrawableSimpleShape";
 
 class CanvasManager {
   public viewManager: ViewManager;

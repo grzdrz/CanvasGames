@@ -1,4 +1,4 @@
-import IModelData from "./IModelData";
+import IModelData from "./Types/IModelData";
 
 class ModelData implements IModelData {
   constructor(data: IModelData) {

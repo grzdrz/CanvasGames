@@ -1,12 +1,12 @@
 import ViewData from '../Data/ViewData';
 import ViewState from '../Data/ViewState';
-import IMouseData from '../Data/IMouseData';
-import EventArgs from '../Events/EventArgs';
-import Event from '../Events/Event';
+import IMouseData from '../Data/Types/IMouseData';
+import EventArgs from '../Helpers/Events/EventArgs';
+import Event from '../Helpers/Events/Event';
 import Vector from '../Helpers/Vector';
 import CanvasManager from '../DrawingSystem/CanvasManager';
-import View from './View';
-import GameComponent from './GameComponent';
+import View from './Base/View';
+import GameComponent from './Base/GameComponent';
 
 export interface IMouseEventArgs {
   handlerMouseMove: (event: UIEvent) => void,

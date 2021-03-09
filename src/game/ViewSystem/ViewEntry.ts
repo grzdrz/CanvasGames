@@ -1,6 +1,6 @@
 import Vector from '../Helpers/Vector';
 import EntryType from '../States/EntryType';
-import View from './View';
+import View from './Base/View';
 
 class ViewEntry {
   public view?: View;
