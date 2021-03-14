@@ -58,6 +58,7 @@ class Presenter {
     this.oldTimeStamp = gameTime;
 
     this.gameComponents.forEach((component) => {
+      window.GLOBAL_TIME_STAMP = this.secondsPassed;
       component.update(this.secondsPassed);
       component.draw();
     });

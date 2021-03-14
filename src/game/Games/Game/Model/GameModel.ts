@@ -1,28 +1,22 @@
-import {
-  Engine,
-  World,
-  Bodies,
-  Body,
-  Events,
-  Runner,
-} from 'matter-js';
-import Matter from 'matter-js';
+import { Engine, World, Bodies, Body, Events, Runner } from "matter-js";
+import Matter from "matter-js";
 
-import GameObject from '../Types/GameObject';
-import Vector from '../../../Helpers/Vector';
-import MathFunctions from '../../../Helpers/MathFunctions';
-import Player from '../GameObjects/Units/Player';
-import Enemy from '../GameObjects/Units/Enemy';
-import GameState from '../../../States/GameState';
-import EnemiesPart from '../GameObjects/Units/EnemiesPart';
-import Ammunition from '../GameObjects/Ammunition/Ammunition';
-import Game from '../Game';
-import Border from '../GameObjects/Terrain/Border';
-import IShotData from '../Types/IShotData';
-import EventArgs from '../../../Helpers/Events/EventArgs';
-import Bullet from '../GameObjects/Ammunition/Bullet';
-import AmmunitionType from '../GameObjects/Ammunition/Ammunition.types';
-import Bomb from '../GameObjects/Ammunition/Bomb';
+import GameObject from "../Types/GameObject";
+import Vector from "../../../Helpers/Vector";
+import MathFunctions from "../../../Helpers/MathFunctions";
+import Player from "../GameObjects/Units/Player";
+import Enemy from "../GameObjects/Units/Enemy";
+import GameState from "../../../States/GameState";
+import EnemiesPart from "../GameObjects/Units/EnemiesPart";
+import Ammunition from "../GameObjects/Ammunition/Ammunition";
+import Game from "../Game";
+import Border from "../GameObjects/Terrain/Border";
+import IShotData from "../Types/IShotData";
+import EventArgs from "../../../Helpers/Events/EventArgs";
+import Bullet from "../GameObjects/Ammunition/Bullet";
+import AmmunitionType from "../GameObjects/Ammunition/Ammunition.types";
+import Bomb from "../GameObjects/Ammunition/Bomb";
+import GameObjectsPair from "../Types/GameObjectsPair.type";
 
 const enemySpawnTimeStamp = 2;
 
@@ -48,14 +42,14 @@ class Model {
   public initialize(): void {
     this.gameObjects = [];
 
-    this.border = new Border(
-      this.game,
-      {
-        size: new Vector(this.game.viewManager.canvasManager.width, 20),
-        position: new Vector(this.game.viewManager.canvasManager.width / 2, this.game.viewManager.canvasManager.height - 20),
-        color: 'blue',
-      }
-    );
+    this.border = new Border(this.game, {
+      size: new Vector(this.game.viewManager.canvasManager.width, 20),
+      position: new Vector(
+        this.game.viewManager.canvasManager.width / 2,
+        this.game.viewManager.canvasManager.height - 20
+      ),
+      color: "blue",
+    });
     this.player = new Player(this.game);
 
     this.gameObjects.push(this.border);
@@ -67,10 +61,11 @@ class Model {
 
     this.engine = Engine.create();
     this.world = this.engine.world;
-    World.add(this.world, [this.player.body, this.border.body,]);
+    World.add(this.world, [this.player.body, this.border.body]);
     Runner.run(this.runner, this.engine);
 
-    Events.on(this.engine, 'collisionStart', this.handleCollisionStartWithAmmunition);
+    Events.on(this.engine, "collisionStart", this.handleCollisionsStart);
+    Events.on(this.engine, "collisionEnd", this.handleCollisionsEnd);
   }
 
   public unloadContent(): void {
@@ -80,11 +75,16 @@ class Model {
     World.clear(this.world, false);
     Engine.clear(this.engine);
 
-    Events.off(this.engine, 'collisionStart', this.handleCollisionStartWithAmmunition);
+    Events.off(this.engine, "collisionStart", this.handleCollisionsStart);
+    Events.on(this.engine, "collisionEnd", this.handleCollisionsEnd);
   }
 
   public update(gameTime: DOMHighResTimeStamp): void {
-    if (this.game.gameState === GameState.Lose || this.game.gameState === GameState.Win || this.game.gameState === GameState.Pause) {
+    if (
+      this.game.gameState === GameState.Lose ||
+      this.game.gameState === GameState.Win ||
+      this.game.gameState === GameState.Pause
+    ) {
       this.runner.enabled = false;
       this.spawnTimeStamp = 0;
       return;
@@ -110,7 +110,10 @@ class Model {
 
       const enemy = new Enemy(this.game);
 
-      const positionX = MathFunctions.randomInteger(0, this.game.viewManager.canvasManager.width);
+      const positionX = MathFunctions.randomInteger(
+        0,
+        this.game.viewManager.canvasManager.width
+      );
       const positionY = enemy.size.height / 2;
       const position = new Vector(positionX, positionY);
       Body.setPosition(enemy.body, position);
@@ -147,13 +150,12 @@ class Model {
 
   public playerTakeAShot = (args?: EventArgs<IShotData>) => {
     if (args) {
-      const {
-        unit,
-        ammoType,
-        mousePosition,
-      } = args.data;
+      const { unit, ammoType, mousePosition } = args.data;
 
-      const playerPosition = new Vector(unit.body.position.x, unit.body.position.y);
+      const playerPosition = new Vector(
+        unit.body.position.x,
+        unit.body.position.y
+      );
       const vectorToClickPoint = mousePosition.subtract(playerPosition);
       const unitVector = vectorToClickPoint.getUnitVector();
       const velocity = unitVector.multiplyByNumber(Bullet.velocityBase);
@@ -165,7 +167,8 @@ class Model {
           ammo = new Bomb(this.game);
           break;
         }
-        default: ammo = new Bullet(this.game);
+        default:
+          ammo = new Bullet(this.game);
       }
 
       Body.setVelocity(ammo.body, velocity);
@@ -176,42 +179,99 @@ class Model {
     }
   };
 
-  public handleCollisionStartWithAmmunition = (event: Matter.IEventCollision<Engine>) => {
+  public handleCollisionsStart = (event: Matter.IEventCollision<Engine>) => {
     const objectPairs = this.formObjectPairs(event.pairs);
 
     objectPairs.forEach((pair) => {
-      if (pair.objectA instanceof Ammunition && !(pair.objectB instanceof Ammunition)) {
-        pair.objectA.destroy();
-      }
-      if (pair.objectB instanceof Ammunition && !(pair.objectA instanceof Ammunition)) {
-        pair.objectB.destroy();
-      }
-
-      if (pair.objectA instanceof Ammunition && pair.objectB instanceof Enemy) {
-        const damage = pair.objectA.damage;
-        pair.objectB.damage(damage);
-      }
-      if (pair.objectB instanceof Ammunition && pair.objectA instanceof Enemy) {
-        const damage = pair.objectB.damage;
-        pair.objectA.damage(damage);
-      }
-
-      if (pair.objectA instanceof Ammunition && pair.objectB instanceof EnemiesPart) {
-        const damage = pair.objectA.damage;
-        pair.objectB.damage(damage);
-      }
-      if (pair.objectB instanceof Ammunition && pair.objectA instanceof EnemiesPart) {
-        const damage = pair.objectB.damage;
-        pair.objectA.damage(damage);
-      }
+      this.handleCollisionWithAmmunition(pair);
+      this.handleCollisionWithPlayer(pair);
     });
-  }
+  };
 
-  public formObjectPairs(pairs: Matter.IPair[]) {
+  public handleCollisionsEnd = (event: Matter.IEventCollision<Engine>) => {
+    const objectPairs = this.formObjectPairs(event.pairs);
+
+    objectPairs.forEach((pair) => {
+      this.handleCollisionWithPlayerEnd(pair);
+    });
+  };
+
+  public handleCollisionWithAmmunition = (pair: GameObjectsPair) => {
+    if (
+      pair.objectA instanceof Ammunition &&
+      !(pair.objectB instanceof Ammunition)
+    ) {
+      pair.objectA.destroy();
+    }
+    if (
+      pair.objectB instanceof Ammunition &&
+      !(pair.objectA instanceof Ammunition)
+    ) {
+      pair.objectB.destroy();
+    }
+
+    if (pair.objectA instanceof Ammunition && pair.objectB instanceof Enemy) {
+      const damage = pair.objectA.damage;
+      pair.objectB.damage(damage);
+    }
+    if (pair.objectB instanceof Ammunition && pair.objectA instanceof Enemy) {
+      const damage = pair.objectB.damage;
+      pair.objectA.damage(damage);
+    }
+
+    if (
+      pair.objectA instanceof Ammunition &&
+      pair.objectB instanceof EnemiesPart
+    ) {
+      const damage = pair.objectA.damage;
+      pair.objectB.damage(damage);
+    }
+    if (
+      pair.objectB instanceof Ammunition &&
+      pair.objectA instanceof EnemiesPart
+    ) {
+      const damage = pair.objectB.damage;
+      pair.objectA.damage(damage);
+    }
+  };
+
+  public handleCollisionWithPlayer = (pair: GameObjectsPair) => {
+    if (
+      pair.objectA instanceof Player &&
+      (pair.objectB instanceof Border ||
+        pair.objectB instanceof Enemy ||
+        pair.objectB instanceof EnemiesPart)
+    ) {
+      pair.objectA.isColliding = true;
+    }
+    if (
+      pair.objectB instanceof Player &&
+      (pair.objectA instanceof Border ||
+        pair.objectA instanceof Enemy ||
+        pair.objectA instanceof EnemiesPart)
+    ) {
+      pair.objectB.isColliding = true;
+    }
+  };
+
+  public handleCollisionWithPlayerEnd = (pair: GameObjectsPair) => {
+    if (pair.objectA instanceof Player) {
+      pair.objectA.isColliding = false;
+    }
+    if (pair.objectB instanceof Player) {
+      pair.objectB.isColliding = false;
+    }
+  };
+
+  private formObjectPairs(pairs: Matter.IPair[]) {
     const objectPairs = pairs.map((pair) => {
       return {
-        objectA: this.gameObjects.find((object) => object.body.id === pair.bodyA.id),
-        objectB: this.gameObjects.find((object) => object.body.id === pair.bodyB.id),
+        objectA: this.gameObjects.find(
+          (object) => object.body.id === pair.bodyA.id
+        ),
+        objectB: this.gameObjects.find(
+          (object) => object.body.id === pair.bodyB.id
+        ),
       };
     });
 
